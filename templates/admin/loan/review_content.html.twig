@@ -1,0 +1,34 @@
+{% set modifyUrl = ea_url()
+    .setController('App\\Controller\\Admin\\LoanCrudController')
+    .setAction('edit')
+    .set('entityId', loan.id) %}
+
+<a class="btn btn-primary" href="{{ modifyUrl }}">Modifier</a>
+<a id="loan-acceptbutton" class="btn btn-success">Accepter</a>
+<a id="loan-refusebutton" class="btn btn-error">Refuser</a>
+
+<form id="loan-comment" style="display:none" method="post" action="">
+    <label id="loan-comment-label" for="loan-comment">Motif de </label>
+    <textarea name="loan-comment" id="loan-comment-textfield" class="form-control" placeholder="Motif"></textarea>
+
+    <button type="submit" id="loan-review-send" class="btn btn-primary">Envoyer</a>
+</form>
+
+<script>
+    const acceptUrl = '/admin/loan/{{ loan.id }}/accept';
+    const refuseUrl = '/admin/loan/{{ loan.id }}/refuse';
+
+    document.getElementById('loan-acceptbutton').addEventListener('click', function() {
+        const form = document.getElementById('loan-comment')
+        form.style.display = 'block';
+        form.action = acceptUrl;
+        document.getElementById('loan-comment-label').innerHTML = 'Réponse à la demande de prêt';
+
+    });
+    document.getElementById('loan-refusebutton').addEventListener('click', function() {
+        const form = document.getElementById('loan-comment')
+        form.style.display = 'block';
+        form.action = refuseUrl;
+        document.getElementById('loan-comment-label').innerHTML = 'Motif du refus';
+    });
+</script>

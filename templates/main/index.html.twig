@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MATOS - Emprunts et Gestion de matériel
+{% endblock %}
+
+{% block body %}
+	{% include 'main/navbar.html.twig' %}
+    {% for message in app.flashes() %}
+        <div role="alert" class="alert alert-success">
+            {{ message[0] }}
+        </div>
+    {% endfor %}
+
+	<div class="flex justify-center">
+		<div class="container">
+            <div class="flex justify-end pt-10">
+                <div class="flex">
+                    <div class="mx-2 w-10 h-full bg-success"></div>En cours de réservation
+                </div>
+                <div class="flex">
+                    <div class="mx-2 w-10 h-full bg-error"></div>Réservé
+                </div>
+                <div class="mr-5"></div>
+            </div>
+            {% for category in categories %}
+                {% if loanableEquipment[category.id]|length > 0 and category.slug != "accessories" %}
+                    <div id="{{ category|lower }}" class="row {% if not loop.first %}pt-20{% endif %}">
+                        <h2 class="text-3xl font-bold">{{ category.name }}</h2>
+                            {% set loans = equipmentLoaned[category.id] ?? [] %}
+                            {% include 'equipment_category/availability_table.html.twig' with {equipment: loanableEquipment[category.id], dates: dates, loans: loans} %}
+                        <a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+		</div>
+	</div>
+{% endblock %}

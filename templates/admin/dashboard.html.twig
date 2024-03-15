@@ -1,0 +1,10 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Tableau de bord{% endblock %}
+
+{% block main %}
+    <p>Bienvenue sur le back-office de Matos.</p>
+    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loansPending')) }}
+    <br/>
+    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loansPendingReturn')) }}
+{% endblock %}

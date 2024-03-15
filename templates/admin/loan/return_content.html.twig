@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="ml-3">
+        {% for equipment in form.equipment %}
+            <div class="mt-1">
+                {{ form_widget(equipment, {'attr': {'class': 'form-check-input', 'style': "width:1.5rem; height:1.5rem"}}) }}
+                <span class="text-lg">
+                    {{ field_label(equipment) }}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-1">
+        {{ form_label(form.comment) }}
+        {{ form_widget(form.comment, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <button type="submit" id="camera_loan_submit" class="mt-4 p-3 btn btn-primary">Confirmer le retour</button>
+{{ form_end(form) }}

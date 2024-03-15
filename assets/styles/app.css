@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.input-cards input[type=radio]{
+    display: none;
+  /*   margin-right: -20px;
+    position: relative;
+    z-index: 2; */
+}
+
+.input-cards input:checked + .card{
+    outline: 4px oklch(var(--p)) solid;
+}
+
+label > input[disabled] + .card {
+  background-color: #0003;
+}
+
+label > input + .card {
+  background-color: #0000;
+}
+
+.hoverdiv:hover {
+  background-color: #0003;
+}

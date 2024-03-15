@@ -1,0 +1,9 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Emprunt de John Doe (#{{ loanId }}){% endblock %}
+
+{% block main %}
+    <h1>Checklist</h1>
+
+    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loanReturn', {id: loanId})) }}
+{% endblock %}

@@ -1,0 +1,24 @@
+<div class="overflow-scroll my-5 rounded-lg bg-base-200 shadow-inner" style="width:100%;max-height:calc(70vh - 60px)">
+	<div class="grid p-2 gap-px" style="grid-template-columns:minmax(192px, 4fr) repeat(20,minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
+        <div class="w-100 h-100" style="grid-area:1/2/{{equipment|length +3}}/4;background-color:#0003"></div>
+        {% for e in equipment %}
+            {% set i = loop.index0 %}
+		    <div class="text-right text-clip overflow-hidden font-bold text-sm mt-1 mr-2" style="grid-row:{{i+3}}; grid-column:1">{{e.name}}</div>
+            {% if loans is defined and e.id in loans|keys %}
+                {% for loan in loans[e.id] %}
+                    {% if loan.status == 0 or loan.status == 1 %}
+                        <div class="{{ (loan.status == 0)? "bg-success" : "bg-error" }} w-100 h-100" style="grid-area: {{i+3}} / {{loan.start +2}} / {{i+4}} / {{loan.end +3}};"></div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="w-100 h-100 hoverdiv" style="grid-area:{{i+3}}/1/{{i+4}}/22;"></div>
+        {% endfor %}
+
+        {% for date in dates %}
+            {% set i = loop.index0 %}
+            <div class="text-center font-bold text-sm" style="grid-area:1/{{i*2+2}}/2/{{i*2+4}}">{{ date }}</div>
+            <div class="text-center font-bold text-sm" style="grid-area:2/{{i*2+2}}/3/{{i*2+3}}">M</div>
+            <div class="text-center font-bold text-sm" style="grid-area:2/{{i*2+3}}/3/{{i*2+4}}">A-M</div>
+        {% endfor %}
+	</div>
+</div>

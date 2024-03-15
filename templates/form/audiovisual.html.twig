@@ -1,0 +1,106 @@
+{% extends 'form/base.html.twig' %}
+
+{% block form %}
+    <script id="equipmentQuantity">
+        const equipmentQuantity = {{ equipmentQuantity|raw }};
+    </script>
+    <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
+    <ul class="ml-10">
+        <li>• Les demandes doivent être faites au <b>minimum 24h à l'avance</b>.</li>
+        <li>• Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
+    </ul>
+    <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
+    <ul class="ml-10">
+        <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b></li>
+        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
+    </ul>
+
+    {{ form_start(form) }}
+
+    <h2 class="text-2xl font-bold my-2" >Créneau</h2>
+    <div>
+        {{ form_label(form.day) }}
+    </div>
+    <div>
+        {{ form_widget(form.day, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+    </div>
+
+    <div>
+        {{ form_label(form.timeSlot) }}
+    </div>
+    {% for timeSlot in form.timeSlot %}
+        <div>
+            {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(timeSlot) }}
+        </div>
+    {% endfor %}
+
+    <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
+
+    <h3 class="text-xl font-bold my-5">Boîtier</h3>
+
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+        {% for equipment in form.cameras %}
+            <label for={{ equipment.vars.id }}>
+                {{ form_widget(equipment) }}
+                <div class="card w-72 bg-base-100 shadow-xl mb-10">
+                    <figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+                    <div class="card-body">
+                        <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name }}</h2>
+                        <p>{{ equipmentInfo[equipment.vars.value].description }}</p>
+                    </div>
+                </div>
+            </label>
+        {% endfor %}
+    </div>
+
+    <h3 class="text-xl font-bold my-5">Objectifs</h3>
+    {% for equipment in form.lenses %}
+        <div>
+            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(equipment) }}
+        </div>
+    {% endfor %}
+
+    <h3 class="text-xl font-bold my-5">Micros</h3>
+    {% for equipment in form.microphones %}
+        <div>
+            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(equipment) }}
+        </div>
+    {% endfor %}
+
+    <h3 class="text-xl font-bold my-5">Lumières</h3>
+    {% for equipment in form.lights %}
+        <div>
+            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(equipment) }}
+        </div>
+    {% endfor %}
+    
+    <h3 class="text-xl font-bold my-5">Trépied</h3>
+    {% for equipment in form.tripods %}
+        <div>
+            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(equipment) }}
+        </div>
+    {% endfor %}
+
+    <h3 class="text-xl font-bold my-5">Batteries supplémentaires</h3>
+    {% for equipment in form.batteries %}
+        <div>
+            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            {{ form_label(equipment) }}
+        </div>
+    {% endfor %}
+
+    {#
+    <h3 class="text-xl font-bold my-5">Autres demandes</h3>
+    <div>
+        {{ form_widget(form.comment, {'attr': {'class': 'w-10/12 md:w-3/4 lg:w-1/2 textarea textarea-bordered textarea-primary mb-10'}}) }}
+    </div>
+    #}
+
+    <button type="submit" id="camera_loan_submit" class="btn btn-primary text-base-100">Envoyer la demande</button>
+    {{ form_end(form) }}
+{% endblock %}

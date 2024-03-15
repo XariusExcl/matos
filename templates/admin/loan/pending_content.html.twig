@@ -1,0 +1,25 @@
+<h3>Emprunts en attente : {{loans|length}}</h3>
+<table class="datagrid">
+    <thead>
+        <tr>
+            <td>Responsable</td>
+            <td>Date de départ</td>
+            <td>Date de retour</td>
+            <td>Équipment emprunté</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for loan in loans %}
+            <tr>
+                <td>John Doe</td>
+                <td>{{ loan.departuredate|date() }}</td>
+                <td>{{ loan.returndate|date() }}</td>
+                <td>{{ loan.equipmentloaned|length }}</td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('admin_loan_review', {'id': loan.id}) }}">Répondre</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
