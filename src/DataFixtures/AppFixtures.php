@@ -81,8 +81,6 @@ class AppFixtures extends Fixture
             ["name" => "Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Canon 6D", "description" => "Appareil photo Canon 6D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
 
@@ -130,23 +128,23 @@ class AppFixtures extends Fixture
             ["name" => "Wacom Cintiq", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
             ["name" => "Wacom Cintiq", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
         
-            ["name"=> "Trépied Manfrotto", "description" => "Trépied Manfrotto", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4]],
-            ["name"=> "Trépied Miller", "description" => "Trépied Miller", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4]],
-            ["name" => "Batterie Canon LP-E6NH", "description" => "Batterie supplémentaire pour Canon", "quantity" => 5, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8]],
-            ["name" => "Batterie Sony NP-F970", "description" => "Batterie supplémentaire pour Camescope Sony", "quantity" => 4, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8]],
-            ["name" => "Batterie Sony NP-FW50", "description" => "Batterie supplémentaire pour petits appareils Sony (et rail motorisé)", "quantity" => 5, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8]],
-            ["name" => "Batterie V-Mount", "description" => "Batterie V-Mount", "quantity" => 9, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8]],
-            ["name" => "Chargeur V-Mount", "description" => "Chargeur V-Mount", "quantity" => 3, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8]],
-            ["name" => "Filtre ND 63mm", "description" => "Filtre ND 63mm", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7]],
-            ["name" => "Filtre ND 70mm", "description" => "Filtre ND 70mm", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7]],
-            ["name" => "Bague conversion Sony E vers Canon EF", "description" => "Bague de conversion pour objectifs Sony E vers Canon EF", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7]], 
-            ["name" => "Lecteur SSD", "description" => "Lecteur SSD pour Blackmagic", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7]],
-            ["name" => "Malette Son", "description" => "Malette son avec Zoom H5 & Micro cravate", "quantity" => 12, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[2]],
-            ["name" => "Perche", "description" => "Perche pour micro Rode NTG-2", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[2]],
-            ["name" => "Fresnel LED 60W", "description" => "Fresnel LED 60W", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3]],
-            ["name" => "Fresnel LED Bi-Color 60W", "description" => "Fresnel LED Bi-Color 60W", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3]],
-            ["name" => "Panneau LED", "description" => "Panneau LED", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3]],
-            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3]],
+            ["name"=> "Trépied Manfrotto", "description" => "Trépied Manfrotto", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4], "showInTable" => false],
+            ["name"=> "Trépied Miller", "description" => "Trépied Miller", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4], "showInTable" => false],
+            ["name" => "Batterie Canon LP-E6NH", "description" => "Batterie supplémentaire pour Canon", "quantity" => 5, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8], "showInTable" => false],
+            ["name" => "Batterie Sony NP-F970", "description" => "Batterie supplémentaire pour Camescope Sony", "quantity" => 4, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8], "showInTable" => false],
+            ["name" => "Batterie Sony NP-FW50", "description" => "Batterie supplémentaire pour petits appareils Sony (et rail motorisé)", "quantity" => 5, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8], "showInTable" => false],
+            ["name" => "Batterie V-Mount", "description" => "Batterie V-Mount", "quantity" => 9, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8], "showInTable" => false],
+            ["name" => "Chargeur V-Mount", "description" => "Chargeur V-Mount", "quantity" => 3, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[8], "showInTable" => false],
+            ["name" => "Filtre ND 63mm", "description" => "Filtre ND 63mm", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7], "showInTable" => false],
+            ["name" => "Filtre ND 70mm", "description" => "Filtre ND 70mm", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7], "showInTable" => false],
+            ["name" => "Bague conversion Sony E vers Canon EF", "description" => "Bague de conversion pour objectifs Sony E vers Canon EF", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7], "showInTable" => false], 
+            ["name" => "Lecteur SSD", "description" => "Lecteur SSD pour Blackmagic", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[7], "showInTable" => false],
+            ["name" => "Malette Son", "description" => "Malette son avec Zoom H5 & Micro cravate", "quantity" => 12, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[2], "showInTable" => false],
+            ["name" => "Perche", "description" => "Perche pour micro Rode NTG-2", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[2], "showInTable" => false],
+            ["name" => "Fresnel LED 60W", "description" => "Fresnel LED 60W", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
+            ["name" => "Fresnel LED Bi-Color 60W", "description" => "Fresnel LED Bi-Color 60W", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
+            ["name" => "Panneau LED", "description" => "Panneau LED", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
+            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0]],
         ];
 
         $equipmentObjects = [];
@@ -161,7 +159,7 @@ class AppFixtures extends Fixture
             $equipmentObject->setLocation($equipment["location"]);
             $equipmentObject->setLoanable(true);
             $equipmentObject->setQuantity($equipment["quantity"]??1);
-            $equipmentObject->setShowInTable(true);
+            $equipmentObject->setShowInTable($equipment["showInTable"]??true);
             array_push($equipmentObjects, $equipmentObject);
             $manager->persist($equipmentObject);
         }

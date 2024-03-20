@@ -76,13 +76,11 @@ class LoanCrudController extends AbstractCrudController
 
             // TODO : update the quantity of the equipment in the database
             // TODO : send an email to the user to notify him that his loan has been returned
-
-            /*
+            
             $loan->setStatus(LoanStatus::RETURNED->value);
             $em->persist($loan);
             $em->flush();
-            */
-    
+            
             $this->addFlash('success', 'Le rendu du matériel a bien été enregistré.'); // FIXME : This message is displayed after one extra refresh somehow?
             // return $this->redirectToRoute('admin'); // Can't reroute because we're in a nested controller render.
         }

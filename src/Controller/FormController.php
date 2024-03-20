@@ -88,45 +88,65 @@ class FormController extends AbstractController
                 throw new \Exception("Invalid time slot: ".var_dump($data['timeSlot']));
             else {
                 $data['day'] += 1;
-                $loan->setDepartureDate(
-                    (new \DateTime("today"))
-                        ->modify("+".$data['day']." day")
-                        ->modify($hours[$data['timeSlot'][0]][0])
-                );
-                $loan->setReturnDate(
-                    (new \DateTime("today"))
-                        ->modify("+".($data['day'] + ((end($data['timeSlot']) == 'evening')? 1 : 0))." day")
-                        ->modify($hours[end($data['timeSlot'])][1])
-                );
+                $start = (new \DateTime("today"))
+                    ->modify("+".$data['day']." day")
+                    ->modify($hours[$data['timeSlot'][0]][0]);
+                
+                $end = (new \DateTime("today"))
+                    ->modify("+".($data['day'] + ((end($data['timeSlot']) == 'evening')? 1 : 0))." day")
+                    ->modify($hours[end($data['timeSlot'])][1]);
+
+                $loan->setDepartureDate($start);
+                $loan->setReturnDate($end);
             }
 
-            // Set the loan's equipment
-            if (!empty($data['cameras']))
-                $loan->addEquipmentLoaned($equipmentInfo[$data['cameras']]);
+            // Check if all the equipment is available
+            $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($start, $end);
+            $equipmentAlreadyLoaned = [];
+            foreach ($loans as $loan) 
+                foreach($loan->getEquipmentLoaned() as $el)
+                    array_push($equipmentAlreadyLoaned, $el->getId());
 
-            
+            $loanEquipment = [];
+
+            if (!empty($data['cameras']))
+                array_push($loanEquipment, $data['cameras']);
+
             if (!empty($data['lenses']))
-                $loan->addEquipmentLoaned($equipmentInfo[$data['lenses']]);
+                array_push($loanEquipment, $data['lenses']);
 
             if (!empty($data['microphones']))
                 foreach($data['microphones'] as $microphone)
-                    $loan->addEquipmentLoaned($equipmentInfo[$microphone]);
+                    array_push($loanEquipment, $microphone);
 
             if (!empty($data['lights']))
                 foreach($data['lights'] as $light)
-                    $loan->addEquipmentLoaned($equipmentInfo[$light]);
+                    array_push($loanEquipment, $light);
 
             if (!empty($data['tripods']))
-                $loan->addEquipmentLoaned($equipmentInfo[$data['tripods']]);
+                array_push($loanEquipment, $data['tripods']);
 
             if (!empty($data['batteries']))
                 foreach($data['batteries'] as $accessory)
-                    $loan->addEquipmentLoaned($equipmentInfo[$accessory]);
-            
+                    array_push($loanEquipment, $accessory);
+
+            dump($equipmentAlreadyLoaned);
+            dump($loanEquipment);
+
+            foreach($loanEquipment as $equipment)
+            {
+                if (in_array($equipment, $equipmentAlreadyLoaned))
+                {
+                    $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
+                    return $this->redirectToRoute('reservation_form_audiovisual');
+                }
+                $loan->addEquipmentLoaned($equipmentInfo[$equipment]);
+            }
+
             $entityManager->persist($loan);
             $entityManager->flush();
 
-            $this->addFlash('success','Votre réservation a bien été enregistrée.');
+            $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
             return $this->redirectToRoute('app_main');
         }
 

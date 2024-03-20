@@ -3,6 +3,12 @@
 {% block title %}Nouvel emprunt{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('error') %}
+        {% dump(message) %}
+        <div role="alert" class="alert alert-error bg-error">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="flex justify-center">
 		<div class="container">
             <h1 class="text-3xl font-bold my-10">{{ formName }}</h1>
