@@ -1,3 +1,12 @@
+when@dev:
+    framework:
+        mailer:
+            envelope:
+                recipients: ['%env(MAILER_DEBUG_EMAIL)%']
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: 'matos@mmi-troyes.fr'
+        headers:
+            From: 'Matos Emprunts <matos@mmi-troyes.fr>'

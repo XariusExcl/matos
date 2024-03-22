@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Form\AudiovisualLoanType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Equipment;
@@ -16,7 +18,7 @@ use App\Entity\Equipment;
 class FormController extends AbstractController
 {
     #[Route('/form/audiovisual', name: 'reservation_form_audiovisual')]
-    public function cameraForm(Request $request, EntityManagerInterface $entityManager): Response
+    public function cameraForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('audiovisual');
 
@@ -130,9 +132,6 @@ class FormController extends AbstractController
                 foreach($data['batteries'] as $accessory)
                     array_push($loanEquipment, $accessory);
 
-            dump($equipmentAlreadyLoaned);
-            dump($loanEquipment);
-
             foreach($loanEquipment as $equipment)
             {
                 if (in_array($equipment, $equipmentAlreadyLoaned))
@@ -145,6 +144,8 @@ class FormController extends AbstractController
 
             $entityManager->persist($loan);
             $entityManager->flush();
+
+            MailerController::sendRequestConfirmMail("John Doe", $mailer); // FIXME : This is a placeholder email
 
             $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
             return $this->redirectToRoute('app_main');

@@ -1,0 +1,23 @@
+{% extends "mailer/base.html.twig" %}
+{% block body %}
+    <h1>Bonjour Administrateur !</h1>
+    <p>Une nouvelle demande de matériel à été émise sur MATOS.</p>
+    <p>Voici les informations de l'emprunt:</p>
+    <p>Utilisateur:
+        {{ name }}</p>
+    <p>Date de début de l'emprunt:
+        {{ date_start|date('d/m/Y H:i') }}</p>
+    <p>Date de fin de l'emprunt:
+        {{ date_end|date('d/m/Y H:i') }}</p>
+    <p>Matériel demandé:</p>
+    <ul>
+        {% for equipment in equipmentLoaned??"" %}
+            <li>
+                <b>{{ equipment.quantity }}x</b>
+                {{ equipment.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Cliquez sur le bouton ci-dessous pour traîter la demande :</p>
+    <a href="{{ url('admin') }}" class="btn btn-primary">Traîter la demande</a>
+{% endblock %}

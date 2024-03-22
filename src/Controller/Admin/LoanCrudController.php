@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\MailerController;
 use App\Entity\Loan;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -14,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\ReturnLoanType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class LoanCrudController extends AbstractCrudController
 {
@@ -92,7 +95,7 @@ class LoanCrudController extends AbstractCrudController
     }
 
     #[Route('/admin/loan/{id}/accept', name: 'admin_loan_accept')]
-    public function loanAccepted(Loan $loan, EntityManagerInterface $em): Response
+    public function loanAccepted(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         $emailComment = $_POST['loan-comment'];
         dump($emailComment);
@@ -100,6 +103,8 @@ class LoanCrudController extends AbstractCrudController
         $loan->setStatus(LoanStatus::ACCEPTED->value);
 
         // TODO: Send an email to the user to notify him that his loan has been accepted
+        MailerController::sendRequestAcceptMail("John Doe", $mailer); // FIXME : This is a placeholder email
+
         $em->persist($loan);
         $em->flush();
 
@@ -108,7 +113,7 @@ class LoanCrudController extends AbstractCrudController
     }
 
     #[Route('/admin/loan/{id}/refuse', name: 'admin_loan_refuse')]
-    public function loanRefused(Loan $loan, EntityManagerInterface $em): Response
+    public function loanRefused(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         $emailComment = $_POST['loan-comment'];
         dump($emailComment);
@@ -116,6 +121,8 @@ class LoanCrudController extends AbstractCrudController
         $loan->setStatus(LoanStatus::REFUSED->value);
 
         // TODO: Send an email to the user to notify him that his loan has been refused
+        MailerController::sendRequestRefuseMail("John Doe", $mailer); // FIXME : This is a placeholder email
+
         $em->persist($loan);
         $em->flush();
 

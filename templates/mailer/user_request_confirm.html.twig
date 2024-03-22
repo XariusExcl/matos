@@ -1,0 +1,18 @@
+{% extends "mailer/base.html.twig" %}
+{% block body %}
+    <h1>Bonjour {{ name??"" }} !</h1>
+    <p>Vous avez fait une demande d'emprunt de matériel sur MATOS. Voici un récapitulatif de votre demande :</p>
+    <p>Date de début de l'emprunt: {{ date_start|date('d/m/Y H:i') }}</p>
+    <p>Date de fin de l'emprunt: {{ date_end|date('d/m/Y H:i') }}</p>
+    <p>Matériel demandé:</p>
+    <ul>
+        {% for equipment in equipmentLoaned??"" %}
+            <li>
+                <b>{{ equipment.quantity }}x</b> {{ equipment.name }} 
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Vous receverez un mail lorsque votre demande sera traitée.</p>
+    <p>Si vous avez des demandes particulières, n'hésitez pas à nous contacter à l'adresse <a href="mailto:matos@mmi-troyes.fr" >matos@mmi-troyes.fr</a>.</p>
+    <p>À bientôt sur MATOS !</p>
+{% endblock %}
