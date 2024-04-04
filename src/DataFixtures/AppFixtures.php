@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Accessory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Location;
@@ -12,9 +11,19 @@ use App\Entity\Loan;
 use App\Entity\LoanStatus;
 use App\Entity\EquipmentSubCategory;
 use App\Entity\EquipmentSubCategoryType;
+use App\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
+    private UserPasswordHasherInterface $hasher;
+
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
         $locations = [
@@ -80,9 +89,18 @@ class AppFixtures extends Fixture
             ["name" => "Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 6D", "description" => "Appareil photo Canon 6D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 24-70mm)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon 6D", "description" => "Appareil photo Canon 6D (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "GoPro Hero 6 Black", "description" => "GoPro Hero 6 Black", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "GoPro Hero 10 Black", "description" => "GoPro Hero 10 Black", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
 
             ["name" => "Obj. 14mm f/3.1", "description" => "Objectif Canon 14mm f/3.1", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
             ["name" => "Obj. 24mm f/1.5", "description" => "Objectif Canon 24mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
@@ -144,7 +162,7 @@ class AppFixtures extends Fixture
             ["name" => "Fresnel LED 60W", "description" => "Fresnel LED 60W", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
             ["name" => "Fresnel LED Bi-Color 60W", "description" => "Fresnel LED Bi-Color 60W", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
             ["name" => "Panneau LED", "description" => "Panneau LED", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
-            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0]],
+            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false]
         ];
 
         $equipmentObjects = [];
@@ -164,19 +182,37 @@ class AppFixtures extends Fixture
             $manager->persist($equipmentObject);
         }
 
+        $users = [
+            ["email" => "abcd@ab.cd", "roles" => ["ROLE_ADMIN"], "name" => "Admin McAdminface", "password" => "abcd"],
+            ["email" => "john@ab.cd", "roles" => ["ROLE_USER"], "name" => "John Mcstudentface", "password" => "abcd"]
+        ];
+
+        $userObjects = [];
+
+        foreach ($users as $user) {
+            $userObject = new User();
+            $userObject->setEmail($user["email"]);
+            $userObject->setRoles($user["roles"]);
+            $userObject->setName($user["name"]);
+            $userObject->setActive(true);
+            $userObject->setPassword($this->hasher->hashPassword($userObject, $user["password"]));
+            array_push($userObjects, $userObject);
+            $manager->persist($userObject);
+        }
+
         $loans = [
-            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[0], $equipmentObjects[13], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+13 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[0], $equipmentObjects[13], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+1 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[1], $equipmentObjects[8], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+11 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[1], $equipmentObjects[8], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+3 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[2], $equipmentObjects[9], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+13 day 17:00"), "returnDate" => new \DateTime("+15 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[2], $equipmentObjects[9], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+4 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[3], $equipmentObjects[10], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+15 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[3], $equipmentObjects[10], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[45], $equipmentObjects[47]]],
-            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[50], $equipmentObjects[51]]],
-            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[50], $equipmentObjects[51]]],
+            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[0], $equipmentObjects[13], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+13 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[0], $equipmentObjects[13], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+1 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[1], $equipmentObjects[8], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+11 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[1], $equipmentObjects[8], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+3 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[2], $equipmentObjects[9], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+13 day 17:00"), "returnDate" => new \DateTime("+15 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[2], $equipmentObjects[9], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+4 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::PENDING, "equipmentLoaned" => [$equipmentObjects[3], $equipmentObjects[10], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+15 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[3], $equipmentObjects[10], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[45], $equipmentObjects[47]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[50], $equipmentObjects[51]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[50], $equipmentObjects[51]], "loaner" => $userObjects[1]],
         ];
 
         foreach ($loans as $loan) {
@@ -184,6 +220,7 @@ class AppFixtures extends Fixture
             $loanObject->setDepartureDate($loan["loanDate"]);
             $loanObject->setReturnDate($loan["returnDate"]);
             $loanObject->setStatus($loan["loanStatus"]->value);
+            $loanObject->setLoaner($loan["loaner"]);
             foreach ($loan["equipmentLoaned"] as $equipmentLoaned) {
                 $loanObject->addEquipmentLoaned($equipmentLoaned);
             }

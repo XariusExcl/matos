@@ -12,7 +12,7 @@
     <tbody>
         {% for loan in loans %}
             <tr>
-                <td>John Doe</td>
+                <td>{{ loan.loaner.name ?? loan.loaner.email|split('@')[0] }}</td>
                 <td>{{ loan.departuredate|date() }}</td>
                 <td>{{ loan.returndate|date() }}</td>
                 <td>{{ loan.equipmentloaned|length }}</td>

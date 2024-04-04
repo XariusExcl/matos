@@ -1,6 +1,6 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block content_title %}Emprunt de John Doe (#{{ loanId }}){% endblock %}
+{% block content_title %}Emprunt #{{ loanId }}{% endblock %}
 
 {% block main %}
     {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loanReview', {id: loanId})) }}

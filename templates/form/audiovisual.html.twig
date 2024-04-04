@@ -17,6 +17,11 @@
 
     {{ form_start(form) }}
 
+    <h2 class="text-2xl font-bold my-2">Projet</h2>
+    <div>
+        {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel, bénévolat...)', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
+    </div>
+
     <h2 class="text-2xl font-bold my-2" >Créneau</h2>
     <div>
         {{ form_label(form.day) }}

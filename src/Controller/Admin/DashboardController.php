@@ -23,7 +23,6 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin/loan/review', name: 'admin_loan_review')]
     public function loanReview(): Response
     {
-        // Get the loan id parameter from the url
         $loanId = $_GET['id']; // Yes, this is bad, but EasyAdmin forced my hand
 
         return $this->render('admin/loan_review.html.twig', [
@@ -34,8 +33,7 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin/loan/return', name: 'admin_loan_return')]
     public function loanReturn(): Response
     {
-        // Get the loan id parameter from the url
-        $loanId = $_GET['id']; // Yes, this is bad, but EasyAdmin forced my hand
+        $loanId = $_GET['id'];
 
         return $this->render('admin/loan_return.html.twig', [
             'loanId' => $loanId,

@@ -25,6 +25,11 @@ class AudiovisualLoanType extends AbstractType
                 'choices' => $options['days'],
                 'label' => 'Jour de l\'emprunt',
             ])
+            ->add('comment', TextareaType::class, [
+                'mapped' => false,
+                'label' => 'Raison de l\'emprunt',
+                'required' => true
+            ])
             ->add('timeSlot', ChoiceType::class, [
                 'mapped' => false,
                 'label' => 'Créneau horaire',

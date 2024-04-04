@@ -38,6 +38,10 @@ class Loan
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\ManyToOne(inversedBy: 'loans')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $loaner = null;
+
     public function __construct()
     {
         $this->equipmentLoaned = new ArrayCollection();
@@ -121,6 +125,18 @@ class Loan
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getLoaner(): ?User
+    {
+        return $this->loaner;
+    }
+
+    public function setLoaner(?User $loaner): static
+    {
+        $this->loaner = $loaner;
 
         return $this;
     }

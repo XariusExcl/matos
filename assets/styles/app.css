@@ -25,3 +25,7 @@ label > input + .card {
 .hoverdiv:hover {
   background-color: #0003;
 }
+
+.pending-reservation {
+  background: repeating-linear-gradient(45deg, #00BE8F, #00BE8F 5px, #00BE8F00 6px, #00BE8F00 11px, #00BE8F 12px);
+}
