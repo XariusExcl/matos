@@ -14,7 +14,7 @@
                     <img src="{{asset('logo.png')}}" class="w-24 h-24"/>
                 </div>
                 <h2 class="card-title">Se connecter</h2>
-                <button class="btn btn-primary mt-5">Utiliser mon login URCA</button>
+                <a href="{{ path('sso_cas') }}" class="btn btn-primary mt-5">Utiliser mon login URCA</a>
                 <hr>
                 <form class="flex flex-col" action="{{ path('app_login') }}" method="post">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

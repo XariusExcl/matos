@@ -1,3 +1,6 @@
+cas_return:
+    path: sso/cas
+    
 controllers:
     resource:
         path: ../src/Controller/
