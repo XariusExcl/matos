@@ -13,6 +13,7 @@ enum LoanStatus: int {
     case ACCEPTED = 1;
     case REFUSED = 2;
     case RETURNED = 3;
+    case CANCELLED_BY_LOANER = 4;
 }
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]

@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Equipment;
+use App\Entity\LoanStatus;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MainController extends AbstractController
 {
@@ -95,5 +97,36 @@ class MainController extends AbstractController
             'equipmentLoaned'=> $equipmentLoaned,
             'dates' => $dates
         ]);
+    }
+
+    #[Route('/my-loans', name: 'app_myloans')]
+    #[IsGranted('ROLE_USER', message: 'Vous devez être connecté pour accéder à cette page.')]
+    public function myLoans(EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        return $this->render('main/myloans.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+    #[Route('/cancel-loan/{id}', name: 'app_cancel_loan')]
+    #[IsGranted('ROLE_USER', message: 'Vous devez être connecté pour accéder à cette page.')]
+    public function cancelLoan(EntityManagerInterface $entityManager, $id): Response
+    {
+        $loan = $entityManager->getRepository(Loan::class)->find($id);
+        $user = $this->getUser();
+        
+        if ($loan->getLoaner() != $user)
+        {
+            $this->addFlash('error', 'Vous ne pouvez pas annuler un prêt qui ne vous appartient pas !');
+            return $this->redirectToRoute('app_myloans');
+        } else {
+            $loan->setStatus(LoanStatus::CANCELLED_BY_LOANER->value);
+            $entityManager->flush();
+            $this->addFlash('success', 'Le prêt a bien été annulé.');
+            # TODO : Send an email
+            return $this->redirectToRoute('app_myloans');
+        }
     }
 }

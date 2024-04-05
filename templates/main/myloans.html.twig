@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MATOS - Mes emprunts
+{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes() %}
+        <div role="alert" class="alert alert-success">
+            {{ message[0] }}
+        </div>
+    {% endfor %}
+    {% include 'main/navbar.html.twig' %}
+	<div class="flex justify-center">
+		<div class="container">
+            <h1 class="text-3xl font-bold my-10">Mes emprunts prévus</h2>
+            <div class="flex flex-wrap justify-around">
+                {% set cardColors = ["bg-white", "bg-green-100", "bg-sky-100", "bg-sky-100", "bg-sky-100"] %}
+                {% set loanStatuses = ["En attente de validation", "Validé", "Refusé", "Passé", "Annulé"] %}
+                {% for loan in user.loans %}
+                    {% if loan.status == 0 or loan.status == 1 %}
+                        <div class="rounded-3xl mb-5 {{ cardColors[loan.status] }} " style="width: 30rem;">
+                            <div class="card-body">
+                                <p class="text-right">{{ loanStatuses[loan.status] }}</p>
+                                <p class="text-xl"><b>Date de départ</b></p>
+                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y') }}</p>
+                                <p class="text-xl"><b>Date de retour</b></p>
+                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y') }}</p>
+                                <p class="text-xl"><b>Matériel</b></p>
+                                <ul>
+                                {% for equipment in loan.equipmentLoaned %}
+                                    <li class="mt-1 ml-4">
+                                        • {{ equipment.name }} 
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                <p class="text-xl"><b>Commentaire</b></p>
+                                <p class="ml-1">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
+                            </div>
+                            <div class="card-actions p-8 pt-0 flex justify-end">
+                                <button class="btn btn-error" onclick="modal_{{ loan.id }}.showModal()">Annuler</button>
+                                <a href="mailto:emprunt.mmi@gmail.com?subject=Demande de modification de l'emprunt du {{ loan.departureDate|date('d/m/Y') }}" class="btn btn-primary">Envoyer un mail</a>
+                                {% if loan.status == 1 %}
+                                    <a class="btn btn-secondary" href="">Fiche emprunt (PDF)</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <dialog id="modal_{{ loan.id }}" class="modal">
+                            <div class="modal-box">
+                                <h3 class="font-bold text-lg">Annuler l'emprunt</h3>
+                                <p class="py-4">Êtes vous sûr de vouloir annuler cet emprunt ?</p>
+                                <div class="modal-action">
+                                    <form method="dialog">
+                                        <button class="btn mr-2">Retour</button>
+                                        <a class="btn btn-error" href="{{ path('app_cancel_loan', {'id': loan.id}) }}">Oui, annuler</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </dialog>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <h1 class="text-3xl font-bold mb-10">Emprunts passés</h2>
+            <div class="flex flex-wrap justify-around">
+                {% for loan in user.loans %}
+                    {% if loan.status >= 2 %}
+                        <div class="rounded-3xl {{ cardColors[loan.status] }} mb-5" style="width: 20rem;">
+                            <div class="card-body">
+                                <p class="text-right">{{ loanStatuses[loan.status] }}</p>
+                                <p class="text-xl"><b>Date de départ</b></p>
+                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y') }}</p>
+                                <p class="text-xl"><b>Date de retour</b></p>
+                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y') }}</p>
+                                <p class="text-xl"><b>Matériel</b></p>
+                                <ul>
+                                {% for equipment in loan.equipmentLoaned %}
+                                    <li class="mt-1 ml-4">
+                                        • {{ equipment.name }} 
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                <p class="text-xl"><b>Commentaire</b></p>
+                                <p class="ml-1">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+		</div>
+	</div>
+{% endblock %}
