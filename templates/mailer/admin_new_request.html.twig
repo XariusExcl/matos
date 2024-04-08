@@ -5,14 +5,12 @@
     <p>Voici les informations de l'emprunt:</p>
     <p>Utilisateur:
         {{ name }}</p>
-    <p>Date de début de l'emprunt:
-        {{ date_start|date('d/m/Y H:i') }}</p>
-    <p>Date de fin de l'emprunt:
-        {{ date_end|date('d/m/Y H:i') }}</p>
+    <p>Date de début de l'emprunt:<b>{{ date_start|date('d/m/Y H:i') }}</b></p>
+    <p>Date de fin de l'emprunt:<b>{{ date_end|date('d/m/Y H:i') }}</b></p>
     <p>Matériel demandé:</p>
-    <ul>
+    <ul style="list-style-type: none;padding:0;">
         {% for equipment in equipmentLoaned??"" %}
-            <li>
+            <li style="margin-bottom: 10px;">
                 <b>{{ equipment.quantity }}x</b>
                 {{ equipment.name }}
             </li>

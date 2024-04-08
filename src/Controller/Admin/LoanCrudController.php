@@ -50,7 +50,7 @@ class LoanCrudController extends AbstractCrudController
         ]);
     }
 
-    public function loanReturn(Loan $loan, EntityManagerInterface $em): Response
+    public function loanReturn(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         // Create the form
         $options = [
@@ -78,7 +78,7 @@ class LoanCrudController extends AbstractCrudController
             }
 
             // TODO : update the quantity of the equipment in the database
-            // TODO : send an email to the user to notify him that his loan has been returned
+            MailerController::sendLoanReturnedMail("John Doe", $mailer);
             
             $loan->setStatus(LoanStatus::RETURNED->value);
             $em->persist($loan);
@@ -102,8 +102,7 @@ class LoanCrudController extends AbstractCrudController
         
         $loan->setStatus(LoanStatus::ACCEPTED->value);
 
-        // TODO: Send an email to the user to notify him that his loan has been accepted
-        MailerController::sendRequestAcceptMail("John Doe", $mailer); // FIXME : This is a placeholder email
+        MailerController::sendRequestAcceptMail("John Doe", $mailer);
 
         $em->persist($loan);
         $em->flush();
@@ -120,8 +119,7 @@ class LoanCrudController extends AbstractCrudController
 
         $loan->setStatus(LoanStatus::REFUSED->value);
 
-        // TODO: Send an email to the user to notify him that his loan has been refused
-        MailerController::sendRequestRefuseMail("John Doe", $mailer); // FIXME : This is a placeholder email
+        MailerController::sendRequestRefuseMail("John Doe", $mailer);
 
         $em->persist($loan);
         $em->flush();
