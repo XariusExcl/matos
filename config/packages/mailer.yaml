@@ -7,7 +7,7 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            # sender: 'matos@mmi-troyes.fr'
+            # sender: 'emprunt.mmi@gmail.com'
             sender: '%env(MAILER_SENDER)%'
         headers:
             From: '%env(MAILER_HEADER_FROM)%'

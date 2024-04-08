@@ -78,7 +78,7 @@ class LoanCrudController extends AbstractCrudController
             }
 
             // TODO : update the quantity of the equipment in the database
-            MailerController::sendLoanReturnedMail("John Doe", $mailer);
+            MailerController::sendLoanReturnedMail($loan, $mailer);
             
             $loan->setStatus(LoanStatus::RETURNED->value);
             $em->persist($loan);
@@ -102,7 +102,7 @@ class LoanCrudController extends AbstractCrudController
         
         $loan->setStatus(LoanStatus::ACCEPTED->value);
 
-        MailerController::sendRequestAcceptMail("John Doe", $mailer);
+        MailerController::sendRequestAcceptMail($loan, $mailer);
 
         $em->persist($loan);
         $em->flush();
@@ -119,7 +119,7 @@ class LoanCrudController extends AbstractCrudController
 
         $loan->setStatus(LoanStatus::REFUSED->value);
 
-        MailerController::sendRequestRefuseMail("John Doe", $mailer);
+        MailerController::sendRequestRefuseMail($loan, $mailer);
 
         $em->persist($loan);
         $em->flush();

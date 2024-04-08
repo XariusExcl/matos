@@ -79,7 +79,7 @@ class FormController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $request->request->all()['audiovisual_loan'];
             
-            dump($data);
+            $loan->setLoaner($this->getUser());
             
             // Set the departure and return dates
             $hours = ['morning' => ["9:15", "12:30"], 'afternoon' => ["14:00", "17:30"], 'evening' => ["17:30", "9:15"]];
@@ -145,7 +145,8 @@ class FormController extends AbstractController
             $entityManager->persist($loan);
             $entityManager->flush();
 
-            MailerController::sendRequestConfirmMail("John Doe", $mailer); // FIXME : This is a placeholder email
+            MailerController::sendRequestConfirmMail($loan, $mailer);
+            MailerController::sendNewRequestMail($loan, $mailer);
 
             $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
             return $this->redirectToRoute('app_main');

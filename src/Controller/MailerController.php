@@ -6,108 +6,107 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\SentMessage;
-use Symfony\Component\Mailer\Transport\TransportInterface;
-use Symfony\Component\Mime\Email;
+use App\Entity\Loan;
+use App\Entity\Equipment;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
 class MailerController extends AbstractController
 {
-    public static function sendNewRequestMail(string $mailto, MailerInterface $mailer)
+    public static function sendNewRequestMail(Loan $loan, MailerInterface $mailer)
     {
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $loan->getLoaner()->getEmail();
 
         $email = (new TemplatedEmail())
             ->to($mailto)
             ->subject('[ADMIN] Nouvelle demande d\'emprunt MATOS')
             ->htmlTemplate('mailer/admin_new_request.html.twig')
             ->context([
-                'name' => 'John Doe',
-                'date_start' => new \DateTime(),
-                'date_end' => new \DateTime('+7 days')
+                'loan' => $loan
             ]);
 
         $mailer->send($email);
     }
 
-    public static function sendRequestConfirmMail(string $mailto, MailerInterface $mailer)
+    public static function sendRequestConfirmMail(Loan $loan, MailerInterface $mailer)
     {
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $loan->getLoaner()->getEmail();
+
 
         $email = (new TemplatedEmail())
             ->to($mailto)
             ->subject('Confirmation de votre demande d\'emprunt')
             ->htmlTemplate('mailer/user_request_confirm.html.twig')
             ->context([
-                'name' => 'John Doe',
-                'date_start' => new \DateTime(),
-                'date_end' => new \DateTime('+7 days')
+                'loan' => $loan
             ]);
 
             $mailer->send($email);
     }
 
-    public static function sendRequestRefuseMail(string $mailto, MailerInterface $mailer)
+    public static function sendRequestRefuseMail(Loan $loan, MailerInterface $mailer)
     {
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $loan->getLoaner()->getEmail();
 
         $email = (new TemplatedEmail())
             ->to($mailto)
             ->subject('Refus de votre demande d\'emprunt')
             ->htmlTemplate('mailer/user_request_refuse.html.twig')
             ->context([
-                'name' => 'John Doe',
-                'reason' => '',
-                'date_start' => new \DateTime(),
-                'date_end' => new \DateTime('+7 days')
+                'loan' => $loan
             ]);
 
         $mailer->send($email);
     }
 
-    public static function sendRequestAcceptMail(string $mailto, MailerInterface $mailer)
+    public static function sendRequestAcceptMail(Loan $loan, MailerInterface $mailer)
     {
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $loan->getLoaner()->getEmail();
 
         $email = (new TemplatedEmail())
             ->to($mailto)
             ->subject('Acceptation de votre demande d\'emprunt')
             ->htmlTemplate('mailer/user_request_accept.html.twig')
             ->context([
-                'name' => 'John Doe',
-                'date_start' => new \DateTime(),
-                'date_end' => new \DateTime('+7 days')
+                'loan' => $loan
             ]);
 
         $mailer->send($email);
     }
 
-    public static function sendLoanReturnedMail(string $mailto, MailerInterface $mailer)
+    public static function sendLoanReturnedMail(Loan $loan, MailerInterface $mailer)
     {
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $loan->getLoaner()->getEmail();
 
         $email = (new TemplatedEmail())
             ->to($mailto)
             ->subject('Retour de votre matériel emprunté')
             ->htmlTemplate('mailer/user_loan_returned.html.twig')
             ->context([
-                'name' => 'John Doe',
-                'date_start' => new \DateTime(),
-                'date_end' => new \DateTime('+7 days')
+                'loan' => $loan
             ]);
 
         $mailer->send($email);
     }
 
     #[Route('/mail/test', name: 'email_test')]
-    public function testEmail(MailerInterface $mailer)
+    public function testEmail(MailerInterface $mailer, EntityManagerInterface $entityManager)
     {
         if ($_ENV['APP_ENV'] === 'prod')
             return new Response('Petit malin :)');
@@ -120,47 +119,49 @@ class MailerController extends AbstractController
         else
             $send = true;
 
+        // Make a fake loan to test emails
+        $equipment = $entityManager->getRepository(Equipment::class)->findAll();
+        $loan = new Loan();
+        $loan->setLoaner($this->getUser());
+        $loan->setDepartureDate(new \DateTime());
+        $loan->setReturnDate(new \DateTime('+1 week'));
+        $loan->addEquipmentLoaned($equipment[rand(0, count($equipment) - 1)]);
+        $loan->addEquipmentLoaned($equipment[rand(0, count($equipment) - 1)]);
+        $loan->addEquipmentLoaned($equipment[rand(0, count($equipment) - 1)]);
+        $loan->setComment('Ceci est un test');
+
         $template = $_GET['e'];
         switch ($template) {
             case 'user_request_confirm':
                 if ($send)
-                    MailerController::sendRequestConfirmMail("John Doe", $mailer);
+                    MailerController::sendRequestConfirmMail($loan, $mailer);
                 
                 return $this->render('mailer/'.$template.'.html.twig', [
-                    'name' => 'John Doe',
-                    'date_start' => new \DateTime(),
-                    'date_end' => new \DateTime('+7 days')
+                    'loan' => $loan
                 ]);
             break;
             case 'user_request_refuse':
                 if ($send)
-                    MailerController::sendRequestRefuseMail("John Doe", $mailer);
+                    MailerController::sendRequestRefuseMail($loan, $mailer);
                 
                 return $this->render('mailer/'.$template.'.html.twig', [
-                    'name' => 'John Doe',
-                    'reason' => 'Skill issue',
-                    'date_start' => new \DateTime(),
-                    'date_end' => new \DateTime('+7 days')
+                    'loan' => $loan
                 ]);
             break;
             case 'user_request_accept':
                 if ($send)
-                    MailerController::sendRequestAcceptMail("John Doe", $mailer);
+                    MailerController::sendRequestAcceptMail($loan, $mailer);
                 
                 return $this->render('mailer/'.$template.'.html.twig', [
-                    'name' => 'John Doe',
-                    'date_start' => new \DateTime(),
-                    'date_end' => new \DateTime('+7 days')
+                    'loan' => $loan
                 ]);
             break;
             case 'admin_new_request':
                 if ($send)
-                    MailerController::sendNewRequestMail("John Doe", $mailer);
+                    MailerController::sendNewRequestMail($loan, $mailer);
                 
                 return $this->render('mailer/'.$template.'.html.twig', [
-                    'name' => 'John Doe',
-                    'date_start' => new \DateTime(),
-                    'date_end' => new \DateTime('+7 days')
+                    'loan' => $loan
                 ]);
             default:
                 return new Response('Invalid template');
