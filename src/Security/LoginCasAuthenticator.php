@@ -84,19 +84,19 @@ class LoginCasAuthenticator extends AbstractAuthenticator
         ];
 
         $def_response = new RedirectResponse(
-            $this->router->generate('security_login', ['message' => $data])
+            $this->router->generate('login', ['message' => $data])
         ); // new JsonResponse($data, Response::HTTP_FORBIDDEN);
 
         // return (new CASAuthenticationFailureEvent($request, $exception, $def_response))->getResponse();
         return new RedirectResponse(
-            $this->router->generate('security_login')
+            $this->router->generate('login')
         );
     }
 
     public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
-            $this->router->generate('security_login')
+            $this->router->generate('login')
         );
     }
 }
