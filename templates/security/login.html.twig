@@ -4,6 +4,16 @@
 {% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('error') %}
+        <div role="alert" class="absolute alert alert-error bg-error">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div role="alert" class="absolute alert alert-success bg-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% if error %}
 		<div role="alert" class="absolute alert alert-error bg-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 	{% endif %}
@@ -14,7 +24,11 @@
                     <img src="{{asset('logo.png')}}" class="w-24 h-24"/>
                 </div>
                 <h2 class="card-title">Se connecter</h2>
-                <a href="{{ path('sso_cas') }}" class="btn btn-primary mt-5">Utiliser mon login URCA</a>
+                {% if enable_urca_login %}
+                    <a href="{{ path('sso_cas') }}" class="btn btn-primary mt-5">Utiliser mon login URCA</a>
+                {% else %}
+                    <button class="btn btn-disabled mt-5">Utiliser mon login URCA (indisponible)</button>
+                {% endif %}
                 <hr>
                 <form class="flex flex-col" action="{{ path('login') }}" method="post">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -38,6 +52,9 @@
 
                     <button class="btn btn-primary mt-5" type="submit">Se connecter</button>
                 </form>
+                {% if not enable_urca_login %}
+                    <a href="{{ path('signup') }}" class="btn btn-primary mt-5">Créer un compte (email URCA requis)</a>
+                {% endif %}
             </div>
         </div>
     </div>

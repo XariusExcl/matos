@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter
+{% endblock %}
+
+{% block body %}    
+    {% for message in app.flashes('error') %}
+        <div role="alert" class="absolute alert alert-error bg-error">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <div class="flex justify-center items-center min-h-screen" style="background-image:url({{asset('bg.webp')}});background-position:center;background-size:cover;">
+        <div class="card w-96 bg-base-100">
+            <div class="card-body">
+                <div class="flex justify-center">
+                    <img src="{{asset('logo.png')}}" class="w-24 h-24"/>
+                </div>
+                <h2 class="card-title">Créer un compte</h2>
+                <a href="{{ path('login') }}" class="btn mt-5">&#60; Se connecter</a>
+                <hr>
+                {{ form_start(form) }}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Email</span>
+                        </div>
+                        {{ form_widget(form.email, {'attr': {'class': 'input input-bordered', 'placeholder': 'john.doe@etudiant.univ-reims.fr', 'pattern': '[a-zA-Z0-9. _%+-]+@(etudiant\.univ-reims\.fr|univ-reims\.fr)'}}) }}
+                    </label>
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Mot de passe</span>
+                        </div>
+                        {{ form_widget(form.password.first, {'attr': {'class': 'input input-bordered', 'placeholder': '●●●●●●●●'}}) }}
+                    </label>
+
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text">Confirmer le mot de passe</span>
+                        </div>
+                        {{ form_widget(form.password.second, {'attr': {'class': 'input input-bordered', 'placeholder': '●●●●●●●●'}}) }}
+                    </label>
+
+                    <button class="btn btn-primary mt-5" type="submit">Créer un compte</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
