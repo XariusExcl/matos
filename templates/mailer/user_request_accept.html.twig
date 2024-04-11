@@ -1,0 +1,22 @@
+{% extends "mailer/base.html.twig" %}
+{% block body %}
+    <h1>Bonjour {{ loaner.name??"" }} !</h1>
+    <p>Vous avez fait une demande d'emprunt de matériel sur MATOS pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
+    <p>Votre demande a été acceptée !</p>
+    <br/>
+    <p>Pour rappel, voici un récapitulatif de votre demande :</p>
+    <p>Date de début de l'emprunt : <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
+    <p>Date de retour de l'emprunt : <b>{{ loan.returnDate|date('d/m/Y H:i') }}</b></p>
+    <p>Matériel emprunté :</p>
+    <ul style="list-style-type: none;padding:0;">
+        {% for equipment in loan.equipmentLoaned??"" %}
+            <li style="margin-bottom: 10px;">
+                <b>{{ equipment.name }}</b>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Ci-joint le contrat d'emprunt à ramener imprimé en noir et blanc au moment de l'emprunt. (Une imprimante est à disposition de tous les étudiants à la BU si vous n'avez pas d'imprimante personnelle)</p>
+    <p>Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse <a href="mailto:emprunt.mmi@gmail.com?subject=?subject=Question%20emprunt%20">emprunt.mmi@gmail.com</a>.</p>
+    <p>À bientôt sur MATOS !</p>
+{% endblock %}
+
