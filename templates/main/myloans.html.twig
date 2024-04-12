@@ -40,7 +40,7 @@
                                 <button class="btn btn-error" onclick="modal_{{ loan.id }}.showModal()">Annuler</button>
                                 <a href="mailto:emprunt.mmi@gmail.com?subject=Demande de modification de l'emprunt du {{ loan.departureDate|date('d/m/Y') }}" class="btn btn-primary">Envoyer un mail</a>
                                 {% if loan.status == 1 %}
-                                    <a class="btn btn-secondary" href="">Fiche emprunt (PDF)</a>
+                                    <a class="btn btn-secondary" href="{{ path('pdf_loan_html', {'id': loan.id}) }}">Fiche emprunt (PDF)</a>
                                 {% endif %}
                             </div>
                         </div>

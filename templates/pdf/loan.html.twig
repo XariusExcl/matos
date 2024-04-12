@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+{% block title %} MATOS Emprunt #{{ loan.id }}{% endblock %}
+{% block body %}
+<style>
+    html {
+        background-color: white !important;
+    }
+</style>
+{% if loan.status != 1 %}
+    <p>Erreur, cet emprunt n'est pas validé !</p>
+
+    <small>MATOS - IUT de Troyes - 2024</small>
+{% else %}
+    <div class="flex">
+        <img src="{{ asset('logo_bw_lowink.png') }}" alt="Logo" class="w-32 h-32">
+        <div class="ml-4">
+            <p class="text-4xl">MATOS</p>
+            <p class="text-xl">IUT de Troyes</p>
+            <p class="text-3xl">{{ loan.loaner.name }}</p>
+            <p class="text-sm">{{ loan.loaner.email }}</p>
+        </div>
+    </div>
+    <p class="text-md text-gray-500 mt-5 mb-3">
+        <b>HORAIRES :</b>
+    </p>
+    <p class="text-xl pl-5 ">
+        Date de départ : <b class="text-gray-500">{{ loan.departureDate|date('d/m/Y H:i') }}</b>
+    </p>
+    <p class="text-xl pl-5">
+        Date de retour : <b class="text-gray-500">{{ loan.returnDate|date('d/m/Y H:i') }}</b>
+    </p>
+    <p class="text-md text-gray-500 mt-5 mb-3">
+        <b>MATÉRIEL EMPRUNTÉ :</b>
+    </p>
+    <div>
+        {% for equipment in loan.equipmentLoaned %}
+            <div class="mt-2 ml-5 text-md flex">
+                <div class="w-6 h-6 mr-1 border-2 rounded-md" style="border-color:slategray"></div>
+                {{ equipment.name }}
+            </div>
+        {% endfor %}
+    </div>
+    <p class="text-md text-gray-500 mt-5 mb-3">
+        <b>COMMENTAIRE :</b>
+    </p>
+    <p class="ml-5">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
+
+    <div class="absolute bottom-3 w-screen">
+        <div class="text-xs text-center">Imprimez ce document en noir et blanc, en pleine page au format A4 ou A5 (demi A4). Document conçu avec conscience écologique sur le site {{ url('app_main') }}.</div>
+        <div class="text-xs text-center">MATOS - #{{ loan.id }} - IUT de Troyes - {{ loan.departureDate|date('Y') }}</div>
+    </div>
+{% endif %}
+{% endblock %}
