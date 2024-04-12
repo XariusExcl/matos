@@ -39,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $activationToken = null;
+
     public function __construct()
     {
         $this->loans = new ArrayCollection();
@@ -164,6 +167,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getActivationToken(): ?string
+    {
+        return $this->activationToken;
+    }
+
+    public function setActivationToken(string|null $activationToken): static
+    {
+        $this->activationToken = $activationToken;
 
         return $this;
     }

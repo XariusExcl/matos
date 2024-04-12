@@ -1,5 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        enable_urca_login: '%env(ENABLE_URCA_LOGIN)%'
 
 when@test:
     twig:

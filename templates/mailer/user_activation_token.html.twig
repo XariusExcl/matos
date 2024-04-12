@@ -1,0 +1,10 @@
+{% extends "mailer/base.html.twig" %}
+{% block body %}
+    <h1>Bonjour {{ user.name??"" }} !</h1>
+    <p>Vous avez fait une demande d'inscription sur MATOS.</p>
+    <p>Veuillez cliquer sur le lien ci dessous pour activer votre compte :</p>
+    <a href="{{ activation_link }}">{{ activation_link }}</a>
+    <p>Si vous avez un problème, n'hésitez pas à nous contacter à l'adresse <a href="mailto:emprunt.mmi@gmail.com?subject=?subject=Question%20emprunt%20">emprunt.mmi@gmail.com</a>.</p>
+    <p>À bientôt sur MATOS !</p>
+{% endblock %}
+

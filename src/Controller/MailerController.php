@@ -11,6 +11,7 @@ use App\Entity\Equipment;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use App\Entity\User;
 
 class MailerController extends AbstractController
 {
@@ -100,6 +101,25 @@ class MailerController extends AbstractController
             ->htmlTemplate('mailer/user_loan_returned.html.twig')
             ->context([
                 'loan' => $loan
+            ]);
+
+        $mailer->send($email);
+    }
+
+    public static function sendActivationTokenMail(User $user, string $link, MailerInterface $mailer)
+    {
+        if ($_ENV['APP_ENV'] === 'dev')
+            $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
+        else
+            $mailto = $user->getEmail();
+
+        $email = (new TemplatedEmail())
+            ->to($mailto)
+            ->subject('Activation de votre compte MATOS')
+            ->htmlTemplate('mailer/user_activation_token.html.twig')
+            ->context([
+                'user' => $user,
+                'activation_link' => $link
             ]);
 
         $mailer->send($email);
