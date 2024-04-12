@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Form\SignupType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoginController extends AbstractController
@@ -38,7 +39,7 @@ class LoginController extends AbstractController
     }
 
     #[Route('/signup', name: 'signup')]
-    public function signup( Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    public function signup( Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $user = new User();
 
@@ -80,14 +81,18 @@ class LoginController extends AbstractController
             $user->setPassword($hashedPassword);
             $user->setRoles(['ROLE_USER']);
             $user->setActive(false);
-            $user->setActivationToken(bin2hex(random_bytes(32)));
+            $user->setActivationToken(md5(random_bytes(16)));
 
-            // Set name based on email
-            $explode = explode('.', $data->getEmail());
-            $user->setName($explode[0] . ' ' . $explode[1]); // Prayge
+            // Set name based on email (firstname.lastname@univ-reims.fr)
+            $explode = explode('.', explode('@', $data->getEmail())[0]);
+            if (count($explode) == 1)
+                $user->setName(ucfirst($explode[0]));
+            else
+                $user->setName(ucfirst($explode[0]) . ' ' . ucfirst($explode[1]));
 
             // Send email to user
-            // TODO : Implement, send activation token
+            $link = $this->generateUrl('activate', ['token' => $user->getActivationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
+            MailerController::sendActivationTokenMail($user, $link, $mailer);
             
             $this->addFlash('success', 'Votre compte a bien été créé ! Veuillez activer votre compte avec le lien de confirmation envoyé à ' . $user->getEmail() . '.');
             $entityManager->persist($user);

@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $active = null;
 
-    #[ORM\Column(length: 32)]
+    #[ORM\Column(length: 32, nullable: true)]
     private ?string $activationToken = null;
 
     public function __construct()
@@ -176,7 +176,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->activationToken;
     }
 
-    public function setActivationToken(string $activationToken): static
+    public function setActivationToken(string|null $activationToken): static
     {
         $this->activationToken = $activationToken;
 
