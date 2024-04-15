@@ -66,8 +66,6 @@ class LoanCrudController extends AbstractCrudController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $request->request->all()["return_loan"];
 
-            dump($data);
-
             if (!isset($data['equipment']) || count($data['equipment']) < $loan->getEquipmentLoaned()->count()) {
                 $this->addFlash('error', 'Il manque des équipements à rendre.'); // FIXME : This message is displayed after one extra refresh somehow?
 
@@ -98,8 +96,7 @@ class LoanCrudController extends AbstractCrudController
     public function loanAccepted(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         $emailComment = $_POST['loan-comment'];
-        dump($emailComment);
-        
+
         $loan->setStatus(LoanStatus::ACCEPTED->value);
 
         MailerController::sendRequestAcceptMail($loan, $mailer);
@@ -115,7 +112,6 @@ class LoanCrudController extends AbstractCrudController
     public function loanRefused(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         $emailComment = $_POST['loan-comment'];
-        dump($emailComment);
 
         $loan->setStatus(LoanStatus::REFUSED->value);
 

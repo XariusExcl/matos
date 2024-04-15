@@ -50,8 +50,6 @@ class LoginController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            dump($data);
-
             // If a user with the same email already exists
             if ($entityManager->getRepository(User::class)->findOneBy(['email' => $data->getEmail()]) != null) {
                 // If the account is already active
