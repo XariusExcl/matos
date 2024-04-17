@@ -18,17 +18,6 @@ const dateFormat = function date2str(x, y) {
         return x.getFullYear().toString().slice(-v.length)
     });
 }
-
-// Audiovisual form date change
-const loanDayElement = document.getElementById("audiovisual_loan_day")
-loanDayElement?.addEventListener("change", formDateChange);
-const loanTimeslot0Element = document.getElementById("audiovisual_loan_timeSlot_0")
-loanTimeslot0Element?.addEventListener("change", formDateChange);
-const loanTimeslot1Element = document.getElementById("audiovisual_loan_timeSlot_1")
-loanTimeslot1Element?.addEventListener("change", formDateChange);
-const loanTimeslot2Element = document.getElementById("audiovisual_loan_timeSlot_2")
-loanTimeslot2Element?.addEventListener("change", formDateChange);
-
 let cachedRequests = {};
 
 async function formDateChange() {
@@ -92,7 +81,7 @@ function updateUnavailableEquipment(request) {
     });
 
     Object.entries(request.equipment).forEach(([key, value]) => { 
-        if (value === 0 || equipmentQuantity[key] > value) return;
+        if (value === 0 || equipmentInfo[key]["quantity"] > value) return;
 
         const input = document.querySelector('[value="'+key+'"]');
         if (!input) return;
@@ -101,3 +90,50 @@ function updateUnavailableEquipment(request) {
         disabledInputs.push(input);
     });
 }
+
+function checkFormValidity() {
+    const form = document.querySelector('form');
+    
+    // check if required inputs are filled
+    const requiredInputs = form.querySelectorAll('[required]');
+    let isValid = true;
+    for(let input of requiredInputs) {
+        if (!input.reportValidity()) {
+            console.log(input);
+            scrollToInvalidInput(input);
+            isValid = false;
+            return;
+        }
+    }
+    if (!isValid) return;
+   
+   // create a list of selected equipment
+   let selectedEquipment = [];
+   
+   // const equipmentInputs = form.querySelectorAll('[name="equipment[]"]'); // not sure
+   const equipmentInputs = document.querySelectorAll('#equipmentSelection input[type="checkbox"]:checked, #equipmentSelection input[type="radio"]:checked');
+   equipmentInputs.forEach((input) => {
+       if (input.checked && input.value != "") {
+           selectedEquipment.push(equipmentInfo[input.value]["name"]);
+        }
+    });
+
+    if (selectedEquipment.length === 0) {
+        document.querySelector('#error_modal_content').innerHTML = "Votre emprunt est vide !";
+        document.querySelector('#error_modal').showModal();
+        return;
+    }
+
+    // Show the list in the modal
+    document.querySelector('#confirmation_modal_content').innerHTML = "• " + selectedEquipment.join('<br> • ');
+
+    // Show the modal
+    document.querySelector('#confirmation_modal').showModal()
+}
+
+function scrollToInvalidInput(input) {
+    input.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+
+window.formDateChange = formDateChange;
+window.checkFormValidity = checkFormValidity;

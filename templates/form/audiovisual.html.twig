@@ -1,9 +1,6 @@
 {% extends 'form/base.html.twig' %}
 
 {% block form %}
-    <script id="equipmentQuantity">
-        const equipmentQuantity = {{ equipmentQuantity|raw }};
-    </script>
     <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
     <ul class="ml-10">
         <li>• Les demandes doivent être faites au
@@ -12,17 +9,9 @@
     </ul>
     <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
     <ul class="ml-10">
-        <li>• Les boîtiers sont fournis avec
-            <b>leur chargeur</b>
-            et
-            <b>une batterie.</b>
+        <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b>
         </li>
-        <li>• Les lumières sont fournies avec
-            <b>une batterie V-mount</b>
-            (si applicable),
-            <b>leur adaptateur secteur</b>
-            et
-            <b>un trépied lumière</b>.</li>
+        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et d<b>un trépied lumière</b>.</li>
     </ul>
 
     {{ form_start(form) }}
@@ -36,68 +25,79 @@
 
     <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
 
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.cameras) }}</h3>
+    <div id="equipmentSelection">
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.cameras) }}</h3>
 
-    <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
-        {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.cameras %}
-            <label for={{ equipment.vars.id }}>
-                {{ form_widget(equipment) }}
-                <div class="card w-72 bg-base-100 shadow-xl mb-10">
-                    <figure class="h-52 bg-slate-300">{% if equipmentInfo[equipment.vars.value].imageName is not empty %}<img src="{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}" alt="Image boîtier" />{% endif %}</figure>
-                    <div class="card-body">
-                        <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
-                        {{ equipmentInfo[equipment.vars.value].description|raw }}
-                    </div>
-                </div>
-            </label>
+        <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+            {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
+            {% for equipment in form.cameras %}
+                    <label for={{ equipment.vars.id }} class="flex">
+                        {{ form_widget(equipment) }}
+                        {% if equipment.vars.value != "" %}
+                            <div class="card w-72 bg-base-100 shadow-xl mb-10 self-end">
+                                <figure class="h-52 bg-slate-300">{% if equipmentInfo[equipment.vars.value].imageName is not empty %}<img src="{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}" alt="Image boîtier" />{% endif %}</figure>
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
+                                    {{ equipmentInfo[equipment.vars.value].description|raw }}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card w-72 bg-base-100 shadow-xl mb-10 self-end">
+                                <div class="card-body">
+                                    <h2 class="card-title"><i>Aucun</i></h2>
+                                    <i>Pas de boîtier nécessaire pour ce projet.</i>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </label>
+            {% endfor %}
+        </div>
+
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.lenses) }}</h3>
+        {{ form_errors(form.lenses, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.lenses %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
+        {% endfor %}
+
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.microphones) }}</h3>
+        {{ form_errors(form.microphones, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.microphones %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
+        {% endfor %}
+
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.lights) }}</h3>
+        {{ form_errors(form.lights, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.lights %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
+        {% endfor %}
+        
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.tripods) }}</h3>
+        {{ form_errors(form.tripods, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.tripods %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
+        {% endfor %}
+
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.batteries) }}</h3>
+        {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.batteries %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
         {% endfor %}
     </div>
-
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.lenses) }}</h3>
-    {{ form_errors(form.lenses, {'attr': {'class': 'text-red-500'}}) }}
-    {% for equipment in form.lenses %}
-        <div>
-            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(equipment) }}
-        </div>
-    {% endfor %}
-
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.microphones) }}</h3>
-    {{ form_errors(form.microphones, {'attr': {'class': 'text-red-500'}}) }}
-    {% for equipment in form.microphones %}
-        <div>
-            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(equipment) }}
-        </div>
-    {% endfor %}
-
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.lights) }}</h3>
-    {{ form_errors(form.lights, {'attr': {'class': 'text-red-500'}}) }}
-    {% for equipment in form.lights %}
-        <div>
-            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(equipment) }}
-        </div>
-    {% endfor %}
-    
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.tripods) }}</h3>
-    {{ form_errors(form.tripods, {'attr': {'class': 'text-red-500'}}) }}
-    {% for equipment in form.tripods %}
-        <div>
-            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(equipment) }}
-        </div>
-    {% endfor %}
-
-    <h3 class="text-xl font-bold my-5">{{ form_label(form.batteries) }}</h3>
-    {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
-    {% for equipment in form.batteries %}
-        <div>
-            {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(equipment) }}
-        </div>
-    {% endfor %}
 
     {#
     <h3 class="text-xl font-bold my-5">Autres demandes</h3>
@@ -106,7 +106,22 @@
     </div>
     #}
 
-    <button type="submit" id="camera_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
     {{ form_end(form) }}
+    <button onclick="checkFormValidity()" id="camera_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
+
+    {% include 'form/_form_modals.html.twig' %}
     {% include 'main/footer.html.twig' %}
+    <script>
+        const equipmentInfo = {{ equipmentInfoJson|raw }};
+        const loanDayElement = document.getElementById("audiovisual_loan_day")
+        const loanTimeslot0Element = document.getElementById("audiovisual_loan_timeSlot_0")
+        const loanTimeslot1Element = document.getElementById("audiovisual_loan_timeSlot_1")
+        const loanTimeslot2Element = document.getElementById("audiovisual_loan_timeSlot_2")
+        window.onload = () => {
+            loanDayElement?.addEventListener("change", formDateChange);
+            loanTimeslot0Element?.addEventListener("change", formDateChange);
+            loanTimeslot1Element?.addEventListener("change", formDateChange);
+            loanTimeslot2Element?.addEventListener("change", formDateChange);
+        }
+    </script>
 {% endblock %}

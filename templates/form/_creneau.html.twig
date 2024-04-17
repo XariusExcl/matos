@@ -9,8 +9,8 @@
     <div class="w-40">
         {{ form_label(form.timeSlot) }}
         {% for timeSlot in form.timeSlot %}
-            <div>
-                {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+            <div class="flex my-1.5">
+                {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
                 {{ form_label(timeSlot) }}
             </div>
         {% endfor %}

@@ -34,14 +34,21 @@ class FormController extends AbstractController
         return $days;
     }
 
-    function parseDepartureReturnDates(array $date): array
+    function parseDepartureReturnDates(array $date): array|bool
     {
         $hours = ['morning' => ["9:15", "12:30"], 'afternoon' => ["14:00", "17:30"], 'evening' => ["17:30", "9:15"]];
             
-        if ($date['day'] < 0 || $date['day'] > 13)
-            throw new \Exception("Invalid day: ".$date['day']);
+        if ($date['day'] < 0 || $date['day'] > 13) {
+            // throw new \Exception("Invalid day: ".$date['day']);
+            $this->addFlash('error','La date d\'emprunt est invalide.');
+            return false;
+        }
         if (!isset($date['timeSlot']) || !in_array("morning", $date['timeSlot']) && !in_array("afternoon", $date['timeSlot']) && !in_array("evening", $date['timeSlot']))
-            throw new \Exception("Invalid time slot: ".var_dump($date['timeSlot']));
+        {
+            // throw new \Exception("Invalid time slot: ".var_dump($date['timeSlot']));
+            $this->addFlash('error','Le créneau horaire est invalide.');
+            return false;
+        }
 
         $date['day'] += 1;
         $start = (new \DateTime("today"))
@@ -120,6 +127,9 @@ class FormController extends AbstractController
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data);
+            if ($parsedDates === false)
+                return $this->redirectToRoute('reservation_form_audiovisual');
+
             $loan->setDepartureDate($parsedDates['start']);
             $loan->setReturnDate($parsedDates['end']);
 
@@ -146,6 +156,12 @@ class FormController extends AbstractController
                 foreach($data['batteries'] as $accessory)
                     array_push($loanEquipment, $accessory);
 
+            if ($loanEquipment == [])
+            {
+                $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
+                return $this->redirectToRoute('reservation_form_audiovisual');
+            }
+
             $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
@@ -167,7 +183,10 @@ class FormController extends AbstractController
             'formName' => 'Emprunt Audiovisuel',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
-            'equipmentQuantity' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo))
+            'equipmentInfoJson' => json_encode(array_map(function($e) { return [
+                "quantity" => $e->getQuantity(),
+                "name" => $e->getName()
+            ]; }, $equipmentInfo))
         ]);
     }
     
@@ -198,6 +217,9 @@ class FormController extends AbstractController
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data);
+            if ($parsedDates === false)
+                return $this->redirectToRoute('reservation_form_vr');
+
             $loan->setDepartureDate($parsedDates['start']);
             $loan->setReturnDate($parsedDates['end']);
 
@@ -205,6 +227,12 @@ class FormController extends AbstractController
             $loanEquipment = [];
             if (!empty($data['headset']))
                 array_push($loanEquipment, $data['headset']);
+
+            if ($loanEquipment == [])
+            {
+                $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
+                return $this->redirectToRoute('reservation_form_audiovisual');
+            }
 
             $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
@@ -227,7 +255,7 @@ class FormController extends AbstractController
             'formName' => 'Emprunt VR',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
-            'equipmentQuantity' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo))
+            'equipmentInfoJson' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo))
         ]);
     }
 
@@ -258,6 +286,9 @@ class FormController extends AbstractController
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data);
+            if ($parsedDates === false)
+                return $this->redirectToRoute('reservation_form_graphic_design');
+            
             $loan->setDepartureDate($parsedDates['start']);
             $loan->setReturnDate($parsedDates['end']);
 
@@ -265,6 +296,12 @@ class FormController extends AbstractController
             $loanEquipment = [];
             if (!empty($data['tablet']))
                 array_push($loanEquipment, $data['tablet']);
+
+            if ($loanEquipment == [])
+            {
+                $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
+                return $this->redirectToRoute('reservation_form_audiovisual');
+            }
         
             $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
@@ -287,7 +324,7 @@ class FormController extends AbstractController
             'formName' => 'Emprunt Graphisme & Infographie',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
-            'equipmentQuantity' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo)),
+            'equipmentInfoJson' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo)),
         ]);
     }
 }

@@ -1,0 +1,27 @@
+<dialog id="confirmation_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-xl">Confirmation</h3>
+        <p class="py-4">Voici un résumé de votre emprunt :</p>
+        <div id="confirmation_modal_content">
+        </div>
+        <p class="py-4">Êtes-vous sûr de vouloir émettre cet emprunt ?</p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn mr-2">Retour</button>
+                <button class="btn btn-success" onclick="submitLoanForm">Valider</a>
+            </form>
+        </div>
+    </div>
+</dialog>
+<dialog id="error_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-xl">Erreur !</h3>
+        <div id="error_modal_content">
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn mr-2">Retour</button>
+            </form>
+        </div>
+    </div>
+</dialog>

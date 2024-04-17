@@ -50,6 +50,7 @@ class AudiovisualLoanType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'choices' => $options['equipmentCategories']['cameras'],
+                'required' => false
             ])
             ->add('lenses', EntityType::class, [
                 'mapped' => false,
