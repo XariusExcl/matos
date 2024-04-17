@@ -44,6 +44,7 @@ class MainController extends AbstractController
             return (int)($hours/13) - 2*$skippedWeekendDays;
         }
 
+        /*
         $categories = $entityManager->getRepository(EquipmentCategory::class)->findAll();
         $equipmentRepository = $entityManager->getRepository(Equipment::class);
 
@@ -58,6 +59,11 @@ class MainController extends AbstractController
                     array_push($loanableEquipment[$category->getId()], $equipment);
             }
         }
+        */
+
+        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
+        $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
+
 
         $loans = $entityManager->getRepository(Loan::class)->findInNextTwoWeeks(new \DateTime());
 
@@ -92,8 +98,8 @@ class MainController extends AbstractController
         }
 
         return $this->render('main/index.html.twig', [
-            'categories' => $categories,
-            'loanableEquipment' => $loanableEquipment, 
+            'audiovisualCategory' => $audiovisualCategory,
+            'tableEquipment' => $tableEquipment, 
             'equipmentLoaned'=> $equipmentLoaned,
             'dates' => $dates
         ]);

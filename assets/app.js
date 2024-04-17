@@ -31,22 +31,22 @@ loanTimeslot2Element?.addEventListener("change", formDateChange);
 
 let cachedRequests = {};
 
-function formDateChange() {
-    // Check the middle timeslot if the first and last are selected
+async function formDateChange() {
     if (loanTimeslot0Element.checked && loanTimeslot2Element.checked) {
+        // Check the middle timeslot if the first and last are selected
         loanTimeslot1Element.checked = true;
     }
 
     const dateValue = parseInt(loanDayElement.value);
-    const timeSlot0Value = loanTimeslot0Element.checked;
-    const timeSlot1Value = loanTimeslot1Element.checked;
-    const timeSlot2Value = loanTimeslot2Element.checked;
+    const timeslot0Value = loanTimeslot0Element.checked;
+    const timeslot1Value = loanTimeslot1Element.checked;
+    const timeslot2Value = loanTimeslot2Element.checked;
 
-    if (!timeSlot0Value && !timeSlot1Value && !timeSlot2Value)
+    if (!timeslot0Value && !timeslot1Value && !timeslot2Value)
         return;
 
-    let startHourIndex = timeSlot0Value ? 0 : (timeSlot1Value ? 2 : 4);
-    let endHourIndex = timeSlot2Value ? 5 : (timeSlot1Value ? 3 : 1);
+    const startHourIndex = timeslot0Value ? 0 : (timeslot1Value ? 2 : 4);
+    const endHourIndex = timeslot2Value ? 5 : (timeslot1Value ? 3 : 1);
 
     const hours = [
         {hours:9, minutes:15}, {hours:12, minutes:0},
@@ -64,7 +64,7 @@ function formDateChange() {
         0
     );
     
-    endDate.setDate(endDate.getDate() + dateValue + (timeSlot2Value? 2 : 1))
+    endDate.setDate(endDate.getDate() + dateValue + (timeslot2Value? 2 : 1))
     endDate.setHours(
         hours[endHourIndex].hours,
         hours[endHourIndex].minutes,
@@ -74,38 +74,30 @@ function formDateChange() {
     const startDateStr = dateFormat(startDate, 'yyyy-MM-dd hh:mm')
     const endDateStr = dateFormat(endDate, 'yyyy-MM-dd hh:mm');
 
-    // ajax call to get unavailable equipment at the selected date
-
+    // Fetch and update unavailable equipment
     let key = String(dateValue) + startHourIndex + endHourIndex;
     if (!(key in cachedRequests)) {
-        const xhttp = new XMLHttpRequest();
-        // console.log( "/api/unavailable_equipment?&s=" + startDateStr + "&e=" + endDateStr);
-        xhttp.open("GET", "/api/unavailable_equipment?&s=" + startDateStr + "&e=" + endDateStr);
-        xhttp.onload = function() {
-            cachedRequests[key] = JSON.parse(this.responseText);
-            updateUnavailableEquipment(cachedRequests[key]);
-        }
-        xhttp.send();
-    } else {
-        updateUnavailableEquipment(cachedRequests[key]);
+        const data = await fetch(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`)
+        cachedRequests[key] = await data.json();
     }
+    updateUnavailableEquipment(cachedRequests[key]);
 }
 
 let disabledInputs = [];
 
 function updateUnavailableEquipment(request) {
-    
+
     disabledInputs.forEach((input) => {
         input.disabled = false;
     });
 
-    for (const [key, value] of Object.entries(request.equipment)) {
+    Object.entries(request.equipment).forEach(([key, value]) => { 
         if (value === 0 || equipmentQuantity[key] > value) return;
 
-        const input = document.querySelector('[value="'+key+'"]')
+        const input = document.querySelector('[value="'+key+'"]');
         if (!input) return;
 
         input.disabled = true;
         disabledInputs.push(input);
-    };
+    });
 }

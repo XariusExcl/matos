@@ -38,6 +38,24 @@ class EquipmentRepository extends ServiceEntityRepository
         ;
     }
 
+        /**
+     * @return Equipment[] Returns an array of Equipment objects
+     */
+    public function findShownInTableByCategory($id): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.category = :category')
+            ->setParameter('category', $id)
+            ->andWhere('e.loanable = :loanable')
+            ->setParameter('loanable', true)
+            ->andWhere('e.showInTable = :showInTable')
+            ->setParameter('showInTable', true)
+            ->orderBy('e.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    public function findOneBySomeField($value): ?Equipment
 //    {
 //        return $this->createQueryBuilder('e')

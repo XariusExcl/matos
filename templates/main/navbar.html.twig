@@ -6,11 +6,11 @@
     {% endif %}
   </div>
   
-  {% for category in categories??[] %}
+  {# for category in categories??[] %}
     {% if category|length > 0 and category.slug != "accessories" %}
       <a href="#{{ category|lower }}" class="btn btn-ghost mx-1 hidden md:flex">{{ category }}</a>
     {% endif %}
-  {% endfor %}
+  {% endfor #}
 
   <div class="flex-none gap-2">
     <div class="dropdown dropdown-end">
@@ -28,6 +28,7 @@
         </ul>
       {% else %}
         <div tabindex="0" role="button" class="btn btn-ghost">
+          <div class="mr-4"><b>Se connecter</b></div>
           <div class="w-10 rounded-full">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Exampleavatar.png" />
           </div>

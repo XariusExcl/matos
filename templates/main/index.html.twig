@@ -22,16 +22,21 @@
                 </div>
                 <div class="mr-5"></div>
             </div>
-            {% for category in categories %}
-                {% if loanableEquipment[category.id]|length > 0 and category.slug != "accessories" %}
-                    <div id="{{ category|lower }}" class="row {% if not loop.first %}pt-20{% endif %}">
-                        <h2 class="text-3xl font-bold">{{ category.name }}</h2>
-                            {% set loans = equipmentLoaned[category.id] ?? [] %}
-                            {% include 'equipment_category/availability_table.html.twig' with {equipment: loanableEquipment[category.id], dates: dates, loans: loans} %}
-                        <a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
-                    </div>
-                {% endif %}
-            {% endfor %}
+            <div id="{{ audiovisualCategory|lower }}" class="row">
+                <h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
+                    {% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
+                    {% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans} %}
+                <a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
+            </div>
+            <div class="mt-10">
+                Autres emprunts :
+                <a href="{{ path('reservation_form_vr') }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
+                <a href="{{ path('reservation_form_graphic_design') }}" class="btn btn-primary text-base-100">Emprunt de tablettes graphiques</a>
+            </div>
+            <div>
+                Tutoriels et guides matériel :
+                Todo !
+            </div>
 		</div>
 	</div>
     {% include 'main/footer.html.twig' %}

@@ -4,12 +4,12 @@
 {% endblock %}
 
 {% block body %}
+    {% include 'main/navbar.html.twig' %}
     {% for message in app.flashes() %}
         <div role="alert" class="alert alert-success">
             {{ message[0] }}
         </div>
     {% endfor %}
-    {% include 'main/navbar.html.twig' %}
 	<div class="flex justify-center">
 		<div class="container">
             <h1 class="text-3xl font-bold my-10">Mes emprunts prévus</h2>

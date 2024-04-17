@@ -17,6 +17,8 @@ class MailerController extends AbstractController
 {
     public static function sendNewRequestMail(Loan $loan, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
@@ -35,6 +37,8 @@ class MailerController extends AbstractController
 
     public static function sendRequestConfirmMail(Loan $loan, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
@@ -54,6 +58,8 @@ class MailerController extends AbstractController
 
     public static function sendRequestRefuseMail(Loan $loan, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
@@ -72,6 +78,8 @@ class MailerController extends AbstractController
 
     public static function sendRequestAcceptMail(Loan $loan, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
@@ -90,6 +98,8 @@ class MailerController extends AbstractController
 
     public static function sendLoanReturnedMail(Loan $loan, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
@@ -108,6 +118,8 @@ class MailerController extends AbstractController
 
     public static function sendActivationTokenMail(User $user, string $link, MailerInterface $mailer)
     {
+        if($_ENV['MAILER_ENABLE'] == 0) return;
+        
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else

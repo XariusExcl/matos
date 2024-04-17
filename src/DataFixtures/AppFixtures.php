@@ -86,65 +86,40 @@ class AppFixtures extends Fixture
         }
 
         $equipment = [
-            ["name" => "Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 24-70mm)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 6D", "description" => "Appareil photo Canon 6D (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
-            ["name" => "Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#1) Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#2) Canon 5D Mark IV", "description" => "Appareil photo Canon 5D Mark IV (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#3) Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#4) Canon R6", "description" => "Appareil photo Canon R6 (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#5) Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 24-70mm)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#6) Canon R6 Mark II", "description" => "Appareil photo Canon R6 Mark II (+ Objectif 50mm AF f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#9) Canon 6D", "description" => "Appareil photo Canon 6D (+ Objectif 85mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#7) Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#8) Canon 70D", "description" => "Appareil photo Canon 70D (+ Objectif 17-50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#11) Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#12) Blackmagic 4K", "description" => "Caméra Blackmagic 4K (+ Objectif 50mm f/1.5)", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#13) Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
+            ["name" => "(#14) Camescope Sony 4K", "description" => "Camescope Sony 4K", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "GoPro Hero 6 Black", "description" => "GoPro Hero 6 Black", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
             ["name" => "GoPro Hero 10 Black", "description" => "GoPro Hero 10 Black", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[0], "location" => $locationObjects[0]],
 
-            ["name" => "Obj. 14mm f/3.1", "description" => "Objectif Canon 14mm f/3.1", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 24mm f/1.5", "description" => "Objectif Canon 24mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 35mm f/1.5", "description" => "Objectif Canon 35mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 50mm f/1.5", "description" => "Objectif Canon 50mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 85mm f/1.5", "description" => "Objectif Canon 85mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 100mm f/2.8 AF", "description" => "Objectif Canon 100mm f/2.4 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 24-105mm f/4 AF", "description" => "Objectif Canon 24-105mm f/4 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
-            ["name" => "Obj. 70-200mm f/2.8 AF", "description" => "Objectif Canon 70-200mm f/2.8 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0]],
+            ["name" => "Obj. 14mm f/3.1 (EF)", "description" => "Objectif Canon 14mm f/3.1", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 24mm f/1.5 (EF)", "description" => "Objectif Canon 24mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 35mm f/1.5 (EF)", "description" => "Objectif Canon 35mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 50mm f/1.5 (EF)", "description" => "Objectif Canon 50mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 85mm f/1.5 (EF)", "description" => "Objectif Canon 85mm f/1.5", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 100mm f/2.8 AF (EF)", "description" => "Objectif Canon 100mm f/2.4 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 24-105mm f/4 AF (EF)", "description" => "Objectif Canon 24-105mm f/4 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 70-200mm f/2.8 AF (EF)", "description" => "Objectif Canon 70-200mm f/2.8 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
+            ["name" => "Obj. 70-200mm f/2.8 AF (RF)", "description" => "Objectif Canon 70-200mm f/2.8 Autofocus", "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[1], "location" => $locationObjects[0], "type" => "EF"],
 
-            ["name" => "Meta Quest 2 N°1", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°2", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°3", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°4", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°5", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°6", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°7", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°8", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°9", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°10", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°11", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°12", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°13", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°14", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°15", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°16", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Meta Quest 2 N°17", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "quest2", "location" => $locationObjects[3]],
-            ["name" => "Vive Focus 3", "description" => "Casque VR Vive Focus 3", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "focus3", "location" => $locationObjects[3]],
-            ["name" => "Vive Focus 3", "description" => "Casque VR Vive Focus 3", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "type" => "focus3", "location" => $locationObjects[3]],
+            ["name" => "Meta Quest 2", "description" => "Casque VR Meta Quest 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "quantity" => 17, "location" => $locationObjects[3]],
+            ["name" => "Meta Quest 3", "description" => "Casque VR Meta Quest 3", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "quantity" => 1, "location" => $locationObjects[3]],
+            ["name" => "HTC Vive Focus 3", "description" => "Casque VR HRC Vive Focus 3", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "quantity" => 2, "location" => $locationObjects[3]],
+            ["name" => "Microsoft HoloLens 2", "description" => "Casque AR Microsoft HoloLens 2", "category" => $equipmentCategoryObjects[1], "subCategory" => $equipmentSubCategoryObjects[5], "quantity" => 3, "location" => $locationObjects[3], "loanable" => false],
 
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Cintiq", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
-            ["name" => "Wacom Cintiq", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "location" => $locationObjects[1]],
+            ["name" => "Wacom One", "description" => "Tablette graphique Wacom One", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "quantity" => 16, "location" => $locationObjects[1]],
+            ["name" => "Wacom Intuos Medium", "description" => "Tablette graphique Intuos Medium", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "quantity" => 6, "location" => $locationObjects[1]],
+            ["name" => "Wacom Cintiq", "description" => "Tablette graphique Wacom Cintiq (avec écran intégré)", "category" => $equipmentCategoryObjects[2], "subCategory" => $equipmentSubCategoryObjects[6], "quantity" => 2, "location" => $locationObjects[1]],
         
             ["name"=> "Trépied Manfrotto", "description" => "Trépied Manfrotto", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4], "showInTable" => false],
             ["name"=> "Trépied Miller", "description" => "Trépied Miller", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[4], "showInTable" => false],
@@ -162,7 +137,7 @@ class AppFixtures extends Fixture
             ["name" => "Fresnel LED 60W", "description" => "Fresnel LED 60W", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
             ["name" => "Fresnel LED Bi-Color 60W", "description" => "Fresnel LED Bi-Color 60W", "quantity" => 2, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
             ["name" => "Panneau LED", "description" => "Panneau LED", "quantity" => 6, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false],
-            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => false]
+            ["name" => "Tubes Nanlite", "description" => "Tubes RGB Nanlite", "quantity" => 1, "location" => $locationObjects[0], "category" => $equipmentCategoryObjects[0], "subCategory" => $equipmentSubCategoryObjects[3], "showInTable" => true]
         ];
 
         $equipmentObjects = [];
@@ -175,7 +150,7 @@ class AppFixtures extends Fixture
             $equipmentObject->setSubCategory($equipment["subCategory"]);
             $equipmentObject->setType($equipment["type"]??null);
             $equipmentObject->setLocation($equipment["location"]);
-            $equipmentObject->setLoanable(true);
+            $equipmentObject->setLoanable($equipment["loanable"]??true);
             $equipmentObject->setQuantity($equipment["quantity"]??1);
             $equipmentObject->setShowInTable($equipment["showInTable"]??true);
             array_push($equipmentObjects, $equipmentObject);

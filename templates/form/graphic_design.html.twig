@@ -1,0 +1,62 @@
+{% extends 'form/base.html.twig' %}
+
+{% block form %}
+    <script id="equipmentQuantity">
+        const equipmentQuantity = {{ equipmentQuantity|raw }};
+    </script>
+    <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
+    <ul class="ml-10">
+        <li>• Les demandes doivent être faites au
+            <b>minimum 24h à l'avance</b>.</li>
+        <li>• Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
+    </ul>
+    <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
+    <ul class="ml-10">
+        <li>• Les casques sont fournis avec
+            <b>leur chargeur</b>
+            et
+            <b>leur câble USB type C.</b>
+            (de charge et/ou de connexion)
+        </li>
+        <li>• Des piles sont fournies dans les manettes (si applicable). Veuillez nous notifier lorsqu'elles sont bientôt vides.</li>
+    </ul>
+
+    {{ form_start(form) }}
+
+    <h2 class="text-2xl font-bold my-2">Projet</h2>
+    <div>
+        {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel...)', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
+    </div>
+
+    {% include 'form/_creneau.html.twig' %}
+
+    <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
+
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.tablet) }}</h3>
+
+    <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+        {% for equipment in form.tablet %}
+            <label for={{ equipment.vars.id }}>
+                {{ form_widget(equipment) }}
+                <div class="card w-72 bg-base-100 shadow-xl mb-10">
+                    <figure class="h-52 bg-slate-300">{% if equipmentInfo[equipment.vars.value].imageName is not empty %}<img src="{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}" alt="Image boîtier" />{% endif %}</figure>
+                    <div class="card-body">
+                        <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
+                        {{ equipmentInfo[equipment.vars.value].description|raw }}
+                    </div>
+                </div>
+            </label>
+        {% endfor %}
+    </div>
+
+    {#
+    <h3 class="text-xl font-bold my-5">Autres demandes</h3>
+    <div>
+        {{ form_widget(form.comment, {'attr': {'class': 'w-10/12 md:w-3/4 lg:w-1/2 textarea textarea-bordered textarea-primary mb-10'}}) }}
+    </div>
+    #}
+
+    <button type="submit" id="vr_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
+    {{ form_end(form) }}
+    {% include 'main/footer.html.twig' %}
+{% endblock %}

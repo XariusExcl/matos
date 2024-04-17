@@ -1,0 +1,18 @@
+<h2 class="text-2xl font-bold my-2" >Créneau</h2>
+{{ form_errors(form.day, {'attr': {'class': 'text-red-500'}}) }}
+{{ form_errors(form.timeSlot, {'attr': {'class': 'text-red-500'}}) }}
+<div class="flex flex-wrap">
+    <div class="w-60 mr-5">
+        {{ form_label(form.day) }}
+        {{ form_widget(form.day, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+    </div>
+    <div class="w-40">
+        {{ form_label(form.timeSlot) }}
+        {% for timeSlot in form.timeSlot %}
+            <div>
+                {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
+                {{ form_label(timeSlot) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>

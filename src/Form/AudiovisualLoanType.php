@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Equipment;
 use App\Entity\Loan;
-use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Text;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -40,6 +39,7 @@ class AudiovisualLoanType extends AbstractType
                     '14h - 17h30' => 'afternoon',
                     '17h30 - 9h15' => 'evening',
                 ],
+                'required' => true
             ])
             ->add('cameras', EntityType::class, [
                 'mapped' => false,
@@ -56,7 +56,7 @@ class AudiovisualLoanType extends AbstractType
                 'class' => Equipment::class,
                 'choice_label' => 'name',
                 'choice_value' => 'id',
-                'label' => 'Objectif',
+                'label' => 'Objectifs',
                 'multiple' => false,
                 'expanded' => true,
                 'required' => false,

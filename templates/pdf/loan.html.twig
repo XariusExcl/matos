@@ -5,12 +5,22 @@
     html {
         background-color: white !important;
     }
+    @media print
+    {    
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+    }
 </style>
 {% if loan.status != 1 %}
     <p>Erreur, cet emprunt n'est pas validé !</p>
 
     <small>MATOS - IUT de Troyes - 2024</small>
 {% else %}
+    <p class="no-print text-center my-5 text-lg italic text-slate-500">
+        Pour imprimer cette page, cliquez sur le bouton d'impression de votre navigateur ou appuyez sur <kbd>Ctrl</kbd> + <kbd>P</kbd>.
+    </p>
     <div class="flex">
         <img src="{{ asset('logo_bw_lowink.png') }}" alt="Logo" class="w-32 h-32">
         <div class="ml-4">

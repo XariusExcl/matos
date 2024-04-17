@@ -6,13 +6,23 @@
     </script>
     <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
     <ul class="ml-10">
-        <li>• Les demandes doivent être faites au <b>minimum 24h à l'avance</b>.</li>
+        <li>• Les demandes doivent être faites au
+            <b>minimum 24h à l'avance</b>.</li>
         <li>• Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
     </ul>
     <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
     <ul class="ml-10">
-        <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b></li>
-        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
+        <li>• Les boîtiers sont fournis avec
+            <b>leur chargeur</b>
+            et
+            <b>une batterie.</b>
+        </li>
+        <li>• Les lumières sont fournies avec
+            <b>une batterie V-mount</b>
+            (si applicable),
+            <b>leur adaptateur secteur</b>
+            et
+            <b>un trépied lumière</b>.</li>
     </ul>
 
     {{ form_start(form) }}
@@ -22,29 +32,14 @@
         {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel, bénévolat...)', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
     </div>
 
-    <h2 class="text-2xl font-bold my-2" >Créneau</h2>
-    <div>
-        {{ form_label(form.day) }}
-    </div>
-    <div>
-        {{ form_widget(form.day, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
-    </div>
-
-    <div>
-        {{ form_label(form.timeSlot) }}
-    </div>
-    {% for timeSlot in form.timeSlot %}
-        <div>
-            {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
-            {{ form_label(timeSlot) }}
-        </div>
-    {% endfor %}
+    {% include 'form/_creneau.html.twig' %}
 
     <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
 
-    <h3 class="text-xl font-bold my-5">Boîtier</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.cameras) }}</h3>
 
     <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+        {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.cameras %}
             <label for={{ equipment.vars.id }}>
                 {{ form_widget(equipment) }}
@@ -59,7 +54,8 @@
         {% endfor %}
     </div>
 
-    <h3 class="text-xl font-bold my-5">Objectifs</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.lenses) }}</h3>
+    {{ form_errors(form.lenses, {'attr': {'class': 'text-red-500'}}) }}
     {% for equipment in form.lenses %}
         <div>
             {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
@@ -67,7 +63,8 @@
         </div>
     {% endfor %}
 
-    <h3 class="text-xl font-bold my-5">Micros</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.microphones) }}</h3>
+    {{ form_errors(form.microphones, {'attr': {'class': 'text-red-500'}}) }}
     {% for equipment in form.microphones %}
         <div>
             {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
@@ -75,7 +72,8 @@
         </div>
     {% endfor %}
 
-    <h3 class="text-xl font-bold my-5">Lumières</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.lights) }}</h3>
+    {{ form_errors(form.lights, {'attr': {'class': 'text-red-500'}}) }}
     {% for equipment in form.lights %}
         <div>
             {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
@@ -83,7 +81,8 @@
         </div>
     {% endfor %}
     
-    <h3 class="text-xl font-bold my-5">Trépied</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.tripods) }}</h3>
+    {{ form_errors(form.tripods, {'attr': {'class': 'text-red-500'}}) }}
     {% for equipment in form.tripods %}
         <div>
             {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
@@ -91,7 +90,8 @@
         </div>
     {% endfor %}
 
-    <h3 class="text-xl font-bold my-5">Batteries supplémentaires</h3>
+    <h3 class="text-xl font-bold my-5">{{ form_label(form.batteries) }}</h3>
+    {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
     {% for equipment in form.batteries %}
         <div>
             {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary'}}) }}
