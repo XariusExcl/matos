@@ -5,9 +5,14 @@
 
 {% block body %}
 	{% include 'main/navbar.html.twig' %}
-    {% for message in app.flashes() %}
-        <div role="alert" class="alert alert-success">
-            {{ message[0] }}
+    {% for message in app.flashes('error') %}
+        <div role="alert" class="absolute alert alert-error bg-error">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div role="alert" class="absolute alert alert-success bg-success">
+            {{ message }}
         </div>
     {% endfor %}
 

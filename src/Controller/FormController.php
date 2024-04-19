@@ -13,6 +13,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Equipment;
+use App\Entity\LoanStatus;
+use App\Entity\User;
 
 class FormController extends AbstractController
 {
@@ -100,9 +102,23 @@ class FormController extends AbstractController
         }
     }
 
+    function hasReachedMaxConcurrentLoans(User $loaner): bool
+    {
+        return $loaner->getLoans()->filter(function(Loan $l) {
+            return ($l->getStatus() == LoanStatus::ACCEPTED->value || $l->getStatus() == LoanStatus::PENDING->value);
+            // return $l->getDepartureDate() <= new \DateTime("now") && $l->getReturnDate() >= new \DateTime("now");
+        })->count() >= 2;
+        
+    }
+
     #[Route('/form/audiovisual', name: 'reservation_form_audiovisual')]
     public function audiovisualForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
+            return $this->redirectToRoute('app_main');
+        }
+
         $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('audiovisual');
         $loan = new Loan();
         $options = [];
@@ -193,6 +209,11 @@ class FormController extends AbstractController
     #[Route('/form/vr', name: 'reservation_form_vr')]
     public function vrForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
+            return $this->redirectToRoute('app_main');
+        }
+
         $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('vr');
         $loan = new Loan();
         $options = [];
@@ -262,6 +283,11 @@ class FormController extends AbstractController
     #[Route('/form/graphic-design', name: 'reservation_form_graphic_design')]
     public function graphicDesignForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
+            return $this->redirectToRoute('app_main');
+        }
+
         $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('graphic_design');
         $loan = new Loan();
         $options = [];

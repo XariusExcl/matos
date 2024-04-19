@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Form\ReturnLoanType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class LoanCrudController extends AbstractCrudController
 {
@@ -74,8 +73,7 @@ class LoanCrudController extends AbstractCrudController
                     'form' => $form->createView(),
                 ]);
             }
-
-            // TODO : update the quantity of the equipment in the database
+            
             MailerController::sendLoanReturnedMail($loan, $mailer);
             
             $loan->setStatus(LoanStatus::RETURNED->value);

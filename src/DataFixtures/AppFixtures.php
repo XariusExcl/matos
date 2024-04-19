@@ -63,15 +63,15 @@ class AppFixtures extends Fixture
         }
 
         $equipmentSubCategories = [
-            ["name" => "Appareils photos", "formDisplayType" => EquipmentSubCategoryType::CARD, "slug" => "cameras"],
-            ["name" => "Objectifs", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "lenses"],
-            ["name" => "Micros", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "microphones"],
-            ["name" => "Lumières", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "lights"],
-            ["name" => "Trépieds", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "tripods"],
-            ["name" => "Casques VR", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "vr_headsets"],
-            ["name" => "Tablettes graphiques", "formDisplayType" => EquipmentSubCategoryType::CARD, "slug" => "pen_tablets"],
-            ["name" => "Autres", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "other"],
-            ["name" => "Batteries", "formDisplayType" => EquipmentSubCategoryType::LIST, "slug" => "batteries"]
+            ["name" => "Appareils photos", "slug" => "cameras"],
+            ["name" => "Objectifs", "slug" => "lenses"],
+            ["name" => "Micros", "slug" => "microphones"],
+            ["name" => "Lumières", "slug" => "lights"],
+            ["name" => "Trépieds", "slug" => "tripods"],
+            ["name" => "Casques VR", "slug" => "vr_headsets"],
+            ["name" => "Tablettes graphiques", "slug" => "pen_tablets"],
+            ["name" => "Autres", "slug" => "other"],
+            ["name" => "Batteries", "slug" => "batteries"]
         ];
 
         $equipmentSubCategoryObjects = [];
@@ -79,7 +79,6 @@ class AppFixtures extends Fixture
         foreach ($equipmentSubCategories as $equipmentSubCategory) {
             $equipmentSubCategoryObject = new EquipmentSubCategory();
             $equipmentSubCategoryObject->setName($equipmentSubCategory["name"]);
-            $equipmentSubCategoryObject->setFormDisplayType($equipmentSubCategory["formDisplayType"]->value);
             $equipmentSubCategoryObject->setSlug($equipmentSubCategory["slug"]);
             array_push($equipmentSubCategoryObjects, $equipmentSubCategoryObject);
             $manager->persist($equipmentSubCategoryObject);

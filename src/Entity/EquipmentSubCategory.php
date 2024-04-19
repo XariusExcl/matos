@@ -27,9 +27,6 @@ class EquipmentSubCategory
     #[ORM\OneToMany(mappedBy: 'equipmentSubCategory', targetEntity: Equipment::class)]
     private Collection $equipment;
 
-    #[ORM\Column]
-    private ?int $formDisplayType = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $slug = null;
 
@@ -86,18 +83,6 @@ class EquipmentSubCategory
                 $equipment->setSubCategory(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getFormDisplayType(): ?int
-    {
-        return $this->formDisplayType;
-    }
-
-    public function setFormDisplayType(int $formDisplayType): static
-    {
-        $this->formDisplayType = $formDisplayType;
 
         return $this;
     }

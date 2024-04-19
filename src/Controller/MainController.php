@@ -44,23 +44,6 @@ class MainController extends AbstractController
             return (int)($hours/13) - 2*$skippedWeekendDays;
         }
 
-        /*
-        $categories = $entityManager->getRepository(EquipmentCategory::class)->findAll();
-        $equipmentRepository = $entityManager->getRepository(Equipment::class);
-
-        $loanableEquipment = [];
-        foreach($categories as $category)
-        {
-            $loanableEquipment[$category->getId()] = [];
-            $equipments = $equipmentRepository->findLoanableByCategory($category->getId());
-            foreach($equipments as $equipment)
-            {
-                if ($equipment->isLoanable() && $equipment->isShowInTable() && $equipment->getSubCategory()->getSlug() != "other")
-                    array_push($loanableEquipment[$category->getId()], $equipment);
-            }
-        }
-        */
-
         $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
 
@@ -107,7 +90,7 @@ class MainController extends AbstractController
 
     #[Route('/my-loans', name: 'app_myloans')]
     #[IsGranted('ROLE_USER', message: 'Vous devez être connecté pour accéder à cette page.')]
-    public function myLoans(EntityManagerInterface $entityManager): Response
+    public function myLoans(): Response
     {
         $user = $this->getUser();
 

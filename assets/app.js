@@ -99,7 +99,6 @@ function checkFormValidity() {
     let isValid = true;
     for(let input of requiredInputs) {
         if (!input.reportValidity()) {
-            console.log(input);
             scrollToInvalidInput(input);
             isValid = false;
             return;
@@ -135,5 +134,11 @@ function scrollToInvalidInput(input) {
     input.scrollIntoView({behavior: 'smooth', block: 'center'});
 }
 
+function submitLoanForm() {
+    console.log(document.querySelector('form'))
+    document.querySelector('form').submit();
+}
+
 window.formDateChange = formDateChange;
 window.checkFormValidity = checkFormValidity;
+window.submitLoanForm = submitLoanForm;
