@@ -4,9 +4,9 @@
             <div class="mt-1">
                 {{ form_widget(equipment, {'attr': {'class': 'form-check-input', 'style': "width:1.5rem; height:1.5rem"}}) }}
                 <span class="text-lg">
-                    {{ field_label(equipment) }}
+                    {{ field_label(equipment) }} {% if loan.discriminators[equipment.vars.value] is defined %} (N°{{ loan.discriminators[equipment.vars.value] }}) {% endif %} 
                 </span>
-            </div>
+           </div>
         {% endfor %}
     </div>
 

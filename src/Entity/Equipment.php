@@ -63,6 +63,9 @@ class Equipment
     #[ORM\Column]
     private ?bool $showInTable = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $numbered = null;
+
     public function __construct()
     {
         $this->loans = new ArrayCollection();
@@ -258,6 +261,18 @@ class Equipment
     public function setShowInTable(bool $showInTable): static
     {
         $this->showInTable = $showInTable;
+
+        return $this;
+    }
+
+    public function isNumbered(): bool
+    {
+        return $this->numbered;
+    }
+
+    public function setNumbered(bool $numbered): static
+    {
+        $this->numbered = $numbered;
 
         return $this;
     }

@@ -29,7 +29,7 @@
                                 <ul>
                                 {% for equipment in loan.equipmentLoaned %}
                                     <li class="mt-1 ml-4">
-                                        • {{ equipment.name }} 
+                                        • {{ equipment.name }} {% if loan.discriminators[equipment.id] is defined %} (N°{{ loan.discriminators[equipment.id] }}) {% endif %} 
                                     </li>
                                 {% endfor %}
                                 </ul>

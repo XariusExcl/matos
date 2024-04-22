@@ -14,7 +14,7 @@
     }
 </style>
 {% if loan.status != 1 %}
-    <p>Erreur, cet emprunt n'est pas validé !</p>
+    <p>Erreur, cet emprunt n'est pas/plus valide !</p>
 
     <small>MATOS - IUT de Troyes - 2024</small>
 {% else %}
@@ -46,7 +46,7 @@
         {% for equipment in loan.equipmentLoaned %}
             <div class="mt-2 ml-5 text-md flex">
                 <div class="w-6 h-6 mr-1 border-2 rounded-md" style="border-color:slategray"></div>
-                {{ equipment.name }}
+                {{ equipment.name }} {% if loan.discriminators[equipment.id] is defined %} (N°{{ loan.discriminators[equipment.id] }}) {% endif %} 
             </div>
         {% endfor %}
     </div>

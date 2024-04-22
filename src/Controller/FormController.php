@@ -80,7 +80,6 @@ class FormController extends AbstractController
                 if ($equipmentAlreadyLoanedCount[$equipmentId] >= $equipmentInfo[$equipmentId]->getQuantity())
                     return false;
             }
-            dump("Adding equipment ".$equipmentId." to loan ".$loan->getId());
 
             $loan->addEquipmentLoaned($equipmentInfo[$equipmentId]);
         }
@@ -106,9 +105,34 @@ class FormController extends AbstractController
     {
         return $loaner->getLoans()->filter(function(Loan $l) {
             return ($l->getStatus() == LoanStatus::ACCEPTED->value || $l->getStatus() == LoanStatus::PENDING->value);
-            // return $l->getDepartureDate() <= new \DateTime("now") && $l->getReturnDate() >= new \DateTime("now");
         })->count() >= 2;
-        
+    }
+
+    function parseFormEquipmentData(&$data, array &$loanEquipment, array &$loanDiscriminators, array &$equipmentInfo): void
+    {
+        $ignored = ['comment', 'day', 'timeSlot', 'csrf_token', '_token'];
+        if (is_array($data)) {
+            foreach($data as $key => $value) {
+                if (in_array($key, $ignored))
+                    continue;
+
+                if (is_array($value)) {
+                    foreach($value as $v) {
+                        $qty = $equipmentInfo[$v]->getQuantity();
+                        if ($qty > 1 && $equipmentInfo[$v]->isNumbered())
+                            $loanDiscriminators[$v] = random_int(1, $qty-1); // TODO : Random for now
+                        
+                        array_push($loanEquipment, $v);
+                    }
+                } else {
+                    $qty = $equipmentInfo[$value]->getQuantity();
+                    if ($qty > 1 && $equipmentInfo[$value]->isNumbered())
+                        $loanDiscriminators[$value] = random_int(1, $qty-1); // TODO : Random for now
+                    
+                    array_push($loanEquipment, $value);	
+                }
+            }
+        }
     }
 
     #[Route('/form/audiovisual', name: 'reservation_form_audiovisual')]
@@ -145,32 +169,17 @@ class FormController extends AbstractController
             $parsedDates = $this->parseDepartureReturnDates($data);
             if ($parsedDates === false)
                 return $this->redirectToRoute('reservation_form_audiovisual');
-
+            
             $loan->setDepartureDate($parsedDates['start']);
             $loan->setReturnDate($parsedDates['end']);
-
+            
             // Add the equipment to the loan
             $loanEquipment = [];
-            if (!empty($data['cameras']))
-                array_push($loanEquipment, $data['cameras']);
+            $loanDiscriminators = [];
+            
+            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
 
-            if (!empty($data['lenses']))
-                array_push($loanEquipment, $data['lenses']);
-
-            if (!empty($data['microphones']))
-                foreach($data['microphones'] as $microphone)
-                    array_push($loanEquipment, $microphone);
-
-            if (!empty($data['lights']))
-                foreach($data['lights'] as $light)
-                    array_push($loanEquipment, $light);
-
-            if (!empty($data['tripods']))
-                array_push($loanEquipment, $data['tripods']);
-
-            if (!empty($data['batteries']))
-                foreach($data['batteries'] as $accessory)
-                    array_push($loanEquipment, $accessory);
+            $loan->setDiscriminators($loanDiscriminators);
 
             if ($loanEquipment == [])
             {
@@ -178,7 +187,7 @@ class FormController extends AbstractController
                 return $this->redirectToRoute('reservation_form_audiovisual');
             }
 
-            $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
+            $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
                 $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
@@ -246,8 +255,11 @@ class FormController extends AbstractController
 
             // Add the equipment to the loan
             $loanEquipment = [];
-            if (!empty($data['headset']))
-                array_push($loanEquipment, $data['headset']);
+            $loanDiscriminators = [];
+            
+            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
+
+            $loan->setDiscriminators($loanDiscriminators);
 
             if ($loanEquipment == [])
             {
@@ -255,7 +267,7 @@ class FormController extends AbstractController
                 return $this->redirectToRoute('reservation_form_audiovisual');
             }
 
-            $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
+            $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
                 $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
@@ -276,7 +288,10 @@ class FormController extends AbstractController
             'formName' => 'Emprunt VR',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
-            'equipmentInfoJson' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo))
+            'equipmentInfoJson' => json_encode(array_map(function($e) { return [
+                "quantity" => $e->getQuantity(),
+                "name" => $e->getName()
+            ]; }, $equipmentInfo))
         ]);
     }
 
@@ -320,16 +335,19 @@ class FormController extends AbstractController
 
             // Add the equipment to the loan
             $loanEquipment = [];
-            if (!empty($data['tablet']))
-                array_push($loanEquipment, $data['tablet']);
+            $loanDiscriminators = [];
+            
+            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
 
+            $loan->setDiscriminators($loanDiscriminators);
+            
             if ($loanEquipment == [])
             {
                 $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
                 return $this->redirectToRoute('reservation_form_audiovisual');
             }
         
-            $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($parsedDates['start'], $parsedDates['end']);
+            $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
                 $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
@@ -350,7 +368,10 @@ class FormController extends AbstractController
             'formName' => 'Emprunt Graphisme & Infographie',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
-            'equipmentInfoJson' => json_encode(array_map(function($e) { return $e->getQuantity(); }, $equipmentInfo)),
+            'equipmentInfoJson' => json_encode(array_map(function($e) { return [
+                "quantity" => $e->getQuantity(),
+                "name" => $e->getName()
+            ]; }, $equipmentInfo))
         ]);
     }
 }

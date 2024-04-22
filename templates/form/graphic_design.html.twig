@@ -55,8 +55,8 @@
     </div>
     #}
 
-    <button onclick="confirmation_modal.showModal()" id="vr_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
     {{ form_end(form) }}
+    <button onclick="checkFormValidity()" id="vr_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
     
     {% include 'form/_form_modals.html.twig' %}
     {% include 'main/footer.html.twig' %}

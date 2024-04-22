@@ -51,17 +51,13 @@ class ApiController extends AbstractController
                 ]);
         }
 
-        $loans = $entityManager->getRepository(Loan::class)->findInBetweenDates($start, $end);
+        $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($start, $end);
 
         $equipmentLoaned = [];
         
         foreach ($loans as $loan) 
             foreach($loan->getEquipmentLoaned() as $el)
                 array_push($equipmentLoaned, $el->getId());
-
-        // TODO, compute for equipment with >1 quantity number of remaining, not just the id
-
-        // $equipment = array_values(array_unique($equipmentLoaned));
 
         $equipment = array_count_values($equipmentLoaned);
 

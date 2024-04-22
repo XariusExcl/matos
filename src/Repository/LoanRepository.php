@@ -42,7 +42,7 @@ class LoanRepository extends ServiceEntityRepository
     /**
      * @return Loan[] Returns an array of Loan objects
      */
-    public function findInBetweenDates(\DateTime $start, \DateTime $end): array
+    public function findUnavailableBetweenDates(\DateTime $start, \DateTime $end): array
     {
         /*
         // Sanitize the dates to never exceed 14 days
@@ -55,6 +55,8 @@ class LoanRepository extends ServiceEntityRepository
             ->setParameter('start', $start->format('Y-m-d'))
             ->setParameter(':end', $end->format('Y-m-d'))
             ->orWhere('l.return_date BETWEEN :start AND :end')
+            ->andWhere('l.status = :status')
+            ->setParameter('status', LoanStatus::ACCEPTED->value)
             ->orderBy('l.id', 'ASC')
             ->getQuery()
             ->getResult()

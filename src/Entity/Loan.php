@@ -43,6 +43,9 @@ class Loan
     #[ORM\JoinColumn(nullable: false)]
     private ?User $loaner = null;
 
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $discriminators = null;
+
     public function __construct()
     {
         $this->equipmentLoaned = new ArrayCollection();
@@ -138,6 +141,18 @@ class Loan
     public function setLoaner(?User $loaner): static
     {
         $this->loaner = $loaner;
+
+        return $this;
+    }
+
+    public function getDiscriminators(): ?array
+    {
+        return $this->discriminators;
+    }
+
+    public function setDiscriminators(?array $discriminators): static
+    {
+        $this->discriminators = $discriminators;
 
         return $this;
     }

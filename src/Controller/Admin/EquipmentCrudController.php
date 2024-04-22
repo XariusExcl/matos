@@ -49,7 +49,8 @@ class EquipmentCrudController extends AbstractCrudController
             AssociationField::new('loans')
                 ->hideOnForm()
                 ->hideOnIndex(),
-            NumberField::new('quantity')
+            NumberField::new('quantity'),
+            BooleanField::new('numbered')
         ];
     }
 }
