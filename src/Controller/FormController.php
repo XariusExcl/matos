@@ -36,30 +36,31 @@ class FormController extends AbstractController
         return $days;
     }
 
-    function parseDepartureReturnDates(array $date): array|bool
+    function parseDepartureReturnDates(array &$data): array|bool
     {
-        $hours = ['morning' => ["9:15", "12:30"], 'afternoon' => ["14:00", "17:30"], 'evening' => ["17:30", "9:15"]];
-            
-        if ($date['day'] < 0 || $date['day'] > 13) {
-            // throw new \Exception("Invalid day: ".$date['day']);
+        $timeSlots = ["0930", "1100", "1230", "1400", "1530", "1700"];
+
+        if ($data['startDay'] < 0
+        || $data['startDay'] > 13
+        || $data['endDay'] < 0
+        || $data['endDay'] > 13
+        || $data['startDay'] > $data['endDay']
+        || !in_array($data['startTimeSlot'], $timeSlots)
+        || !in_array($data['endTimeSlot'], $timeSlots))
+        {
             $this->addFlash('error','La date d\'emprunt est invalide.');
             return false;
         }
-        if (!isset($date['timeSlot']) || !in_array("morning", $date['timeSlot']) && !in_array("afternoon", $date['timeSlot']) && !in_array("evening", $date['timeSlot']))
-        {
-            // throw new \Exception("Invalid time slot: ".var_dump($date['timeSlot']));
-            $this->addFlash('error','Le créneau horaire est invalide.');
-            return false;
-        }
 
-        $date['day'] += 1;
         $start = (new \DateTime("today"))
-            ->modify("+".$date['day']." day")
-            ->modify($hours[$date['timeSlot'][0]][0]);
-        
+            ->modify("+".($data['startDay'] + 1)." day")
+            ->modify("+".substr($data['startTimeSlot'], 0, 2)." hours")
+            ->modify("+".substr($data['startTimeSlot'], 2, 2)." minutes");
+
         $end = (new \DateTime("today"))
-            ->modify("+".($date['day'] + ((end($date['timeSlot']) == 'evening')? 1 : 0))." day")
-            ->modify($hours[end($date['timeSlot'])][1]);
+            ->modify("+".($data['endDay'] + 1)." day")
+            ->modify("+".substr($data['endTimeSlot'], 0, 2)." hours")
+            ->modify("+".substr($data['endTimeSlot'], 2, 2)." minutes");
 
         return ['start' => $start, 'end' => $end];
     }
@@ -110,7 +111,7 @@ class FormController extends AbstractController
 
     function parseFormEquipmentData(&$data, array &$loanEquipment, array &$loanDiscriminators, array &$equipmentInfo): void
     {
-        $ignored = ['comment', 'day', 'timeSlot', 'csrf_token', '_token'];
+        $ignored = ['comment', 'startDay', 'startTimeSlot', 'endDay', 'endTimeSlot', 'csrf_token', '_token'];
         if (is_array($data)) {
             foreach($data as $key => $value) {
                 if (in_array($key, $ignored))
@@ -124,7 +125,7 @@ class FormController extends AbstractController
                         
                         array_push($loanEquipment, $v);
                     }
-                } else {
+                } else if (!empty($value)){
                     $qty = $equipmentInfo[$value]->getQuantity();
                     if ($qty > 1 && $equipmentInfo[$value]->isNumbered())
                         $loanDiscriminators[$value] = random_int(1, $qty-1); // TODO : Random for now
@@ -208,6 +209,7 @@ class FormController extends AbstractController
             'formName' => 'Emprunt Audiovisuel',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
+            'loanableDays' => json_encode(array_values($options['days'])),
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
@@ -288,6 +290,7 @@ class FormController extends AbstractController
             'formName' => 'Emprunt VR',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
+            'loanableDays' => json_encode(array_values($options['days'])),
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
@@ -368,6 +371,7 @@ class FormController extends AbstractController
             'formName' => 'Emprunt Graphisme & Infographie',
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
+            'loanableDays' => json_encode(array_values($options['days'])),
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()

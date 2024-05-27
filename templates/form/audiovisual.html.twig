@@ -11,7 +11,7 @@
     <ul class="ml-10">
         <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b>
         </li>
-        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et d<b>un trépied lumière</b>.</li>
+        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
     </ul>
 
     {{ form_start(form) }}
@@ -113,15 +113,17 @@
     {% include 'main/footer.html.twig' %}
     <script>
         const equipmentInfo = {{ equipmentInfoJson|raw }};
-        const loanDayElement = document.getElementById("audiovisual_loan_day")
-        const loanTimeslot0Element = document.getElementById("audiovisual_loan_timeSlot_0")
-        const loanTimeslot1Element = document.getElementById("audiovisual_loan_timeSlot_1")
-        const loanTimeslot2Element = document.getElementById("audiovisual_loan_timeSlot_2")
+        const loanStartDayElement = document.getElementById("audiovisual_loan_startDay")
+        const loanStartTimeslotElement = document.getElementById("audiovisual_loan_startTimeSlot")
+        const loanEndDayElement = document.getElementById("audiovisual_loan_endDay")
+        const loanEndTimeslotElement = document.getElementById("audiovisual_loan_endTimeSlot")
+        const loanableDays = {{ loanableDays|raw }};
+
         window.onload = () => {
-            loanDayElement?.addEventListener("change", formDateChange);
-            loanTimeslot0Element?.addEventListener("change", formDateChange);
-            loanTimeslot1Element?.addEventListener("change", formDateChange);
-            loanTimeslot2Element?.addEventListener("change", formDateChange);
+            loanStartDayElement?.addEventListener("change", formDateChange);
+            loanEndDayElement?.addEventListener("change", formDateChange);
+            loanStartTimeslotElement?.addEventListener("change", formDateChange);
+            loanEndTimeslotElement?.addEventListener("change", formDateChange);
         }
     </script>
 {% endblock %}

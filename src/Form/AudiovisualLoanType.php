@@ -19,26 +19,45 @@ class AudiovisualLoanType extends AbstractType
         // dump($options);
 
         $builder
-            ->add('day', ChoiceType::class, [
+            ->add('startDay', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => $options['days'],
-                'label' => 'Jour de l\'emprunt',
+                'label' => 'Départ de l\'emprunt',
+            ])
+            ->add('startTimeSlot', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'Créneau horaire',
+                'choices' => [
+                    '9h30' => '0930',
+                    '11h' => '1100',
+                    '12h30' => '1230',
+                    '14h' => '1400',
+                    '15h30' => '1530',
+                    '17h00' => '1700',
+                ],
+                'required' => true
+            ])
+            ->add('endDay', ChoiceType::class, [
+                'mapped' => false,
+                'choices' => $options['days'],
+                'label' => 'Retour de l\'emprunt',
+            ])
+            ->add('endTimeSlot', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'Créneau horaire',
+                'choices' => [
+                    '9h30' => '0930',
+                    '11h' => '1100',
+                    '12h30' => '1230',
+                    '14h' => '1400',
+                    '15h30' => '1530',
+                    '17h00' => '1700',
+                ],
+                'required' => true
             ])
             ->add('comment', TextareaType::class, [
                 'mapped' => false,
                 'label' => 'Raison de l\'emprunt',
-                'required' => true
-            ])
-            ->add('timeSlot', ChoiceType::class, [
-                'mapped' => false,
-                'label' => 'Créneau horaire',
-                'expanded' => true,
-                'multiple' => true,
-                'choices' => [
-                    '9h15 - 12h30' => 'morning',
-                    '14h - 17h30' => 'afternoon',
-                    '17h30 - 9h15' => 'evening',
-                ],
                 'required' => true
             ])
             ->add('cameras', EntityType::class, [

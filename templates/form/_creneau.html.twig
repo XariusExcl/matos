@@ -1,18 +1,32 @@
 <h2 class="text-2xl font-bold my-2" >Créneau</h2>
-{{ form_errors(form.day, {'attr': {'class': 'text-red-500'}}) }}
-{{ form_errors(form.timeSlot, {'attr': {'class': 'text-red-500'}}) }}
+<p id="creneau-error" class="text-error">
+    {{ form_errors(form.startDay) }}
+    {{ form_errors(form.endDay) }}
+    {{ form_errors(form.startTimeSlot) }}
+    {{ form_errors(form.endTimeSlot) }}
+</p>
 <div class="flex flex-wrap">
-    <div class="w-60 mr-5">
-        {{ form_label(form.day) }}
-        {{ form_widget(form.day, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+    <div class="flex flex-wrap">
+        <div class="w-52 mr-5">
+            {{ form_label(form.startDay) }}
+            {{ form_widget(form.startDay, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+        </div>
+        <div class="w-32">
+            {{ form_label(form.startTimeSlot) }}
+            {{ form_widget(form.startTimeSlot, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+        </div>
     </div>
-    <div class="w-40">
-        {{ form_label(form.timeSlot) }}
-        {% for timeSlot in form.timeSlot %}
-            <div class="flex my-1.5">
-                {{ form_widget(timeSlot, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
-                {{ form_label(timeSlot) }}
-            </div>
-        {% endfor %}
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-6 mt-6 w10 h-10 invisible lg:visible" style="transform:rotate(180deg);" viewBox="0 0 24 24"><g id="Left-3" data-name="Left"><path d="M21,8H11V5a1,1,0,0,0-1.707-.707l-7,7a1,1,0,0,0,0,1.414l7,7A1,1,0,0,0,11,19V16H21a1,1,0,0,0,1-1V9A1,1,0,0,0,21,8Z" style="fill:#CBD5E1"/></g></svg>
+
+    <div class="flex flex-wrap">
+        <div class="w-52 mr-5">
+            {{ form_label(form.endDay) }}
+            {{ form_widget(form.endDay, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+        </div>
+        <div class="w-32">
+            {{ form_label(form.endTimeSlot) }}
+            {{ form_widget(form.endTimeSlot, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
+        </div>
     </div>
 </div>
