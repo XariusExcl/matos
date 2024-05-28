@@ -97,7 +97,9 @@ function checkFormValidity() {
 
     if (!isDateValid) {
         scrollToInvalidInput(loanStartDayElement);
-        document.querySelector('#creneau-error').innerHTML = "Le créneau d'emprunt est invalide !";
+        let error = document.querySelector('#creneau-error');
+        if (error.innerText === "")
+            error.innerHTML = "Le créneau d'emprunt est invalide !";
         return;
     }
     
