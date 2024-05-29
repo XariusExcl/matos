@@ -118,12 +118,14 @@
         const loanEndDayElement = document.getElementById("audiovisual_loan_endDay")
         const loanEndTimeslotElement = document.getElementById("audiovisual_loan_endTimeSlot")
         const loanableDays = {{ loanableDays|raw }};
-
+        const _ud = {{ unavailableDays|raw }};
+        const unavailableDays = _ud.map((date) => {return {"start": new Date(date.start), "end": new Date(date.end)}});
         window.onload = () => {
             loanStartDayElement?.addEventListener("change", formDateChange);
             loanEndDayElement?.addEventListener("change", formDateChange);
             loanStartTimeslotElement?.addEventListener("change", formDateChange);
             loanEndTimeslotElement?.addEventListener("change", formDateChange);
+            processUnavailableDays();
         }
     </script>
 {% endblock %}

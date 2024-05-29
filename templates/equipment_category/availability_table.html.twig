@@ -1,6 +1,10 @@
 <div class="overflow-scroll my-5 rounded-lg bg-base-200 shadow-inner" style="width:100%;max-height:calc(70vh - 60px)">
 	<div class="grid p-2 gap-px" style="grid-template-columns:minmax(192px, 4fr) repeat(20,minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
         <div class="w-100 h-100" style="grid-area:1/2/{{equipment|length +3}}/4;background-color:#0003"></div>
+        {% for u in unavailableDays %}
+            <div class="w-100 h-100" style="grid-area:1/{{u.start +2}}/{{equipment|length +3}}/{{u.end +3}};background-color:#0003"></div>
+        {% endfor %}
+
         {% for e in equipment %}
             {% set i = loop.index0 %}
 		    <div class="text-right text-clip overflow-hidden font-bold text-sm mt-1 mr-2" style="grid-row:{{i+3}}; grid-column:1">{{e.name}}</div>

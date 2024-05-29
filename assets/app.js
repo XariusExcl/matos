@@ -20,6 +20,12 @@ const dateFormat = function date2str(x, y) {
 }
 let cachedRequests = {};
 let isDateValid = false;
+let unavailableTimeSlots = {};
+
+// To grey out the days/timeslots that are not available
+function processUnavailableDays() {
+    // TODO
+}
 
 async function formDateChange() {
     const loanStartDay = parseInt(loanStartDayElement.value);
@@ -29,20 +35,17 @@ async function formDateChange() {
 
     // Make sure the start date is before the end date
     if (loanEndDay < loanStartDay || (loanEndDay == loanStartDay && loanEndTimeslot <= loanStartTimeslot)) {
-        document.querySelector('#creneau-error').innerHTML = "La date de fin doit être après la date de début.";
+        document.querySelector('#creneau-error').innerText = "La date de fin doit être après la date de début.";
         isDateValid = false;
         return;
     }
     
     // Don't exceed max loan duration
     if (loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 1) {
-        document.querySelector('#creneau-error').innerHTML = "La durée maximale d'emprunt est de 1 jour.";
+        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
         isDateValid = false;
         return;
     }
-
-    isDateValid = true;
-    document.querySelector('#creneau-error').innerHTML = "";
 
     // Calculate the start and end date
     const startDate = new Date();
@@ -61,10 +64,29 @@ async function formDateChange() {
         0
     );
 
+    // Check if date is not in unavailable dates
+    let flag = false;
+    unavailableDays.forEach((unavailableDate) => {
+        if (
+            (startDate >= unavailableDate.start && startDate <= unavailableDate.end)
+            || (endDate >= unavailableDate.start && endDate <= unavailableDate.end)
+            || (startDate <= unavailableDate.start && endDate >= unavailableDate.end)
+        ) {
+            document.querySelector('#creneau-error').innerText = "Le créneau d'emprunt est indisponible.";
+            isDateValid = false;
+            flag = true;
+            return;
+        }
+    });
+    if (flag) return;
+
+    isDateValid = true;
+    document.querySelector('#creneau-error').innerText = "";
+
+    // Fetch and update unavailable equipment
     const startDateStr = dateFormat(startDate, 'yyyy-MM-dd hh:mm')
     const endDateStr = dateFormat(endDate, 'yyyy-MM-dd hh:mm');
 
-    // Fetch and update unavailable equipment
     const key = String(loanStartDay) + loanStartTimeslot + loanEndDay + loanEndTimeslot;
     if (!(key in cachedRequests)) {
         const data = await fetch(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`)
@@ -118,7 +140,6 @@ function checkFormValidity() {
    // create a list of selected equipment
    let selectedEquipment = [];
    
-   // const equipmentInputs = form.querySelectorAll('[name="equipment[]"]'); // not sure
    const equipmentInputs = document.querySelectorAll('#equipmentSelection input[type="checkbox"]:checked, #equipmentSelection input[type="radio"]:checked');
    equipmentInputs.forEach((input) => {
        if (input.checked && input.value != "") {
@@ -144,10 +165,10 @@ function scrollToInvalidInput(input) {
 }
 
 function submitLoanForm() {
-    console.log(document.querySelector('form'))
     document.querySelector('form').submit();
 }
 
 window.formDateChange = formDateChange;
 window.checkFormValidity = checkFormValidity;
 window.submitLoanForm = submitLoanForm;
+window.processUnavailableDays = processUnavailableDays;

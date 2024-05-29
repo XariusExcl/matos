@@ -30,17 +30,13 @@
             <div id="{{ audiovisualCategory|lower }}" class="row">
                 <h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
                     {% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
-                    {% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans} %}
+                    {% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
                 <a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
             </div>
             <div class="mt-10">
                 Autres emprunts :
                 <a href="{{ path('reservation_form_vr') }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
                 <a href="{{ path('reservation_form_graphic_design') }}" class="btn btn-primary text-base-100">Emprunt de tablettes graphiques</a>
-            </div>
-            <div>
-                Tutoriels et guides matériel :
-                Todo !
             </div>
 		</div>
 	</div>

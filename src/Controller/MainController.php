@@ -10,6 +10,7 @@ use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Equipment;
 use App\Entity\LoanStatus;
+use App\Entity\UnavailableDays;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MainController extends AbstractController
@@ -25,7 +26,7 @@ class MainController extends AbstractController
 
             $hours = $diff->d*24 + $diff->h;
 
-            if ($hours < 13)
+            if ($hours < 13 || $diff->invert == 0)
                 return 0;
             
             if ($hours > 14*24-12)
@@ -40,13 +41,22 @@ class MainController extends AbstractController
                 if ($dw_ > 5)
                     $skippedWeekendDays++;
             }
-
-            return (int)($hours/13) - 2*$skippedWeekendDays;
+            return (int)($hours/12) - 2*$skippedWeekendDays;
         }
 
         $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
 
+        // Create a dictionary of unavailable timeslots
+        $unavailableDaysTimeSlots = [];
+        foreach($unavailableDays as $u)
+            $unavailableDaysTimeSlots[$u->getId()] = [
+                "start" => getTimeslot($u->getDateStart()),
+                "end" => getTimeslot($u->getDateEnd()),
+                "preventsLoans" => $u->isPreventsLoans(),
+                "comment" => $u->getComment()
+            ];
 
         $loans = $entityManager->getRepository(Loan::class)->findInNextTwoWeeks(new \DateTime());
 
@@ -84,7 +94,8 @@ class MainController extends AbstractController
             'audiovisualCategory' => $audiovisualCategory,
             'tableEquipment' => $tableEquipment, 
             'equipmentLoaned'=> $equipmentLoaned,
-            'dates' => $dates
+            'dates' => $dates,
+            'unavailableDays' => $unavailableDaysTimeSlots
         ]);
     }
 

@@ -11,6 +11,7 @@ use App\Entity\Equipment;
 use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Location;
+use App\Entity\UnavailableDays;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -49,12 +50,14 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Admin');
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-inbox');
+        yield MenuItem::linkToCrud('Jours "indisponibles"', 'fas fa-calendar', UnavailableDays::class);
+        yield MenuItem::linkToUrl('Retour au site', 'fa fa-home', '/');
 
         yield MenuItem::section('Crud');
-        yield MenuItem::linkToCrud('Matos', 'fas fa-list', Equipment::class);
-        yield MenuItem::linkToCrud('Catégories', 'fas fa-list', EquipmentCategory::class);
-        yield MenuItem::linkToCrud('Emprunts', 'fas fa-list', Loan::class);
-        yield MenuItem::linkToCrud('Salles', 'fas fa-list', Location::class);
+        yield MenuItem::linkToCrud('Matos', 'fas fa-camera', Equipment::class);
+        yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', EquipmentCategory::class);
+        yield MenuItem::linkToCrud('Emprunts', 'fas fa-clipboard', Loan::class);
+        yield MenuItem::linkToCrud('Salles', 'fas fa-door-open', Location::class);
     }
 }

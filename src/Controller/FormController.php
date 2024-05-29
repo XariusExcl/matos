@@ -15,6 +15,7 @@ use App\Entity\Loan;
 use App\Entity\Equipment;
 use App\Entity\LoanStatus;
 use App\Entity\User;
+use App\Entity\UnavailableDays;
 
 class FormController extends AbstractController
 {
@@ -36,7 +37,7 @@ class FormController extends AbstractController
         return $days;
     }
 
-    function parseDepartureReturnDates(array &$data): array|bool
+    function parseDepartureReturnDates(array &$data, array &$unavailableDays): array|bool
     {
         $timeSlots = ["0930", "1100", "1230", "1400", "1530", "1700"];
 
@@ -61,6 +62,19 @@ class FormController extends AbstractController
             ->modify("+".($data['endDay'] + 1)." day")
             ->modify("+".substr($data['endTimeSlot'], 0, 2)." hours")
             ->modify("+".substr($data['endTimeSlot'], 2, 2)." minutes");
+
+        foreach ($unavailableDays as $ud)
+        {
+            if (
+                ($start >= $ud->getDateStart() && $start <= $ud->getDateEnd())
+                || ($end >= $ud->getDateStart() && $end <= $ud->getDateEnd())
+                || ($start <= $ud->getDateStart() && $end >= $ud->getDateEnd())
+            )
+            {
+                $this->addFlash('error','La période sélectionnée est indisponible.');
+                return false;
+            }
+        }
 
         return ['start' => $start, 'end' => $end];
     }
@@ -158,6 +172,8 @@ class FormController extends AbstractController
 
         $options['days'] = $this->createLoanableDates();
 
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
+
         // Create the form
         $form = $this->createForm(AudiovisualLoanType::class, $loan, $options);
         $form->handleRequest($request);
@@ -167,7 +183,7 @@ class FormController extends AbstractController
             $loan->setLoaner($this->getUser());
             
             // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data);
+            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
             if ($parsedDates === false)
                 return $this->redirectToRoute('reservation_form_audiovisual');
             
@@ -213,7 +229,11 @@ class FormController extends AbstractController
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
-            ]; }, $equipmentInfo))
+            ]; }, $equipmentInfo)),
+            'unavailableDays' => json_encode(array_map(function($u) { return [
+                "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
+                "end" => $u->getDateEnd()->format('Y-m-d H:i:s')
+            ]; }, array_filter($unavailableDays, function($u) { return $u->isPreventsLoans(); }))), // Filter out days that don't prevent loans
         ]);
     }
     
@@ -248,7 +268,7 @@ class FormController extends AbstractController
             $loan->setLoaner($this->getUser());
             
             // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data);
+            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
             if ($parsedDates === false)
                 return $this->redirectToRoute('reservation_form_vr');
 
@@ -329,7 +349,7 @@ class FormController extends AbstractController
             $loan->setLoaner($this->getUser());
             
             // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data);
+            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
             if ($parsedDates === false)
                 return $this->redirectToRoute('reservation_form_graphic_design');
             
