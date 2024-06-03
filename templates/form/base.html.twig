@@ -19,4 +19,17 @@
             </div>
         </div>
     </div>
+    <script>
+        const equipmentInfo = {{ equipmentInfoJson|raw }};
+        const loanableDays = {{ loanableDays|raw }};
+        const _ud = {{ unavailableDays|raw }};
+        const unavailableDays = _ud.map((ud) => {return {"start": new Date(ud.start), "end": new Date(ud.end), "preventsLoans": ud.preventsLoans}});
+        window.onload = () => {
+            loanStartDayElement?.addEventListener("change", formDateChange);
+            loanEndDayElement?.addEventListener("change", formDateChange);
+            loanStartTimeslotElement?.addEventListener("change", formDateChange);
+            loanEndTimeslotElement?.addEventListener("change", formDateChange);
+            processUnavailableDays();
+        }
+    </script>
 {% endblock %}

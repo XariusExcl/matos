@@ -61,20 +61,9 @@
     {% include 'form/_form_modals.html.twig' %}
     {% include 'main/footer.html.twig' %}
     <script>
-        const equipmentInfo = {{ equipmentInfoJson|raw }};
         const loanStartDayElement = document.getElementById("graphic_design_loan_startDay")
         const loanStartTimeslotElement = document.getElementById("graphic_design_loan_startTimeSlot")
         const loanEndDayElement = document.getElementById("graphic_design_loan_endDay")
         const loanEndTimeslotElement = document.getElementById("graphic_design_loan_endTimeSlot")
-        const loanableDays = {{ loanableDays|raw }};
-        const _ud = {{ unavailableDays|raw }};
-        const unavailableDays = _ud.map((date) => {return {"start": new Date(date.start), "end": new Date(date.end)}});
-        console.log(unavailableDays);
-        window.onload = () => {
-            loanStartDayElement?.addEventListener("change", formDateChange);
-            loanEndDayElement?.addEventListener("change", formDateChange);
-            loanStartTimeslotElement?.addEventListener("change", formDateChange);
-            loanEndTimeslotElement?.addEventListener("change", formDateChange);
-        }
     </script>
 {% endblock %}

@@ -20,11 +20,48 @@ const dateFormat = function date2str(x, y) {
 }
 let cachedRequests = {};
 let isDateValid = false;
-let unavailableTimeSlots = {};
+let unavailableStartTimeSlots = {};
 
 // To grey out the days/timeslots that are not available
 function processUnavailableDays() {
-    // TODO
+    // let _st = new Date().getTime();
+
+    let index = 0;
+    let inUnavailablePeriod = false;
+    let timeslotCount = loanStartTimeslotElement.options.length;
+
+    loanableDays.forEach((day) => {
+        [...loanStartTimeslotElement.options].map((o) => {
+            let date = new Date();
+            date.setDate(date.getDate() + day + 1);
+            date.setHours(parseInt(o.value.substring(0, 2)), parseInt(o.value.substring(2, 4)), 0);
+            
+            if (!inUnavailablePeriod) {
+                if (unavailableDays[index] && date >= unavailableDays[index].start && date <= unavailableDays[index].end) {
+                    inUnavailablePeriod = true;
+                }
+            } else {
+                if (unavailableDays[index] && date > unavailableDays[index].end) {
+                    inUnavailablePeriod = false;
+                    index++;
+                }
+            }
+
+            if (inUnavailablePeriod) {
+                if (unavailableStartTimeSlots[day] === undefined) {
+                    unavailableStartTimeSlots[day] = [];
+                }
+                unavailableStartTimeSlots[day].push(o.value);
+            }
+            
+        });
+        if (unavailableStartTimeSlots[day] !== undefined && unavailableStartTimeSlots[day].length === timeslotCount) {
+            loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
+            loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true; // FIXME
+        }
+    });
+
+    // console.log("processUnavailableDays took", new Date().getTime() - _st, "ms");
 }
 
 async function formDateChange() {
@@ -32,6 +69,17 @@ async function formDateChange() {
     const loanStartTimeslot = parseInt(loanStartTimeslotElement.value);
     const loanEndDay = parseInt(loanEndDayElement.value);
     const loanEndTimeslot = parseInt(loanEndTimeslotElement.value);
+
+    // Disable unavailable timeslots
+    loanStartTimeslotElement.querySelectorAll('option').forEach((option) => {
+        option.disabled = false;
+    });
+    if (unavailableStartTimeSlots[loanStartDay]) {
+        unavailableStartTimeSlots[loanStartDay].forEach((timeslot) => {
+            loanStartTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
+            loanEndTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true; // FIXME
+        });
+    }
 
     // Make sure the start date is before the end date
     if (loanEndDay < loanStartDay || (loanEndDay == loanStartDay && loanEndTimeslot <= loanStartTimeslot)) {

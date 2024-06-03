@@ -232,8 +232,9 @@ class FormController extends AbstractController
             ]; }, $equipmentInfo)),
             'unavailableDays' => json_encode(array_map(function($u) { return [
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
-                "end" => $u->getDateEnd()->format('Y-m-d H:i:s')
-            ]; }, array_filter($unavailableDays, function($u) { return $u->isPreventsLoans(); }))), // Filter out days that don't prevent loans
+                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
+                "preventsLoans" => $u->isPreventsLoans()
+            ]; }, $unavailableDays))
         ]);
     }
     
@@ -258,6 +259,8 @@ class FormController extends AbstractController
         $this->groupEquipmentBySubcategoryAndById($equipmentLoanable, $options['equipmentCategories'], $equipmentInfo);
 
         $options['days'] = $this->createLoanableDates();
+
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
 
         // Create the form
         $form = $this->createForm(VRLoanType::class, $loan, $options);
@@ -314,7 +317,12 @@ class FormController extends AbstractController
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
-            ]; }, $equipmentInfo))
+            ]; }, $equipmentInfo)),
+            'unavailableDays' => json_encode(array_map(function($u) { return [
+                "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
+                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
+                "preventsLoans" => $u->isPreventsLoans()
+            ]; }, $unavailableDays))
         ]);
     }
 
@@ -339,6 +347,8 @@ class FormController extends AbstractController
         $this->groupEquipmentBySubcategoryAndById($equipmentLoanable, $options['equipmentCategories'], $equipmentInfo);
 
         $options['days'] = $this->createLoanableDates();
+
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
 
         // Create the form
         $form = $this->createForm(GraphicDesignLoanType::class, $loan, $options);
@@ -395,7 +405,12 @@ class FormController extends AbstractController
             'equipmentInfoJson' => json_encode(array_map(function($e) { return [
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
-            ]; }, $equipmentInfo))
+            ]; }, $equipmentInfo)),
+            'unavailableDays' => json_encode(array_map(function($u) { return [
+                "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
+                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
+                "preventsLoans" => $u->isPreventsLoans()
+            ]; }, $unavailableDays))
         ]);
     }
 }
