@@ -1,0 +1,7 @@
+{% extends "mailer/base.html.twig" %}
+{% block body %}
+    <h1>Bonjour {{ loaner.name??"" }} !</h1>
+    <p>Nous confirmons que votre emprunt a bien été rendu.</p>
+    <p>Vous pouvez consulter vos emprunts passés sur votre profil.</p>
+    <p>À bientôt sur MATOS !</p>
+{% endblock %}

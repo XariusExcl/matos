@@ -51,37 +51,40 @@ class LoanCrudController extends AbstractCrudController
 
     public function loanReturn(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
-        // Create the form
-        $options = [
-            'equipmentLoaned' => $loan->getEquipmentLoaned(),
-        ];
-
-        $form = $this->createForm(ReturnLoanType::class, $loan, $options);
-
-        $request = Request::createFromGlobals();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $request->request->all()["return_loan"];
-
-            if (!isset($data['equipment']) || count($data['equipment']) < $loan->getEquipmentLoaned()->count()) {
-                $this->addFlash('error', 'Il manque des équipements à rendre.'); // FIXME : This message is displayed after one extra refresh somehow?
-
-                return $this->render('admin/loan/return_content.html.twig', [
-                    'loan' => $loan,
-                    'form' => $form->createView(),
-                ]);
+        if ($loan->getStatus() == LoanStatus::ACCEPTED->value)
+        {
+            // Create the form
+            $options = [
+                'equipmentLoaned' => $loan->getEquipmentLoaned(),
+            ];
+    
+            $form = $this->createForm(ReturnLoanType::class, $loan, $options);
+    
+            $request = Request::createFromGlobals();
+    
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data = $request->request->all()["return_loan"];
+    
+                if (!isset($data['equipment']) || count($data['equipment']) < $loan->getEquipmentLoaned()->count()) {
+                    $this->addFlash('error', 'Il manque des équipements à rendre.'); // FIXME : This message is displayed after one extra refresh somehow?
+    
+                    return $this->render('admin/loan/return_content.html.twig', [
+                        'loan' => $loan,
+                        'form' => $form->createView(),
+                    ]);
+                }
+                
+                MailerController::sendLoanReturnedMail($loan, $mailer);
+                
+                $loan->setStatus(LoanStatus::RETURNED->value);
+                $em->persist($loan);
+                $em->flush();
+                
+                $this->addFlash('success', 'Le rendu du matériel a bien été enregistré.'); // FIXME : This message is displayed after one extra refresh somehow?
+                // return $this->redirectToRoute('admin'); // Can't reroute because we're in a nested controller render.
             }
-            
-            MailerController::sendLoanReturnedMail($loan, $mailer);
-            
-            $loan->setStatus(LoanStatus::RETURNED->value);
-            $em->persist($loan);
-            $em->flush();
-            
-            $this->addFlash('success', 'Le rendu du matériel a bien été enregistré.'); // FIXME : This message is displayed after one extra refresh somehow?
-            // return $this->redirectToRoute('admin'); // Can't reroute because we're in a nested controller render.
         }
 
         return $this->render('admin/loan/return_content.html.twig', [
