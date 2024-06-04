@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mailer\MailerInterface;
 use App\Entity\Loan;
 use App\Entity\Equipment;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use App\Entity\User;
@@ -22,7 +21,7 @@ class MailerController extends AbstractController
         if ($_ENV['APP_ENV'] === 'dev')
             $mailto = $_ENV['MAILER_DEBUG_EMAIL'];
         else
-            $mailto = $loan->getLoaner()->getEmail();
+            $mailto = $_ENV['MAILER_ADMIN_EMAIL'];
 
         $email = (new TemplatedEmail())
             ->to($mailto)
