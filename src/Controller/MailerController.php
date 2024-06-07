@@ -160,6 +160,7 @@ class MailerController extends AbstractController
         $loan->addEquipmentLoaned($equipment[rand(0, count($equipment) - 1)]);
         $loan->addEquipmentLoaned($equipment[rand(0, count($equipment) - 1)]);
         $loan->setComment('Ceci est un test');
+        $loan->setAdminComment('Ceci est un test admin');
 
         $template = $_GET['e'];
         switch ($template) {

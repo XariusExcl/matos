@@ -46,6 +46,9 @@ class Loan
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private ?array $discriminators = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $adminComment = null;
+
     public function __construct()
     {
         $this->equipmentLoaned = new ArrayCollection();
@@ -153,6 +156,18 @@ class Loan
     public function setDiscriminators(?array $discriminators): static
     {
         $this->discriminators = $discriminators;
+
+        return $this;
+    }
+
+    public function getAdminComment(): ?string
+    {
+        return $this->adminComment;
+    }
+
+    public function setAdminComment(?string $adminComment): static
+    {
+        $this->adminComment = $adminComment;
 
         return $this;
     }

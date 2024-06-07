@@ -18,7 +18,7 @@
 
     <h2 class="text-2xl font-bold my-2">Projet</h2>
     <div>
-        {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel, bénévolat...)', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
+        {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel, bénévolat...) ainsi qu\'un numéro de contact.', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
     </div>
 
     {% include 'form/_creneau.html.twig' %}
@@ -121,9 +121,10 @@
     {% include 'form/_form_modals.html.twig' %}
     {% include 'main/footer.html.twig' %}
     <script>
-        const loanStartDayElement = document.getElementById("audiovisual_loan_startDay")
-        const loanStartTimeslotElement = document.getElementById("audiovisual_loan_startTimeSlot")
-        const loanEndDayElement = document.getElementById("audiovisual_loan_endDay")
-        const loanEndTimeslotElement = document.getElementById("audiovisual_loan_endTimeSlot")
+        const loanName = "audiovisual";
+        const loanStartDayElement = document.getElementById("audiovisual_loan_startDay");
+        const loanStartTimeslotElement = document.getElementById("audiovisual_loan_startTimeSlot");
+        const loanEndDayElement = document.getElementById("audiovisual_loan_endDay");
+        const loanEndTimeslotElement = document.getElementById("audiovisual_loan_endTimeSlot");
     </script>
 {% endblock %}

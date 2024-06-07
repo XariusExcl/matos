@@ -5,18 +5,8 @@
 
 {% block body %}
 	{% include 'main/navbar.html.twig' %}
-    {% for message in app.flashes('error') %}
-        <div role="alert" class="absolute alert alert-error bg-error">
-            {{ message }}
-        </div>
-    {% endfor %}
-    {% for message in app.flashes('success') %}
-        <div role="alert" class="absolute alert alert-success bg-success">
-            {{ message }}
-        </div>
-    {% endfor %}
 
-	<div class="flex justify-center mb-10">
+	<div class="flex justify-center pt-16 mb-10">
 		<div class="container">
             <div class="flex justify-end pt-10">
                 <div class="flex">

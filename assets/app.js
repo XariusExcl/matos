@@ -24,8 +24,6 @@ let unavailableStartTimeSlots = {};
 
 // To grey out the days/timeslots that are not available
 function processUnavailableDays() {
-    // let _st = new Date().getTime();
-
     let index = 0;
     let inUnavailablePeriod = false;
     let timeslotCount = loanStartTimeslotElement.options.length;
@@ -35,7 +33,7 @@ function processUnavailableDays() {
             let date = new Date();
             date.setDate(date.getDate() + day + 1);
             date.setHours(parseInt(o.value.substring(0, 2)), parseInt(o.value.substring(2, 4)), 0);
-            
+    
             if (!inUnavailablePeriod) {
                 if (unavailableDays[index] && date >= unavailableDays[index].start && date <= unavailableDays[index].end) {
                     inUnavailablePeriod = true;
@@ -53,15 +51,12 @@ function processUnavailableDays() {
                 }
                 unavailableStartTimeSlots[day].push(o.value);
             }
-            
         });
         if (unavailableStartTimeSlots[day] !== undefined && unavailableStartTimeSlots[day].length === timeslotCount) {
             loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
             loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true; // FIXME
         }
     });
-
-    // console.log("processUnavailableDays took", new Date().getTime() - _st, "ms");
 }
 
 async function formDateChange() {
@@ -70,10 +65,20 @@ async function formDateChange() {
     const loanEndDay = parseInt(loanEndDayElement.value);
     const loanEndTimeslot = parseInt(loanEndTimeslotElement.value);
 
-    // Disable unavailable timeslots
+    // Reenable timeslots
     loanStartTimeslotElement.querySelectorAll('option').forEach((option) => {
         option.disabled = false;
     });
+
+    // Disable end day if it's before start day
+    loanEndDayElement.querySelectorAll('option').forEach((option) => {
+        option.disabled = false;
+        if (parseInt(option.value) < loanStartDay) {
+            option.disabled = true;
+        }
+    });
+
+    // Disable preprocessed unavailable timeslots
     if (unavailableStartTimeSlots[loanStartDay]) {
         unavailableStartTimeSlots[loanStartDay].forEach((timeslot) => {
             loanStartTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
@@ -89,8 +94,12 @@ async function formDateChange() {
     }
     
     // Don't exceed max loan duration
-    if (loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 1) {
+    if(loanName == "audiovisual" && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 1){
         document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
+        isDateValid = false;
+        return;
+    } else if ((loanName == "vr" || loanName == "graphic_design") && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 5) {
+        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 semaine.";
         isDateValid = false;
         return;
     }

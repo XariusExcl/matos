@@ -181,6 +181,7 @@ class FormController extends AbstractController
             $data = $request->request->all()['audiovisual_loan'];
             
             $loan->setLoaner($this->getUser());
+            $loan->setComment($data['comment']);
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
@@ -269,6 +270,7 @@ class FormController extends AbstractController
             $data = $request->request->all()['vr_loan'];
             
             $loan->setLoaner($this->getUser());
+            $loan->setComment($data['comment']);
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
@@ -357,6 +359,7 @@ class FormController extends AbstractController
             $data = $request->request->all()['graphic_design_loan'];
             
             $loan->setLoaner($this->getUser());
+            $loan->setComment($data['comment']);
             
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
