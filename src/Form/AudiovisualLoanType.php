@@ -110,6 +110,16 @@ class AudiovisualLoanType extends AbstractType
                 'required' => false,
                 'choices' => $options['equipmentCategories']['tripods']
             ])
+            ->add('stabilizers', EntityType::class, [
+                'mapped' => false,
+                'class' => Equipment::class,
+                'choice_label' => 'name',
+                'label' => 'Stabilisateurs',
+                'multiple' => false,
+                'expanded' => true,
+                'required' => false,
+                'choices' => $options['equipmentCategories']['stabilizers']
+            ])
             // Extra accessories
             ->add('batteries', EntityType::class, [
                 'mapped' => false,

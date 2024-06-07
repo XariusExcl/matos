@@ -89,6 +89,15 @@
             </div>
         {% endfor %}
 
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.stabilizers) }}</h3>
+        {{ form_errors(form.stabilizers, {'attr': {'class': 'text-red-500'}}) }}
+        {% for equipment in form.stabilizers %}
+            <div class="flex my-1.5">
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_label(equipment) }}
+            </div>
+        {% endfor %}
+
         <h3 class="text-xl font-bold my-5">{{ form_label(form.batteries) }}</h3>
         {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.batteries %}
