@@ -11,11 +11,11 @@
     <ul style="list-style-type: none;padding:0;">
         {% for equipment in loan.equipmentLoaned??"" %}
             <li style="margin-bottom: 10px;">
-                <b>{{ equipment.name }}</b>
+                • <b>{{ equipment.name }}</b>
             </li>
         {% endfor %}
     </ul>
-    <p>Veuillez imprimer le <a href="{{ path('pdf_loan_html', {'id': loan.id }) }}">contrat d'emprunt</a>, en noir et blanc à nous remettre au moment de l'emprunt. (Une imprimante est à disposition de tous les étudiants à la BU si vous n'avez pas d'imprimante personnelle)</p>
+    <p>Veuillez imprimer le <a href="{{ url('pdf_loan_html', {'id': loan.id }) }}">contrat d'emprunt</a>, en noir et blanc à nous remettre au moment de l'emprunt. (Une imprimante est à disposition de tous les étudiants à la BU si vous n'avez pas d'imprimante personnelle)</p>
     <p>Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse <a href="mailto:emprunt.mmi@gmail.com?subject=?subject=Question%20emprunt%20">emprunt.mmi@gmail.com</a>.</p>
     <p>À bientôt sur MATOS !</p>
 {% endblock %}

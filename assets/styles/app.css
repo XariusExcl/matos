@@ -18,10 +18,6 @@ label > input[disabled] + .card {
   background-color: #0003;
 }
 
-label > input + .card {
-  background-color: #0000;
-}
-
 .hoverdiv:hover {
   background-color: #0003;
 }

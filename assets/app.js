@@ -210,6 +210,9 @@ function checkFormValidity() {
         return;
     }
 
+    // Show crenau in the modal
+    document.querySelector('#confirmation_modal_creneau').innerHTML = `Du <b>${loanStartDayElement.options[loanStartDayElement.selectedIndex].text}</b> à <b>${loanStartTimeslotElement.options[loanStartTimeslotElement.selectedIndex].text}</b> au <b>${loanEndDayElement.options[loanEndDayElement.selectedIndex].text}</b> à <b>${loanEndTimeslotElement.options[loanEndTimeslotElement.selectedIndex].text}</b>.`;
+
     // Show the list in the modal
     document.querySelector('#confirmation_modal_content').innerHTML = "• " + selectedEquipment.join('<br> • ');
 
