@@ -30,7 +30,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
-use Doctrine\ORM\EntityManager;
 
 class LoginCasAuthenticator extends AbstractAuthenticator
 {
@@ -39,7 +38,7 @@ class LoginCasAuthenticator extends AbstractAuthenticator
         private readonly RouterInterface $router,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly UserRepository $userRepository,
-        private readonly EntityManager $entityManager
+        private readonly EntityManagerInterface $entityManager
     )
     {
     }
@@ -72,6 +71,7 @@ class LoginCasAuthenticator extends AbstractAuthenticator
             else
                 $user->setName(ucfirst($explode[0]) . ' ' . ucfirst($explode[1]));
 
+            $user->setPassword('');
             $this->entityManager->persist($user);
             $this->entityManager->flush();
         }
@@ -116,7 +116,9 @@ class LoginCasAuthenticator extends AbstractAuthenticator
             $this->router->generate('login', ['message' => $data])
         ); // new JsonResponse($data, Response::HTTP_FORBIDDEN);
 
-        throw new Exception(strtr($exception->getMessageKey(), $exception->getMessageData()));
+        return $def_response;
+
+        # throw new Exception(strtr($exception->getMessageKey(), $exception->getMessageData()));
         return new RedirectResponse(
             $this->router->generate('login')
         );

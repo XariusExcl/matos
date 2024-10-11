@@ -23,7 +23,7 @@ security:
                 check_path: login
             logout:
                 path: /logout
-                target: app_main
+                target: login
             user_checker: App\Security\UserChecker
 
         secured_area:
