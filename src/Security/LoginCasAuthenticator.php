@@ -12,6 +12,7 @@
 namespace App\Security;
 
 use App\Event\CASAuthenticationFailureEvent;
+use Exception;
 use phpCAS;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,10 +27,20 @@ use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 
 class LoginCasAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private readonly ParameterBagInterface $parameterBag, private readonly RouterInterface $router, private readonly UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly RouterInterface $router,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly UserRepository $userRepository,
+        private readonly EntityManager $entityManager
+    )
     {
     }
 
@@ -45,6 +56,24 @@ class LoginCasAuthenticator extends AbstractAuthenticator
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
             throw new CustomUserMessageAuthenticationException('Authentification CAS incorrecte. Utilisateur inconnu.');
+        }
+
+        
+        // If user with email doesn't exist, create and flush it
+        if ($this->userRepository->findBy(['email' => $username]) == null)
+        {
+            $user = new User();
+            $user->setEmail($username);
+            $user->setRoles(['ROLE_USER']);
+            $user->setActive(true);
+            $explode = explode('.', explode('@', $username)[0]);
+            if (count($explode) == 1)
+                $user->setName(ucfirst($explode[0]));
+            else
+                $user->setName(ucfirst($explode[0]) . ' ' . ucfirst($explode[1]));
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
         }
 
         return new SelfValidatingPassport(new UserBadge($username));
@@ -63,8 +92,8 @@ class LoginCasAuthenticator extends AbstractAuthenticator
         phpCAS::setNoCasServerValidation();
         phpCAS::forceAuthentication();
 
-        if (phpCAS::getUser()) {
-            return phpCAS::getUser();
+        if (phpCAS::getAttribute("mail")) {
+            return phpCAS::getAttribute("mail");
         }
 
         return null;
@@ -73,7 +102,7 @@ class LoginCasAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return new RedirectResponse(
-            $this->router->generate('default_homepage')
+            $this->router->generate('app_main')
         );
     }
 
@@ -87,7 +116,7 @@ class LoginCasAuthenticator extends AbstractAuthenticator
             $this->router->generate('login', ['message' => $data])
         ); // new JsonResponse($data, Response::HTTP_FORBIDDEN);
 
-        // return (new CASAuthenticationFailureEvent($request, $exception, $def_response))->getResponse();
+        throw new Exception(strtr($exception->getMessageKey(), $exception->getMessageData()));
         return new RedirectResponse(
             $this->router->generate('login')
         );

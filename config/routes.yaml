@@ -1,5 +1,5 @@
 cas_return:
-    path: sso/cas
+    path: /sso/cas
     
 controllers:
     resource:

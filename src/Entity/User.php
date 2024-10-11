@@ -47,6 +47,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->loans = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->name??"null";
+    }
+
     public function getId(): ?int
     {
         return $this->id;

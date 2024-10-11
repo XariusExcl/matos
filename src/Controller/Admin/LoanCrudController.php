@@ -128,6 +128,7 @@ class LoanCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            AssociationField::new('loaner'),
             DateTimeField::new('departure_date'),
             DateTimeField::new('return_date'),
             ChoiceField::new('status')->setChoices(LoanStatus::cases())->hideOnForm(),

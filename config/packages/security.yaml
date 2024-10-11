@@ -16,6 +16,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            custom_authenticator:
+                - App\Security\LoginCasAuthenticator
             form_login:
                 login_path: login
                 check_path: login
@@ -39,6 +41,7 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/form, roles: ROLE_USER }
+        - { path: ^/sso/redirect/cas, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

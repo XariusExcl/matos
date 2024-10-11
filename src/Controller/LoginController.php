@@ -41,6 +41,11 @@ class LoginController extends AbstractController
     #[Route('/signup', name: 'signup')]
     public function signup( Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        if ($this->getParameter('ENABLE_URCA_LOGIN') === "1") {
+            $this->addFlash('error', 'La création de compte par adresse mail est désactivée. Utilisez l\'option "Utiliser mon login URCA" pour vous connecter.');
+            return $this->redirectToRoute('login');
+        }
+
         $user = new User();
 
         $form = $this->createForm(SignupType::class, $user);
@@ -106,6 +111,11 @@ class LoginController extends AbstractController
     #[Route('/activate/{token}', name: 'activate')]
     public function activate(string $token, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getParameter('ENABLE_URCA_LOGIN') === "1") {
+            $this->addFlash('error', 'La création de compte par adresse mail est désactivée. Utilisez l\'option "Utiliser mon login URCA" pour vous connecter.');
+            return $this->redirectToRoute('login');
+        }
+
         $user = $entityManager->getRepository(User::class)->findOneBy(['activationToken' => $token]);
 
         if ($user == null) {
