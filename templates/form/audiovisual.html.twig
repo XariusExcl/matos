@@ -32,7 +32,7 @@
             {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
             {% for equipment in form.cameras %}
                     <label for={{ equipment.vars.id }} class="flex">
-                        {{ form_widget(equipment) }}
+                        {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                         {% if equipment.vars.value != "" %}
                             <div class="card w-72 bg-white shadow-xl mb-10 self-end">
                                 <figure class="h-52 bg-slate-300" style="
@@ -59,7 +59,7 @@
         {{ form_errors(form.lenses, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.lenses %}
             <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : "" }}) }}
                 {{ form_label(equipment) }}
             </div>
         {% endfor %}
@@ -77,7 +77,7 @@
         {{ form_errors(form.lights, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.lights %}
             <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                 {{ form_label(equipment) }}
             </div>
         {% endfor %}
@@ -86,7 +86,7 @@
         {{ form_errors(form.tripods, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.tripods %}
             <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                 {{ form_label(equipment) }}
             </div>
         {% endfor %}
@@ -95,7 +95,7 @@
         {{ form_errors(form.stabilizers, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.stabilizers %}
             <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                 {{ form_label(equipment) }}
             </div>
         {% endfor %}
@@ -104,7 +104,7 @@
         {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
         {% for equipment in form.batteries %}
             <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
+                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                 {{ form_label(equipment) }}
             </div>
         {% endfor %}

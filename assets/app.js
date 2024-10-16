@@ -1,4 +1,4 @@
-import './bootstrap.js';
+// import './bootstrap.js';
 import './styles/app.css';
 
 // https://stackoverflow.com/questions/23593052/format-javascript-date-as-yyyy-mm-dd
