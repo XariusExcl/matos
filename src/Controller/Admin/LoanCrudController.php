@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextAreaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use App\Entity\LoanStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -132,7 +132,7 @@ class LoanCrudController extends AbstractCrudController
             DateTimeField::new('departure_date'),
             DateTimeField::new('return_date'),
             ChoiceField::new('status')->setChoices(LoanStatus::cases())->hideOnForm(),
-            TextAreaField::new('comment')->setFormTypeOption('disabled','disabled'),
+            TextareaField::new('comment')->setFormTypeOption('disabled','disabled'),
             AssociationField::new('equipmentLoaned')
         ];
     }
