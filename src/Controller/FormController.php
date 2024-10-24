@@ -153,7 +153,7 @@ class FormController extends AbstractController
     #[Route('/form/audiovisual', name: 'reservation_form_audiovisual')]
     public function audiovisualForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
             $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
             return $this->redirectToRoute('app_main');
         }
@@ -242,7 +242,7 @@ class FormController extends AbstractController
     #[Route('/form/vr', name: 'reservation_form_vr')]
     public function vrForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
             $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
             return $this->redirectToRoute('app_main');
         }
@@ -331,7 +331,7 @@ class FormController extends AbstractController
     #[Route('/form/graphic-design', name: 'reservation_form_graphic_design')]
     public function graphicDesignForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        if ($this->hasReachedMaxConcurrentLoans($this->getUser())) {
+        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
             $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
             return $this->redirectToRoute('app_main');
         }
