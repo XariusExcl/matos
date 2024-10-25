@@ -224,8 +224,8 @@ function checkFormValidity() {
 let tagAffectedInputs = [];
 
 function processTagRules() {
-    console.log(tagAffectedInputs);
     tagAffectedInputs.forEach(e => {
+        if (unavailableEquipmentInputs.includes(e)) return;
         e.disabled = false;
     });
 
@@ -237,7 +237,6 @@ function processTagRules() {
         tagAffectedInputs.push(...loanTaggedElementsArray.filter(e => e.getAttribute('tag') === rule.arg2));
         tagAffectedInputs.forEach(e => {
             e.disabled = true;
-            console.log(e);
         });
     });
 }
