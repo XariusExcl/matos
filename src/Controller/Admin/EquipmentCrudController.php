@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Equipment;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -12,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class EquipmentCrudController extends AbstractCrudController
 {
@@ -34,13 +32,6 @@ class EquipmentCrudController extends AbstractCrudController
                 ->setBasePath('public/images/equipments')
                 ->setUploadDir('public/images/equipments')
                 ->hideOnIndex(),
-                
-            /*
-            ImageField::new('imageFile')
-            ->setFormType(VichImageType::class)
-            ->setUploadDir('public/uploads/equipments')
-            ->hideOnIndex(),
-            */
             TextField::new('serial_number'),
             BooleanField::new('showInTable'),
             BooleanField::new('loanable'),

@@ -12,6 +12,7 @@ use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Location;
 use App\Entity\UnavailableDays;
+use App\Entity\TagRule;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -59,5 +60,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', EquipmentCategory::class);
         yield MenuItem::linkToCrud('Emprunts', 'fas fa-clipboard', Loan::class);
         yield MenuItem::linkToCrud('Salles', 'fas fa-door-open', Location::class);
+        yield MenuItem::linkToCrud('Tag Rules', 'fas fa-tags', TagRule::class);
     }
 }

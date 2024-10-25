@@ -16,6 +16,7 @@ use App\Entity\Equipment;
 use App\Entity\LoanStatus;
 use App\Entity\User;
 use App\Entity\UnavailableDays;
+use App\Entity\TagRule;
 
 class FormController extends AbstractController
 {
@@ -235,7 +236,11 @@ class FormController extends AbstractController
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
                 "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
                 "preventsLoans" => $u->isPreventsLoans()
-            ]; }, $unavailableDays))
+            ]; }, $unavailableDays)),
+            'tagRules' => json_encode(array_map(function($e) { return [
+                "arg1" => $e->getArg1(),
+                "arg2" => $e->getArg2()
+            ]; }, $entityManager->getRepository(TagRule::class)->findAll()))
         ]);
     }
     
@@ -324,7 +329,11 @@ class FormController extends AbstractController
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
                 "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
                 "preventsLoans" => $u->isPreventsLoans()
-            ]; }, $unavailableDays))
+            ]; }, $unavailableDays)),
+            'tagRules' => json_encode(array_map(function($e) { return [
+                "arg1" => $e->getArg1(),
+                "arg2" => $e->getArg2()
+            ]; }, $entityManager->getRepository(TagRule::class)->findAll()))
         ]);
     }
 
@@ -413,7 +422,11 @@ class FormController extends AbstractController
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
                 "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
                 "preventsLoans" => $u->isPreventsLoans()
-            ]; }, $unavailableDays))
+            ]; }, $unavailableDays)),
+            'tagRules' => json_encode(array_map(function($e) { return [
+                "arg1" => $e->getArg1(),
+                "arg2" => $e->getArg2()
+            ]; }, $entityManager->getRepository(TagRule::class)->findAll()))
         ]);
     }
 }

@@ -152,11 +152,12 @@ async function formDateChange() {
     updateUnavailableEquipment(cachedRequests[key]);
 }
 
-let disabledInputs = [];
+let unavailableEquipmentInputs = [];
 
 function updateUnavailableEquipment(request) {
 
-    disabledInputs.forEach((input) => {
+    unavailableEquipmentInputs.forEach((input) => {
+        if (tagAffectedInputs.includes(input)) return;
         input.disabled = false;
     });
 
@@ -167,7 +168,7 @@ function updateUnavailableEquipment(request) {
         if (!input) return;
 
         input.disabled = true;
-        disabledInputs.push(input);
+        unavailableEquipmentInputs.push(input);
     });
 }
 
@@ -220,6 +221,27 @@ function checkFormValidity() {
     document.querySelector('#confirmation_modal').showModal()
 }
 
+let tagAffectedInputs = [];
+
+function processTagRules() {
+    console.log(tagAffectedInputs);
+    tagAffectedInputs.forEach(e => {
+        e.disabled = false;
+    });
+
+    tagAffectedInputs = [];
+
+    const tag = this.getAttribute('tag');
+    const tagAffected = tagRules.filter(rule => rule.arg1 === tag);
+    tagAffected.forEach(rule => {
+        tagAffectedInputs.push(...loanTaggedElementsArray.filter(e => e.getAttribute('tag') === rule.arg2));
+        tagAffectedInputs.forEach(e => {
+            e.disabled = true;
+            console.log(e);
+        });
+    });
+}
+
 function scrollToInvalidInput(input) {
     input.scrollIntoView({behavior: 'smooth', block: 'center'});
 }
@@ -232,3 +254,4 @@ window.formDateChange = formDateChange;
 window.checkFormValidity = checkFormValidity;
 window.submitLoanForm = submitLoanForm;
 window.processUnavailableDays = processUnavailableDays;
+window.processTagRules = processTagRules;
