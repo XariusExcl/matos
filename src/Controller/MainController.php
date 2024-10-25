@@ -44,6 +44,9 @@ class MainController extends AbstractController
             return (int)($hours/12) - 2*$skippedWeekendDays;
         }
 
+        if ($this->getParameter(('MESSAGE_CONTENT')) != null)
+            $this->addFlash('info', $this->getParameter(('MESSAGE_CONTENT')));
+
         $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
         $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
