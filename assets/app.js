@@ -128,7 +128,6 @@ async function formDateChange() {
 
     const key = String(loanStartDay) + loanStartTimeslot + loanEndDay + loanEndTimeslot;
     if (!(key in cachedRequests)) {
-        console.log(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`);
         const data = await fetch(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`)
         cachedRequests[key] = await data.json();
     }
