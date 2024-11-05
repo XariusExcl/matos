@@ -126,7 +126,7 @@ class AudiovisualLoanType extends AbstractType
                 'class' => Equipment::class,
                 'choice_label' => 'name',
                 'choice_value' => 'id',
-                'label' => 'Batteries',
+                'label' => 'Batteries supplémentaires',
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,

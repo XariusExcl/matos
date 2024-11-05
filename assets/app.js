@@ -4,12 +4,12 @@ import './styles/app.css';
 let cachedRequests = {};
 let isDateValid = false;
 let unavailableStartTimeSlots = {};
+const timeslotCount = loanStartTimeslotElement.options.length;
 
 // To grey out the days/timeslots that are not available
 function processUnavailableDays() {
     let index = 0;
     let inUnavailablePeriod = false;
-    let timeslotCount = loanStartTimeslotElement.options.length;
 
     loanableDays.forEach((day) => {
         [...loanStartTimeslotElement.options].map((o) => {
@@ -35,7 +35,7 @@ function processUnavailableDays() {
                 unavailableStartTimeSlots[day].push(o.value);
             }
         });
-        if (unavailableStartTimeSlots[day] !== undefined && unavailableStartTimeSlots[day].length === timeslotCount) {
+        if (unavailableStartTimeSlots[day]?.length === timeslotCount) {
             loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
             loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true; // FIXME
         }
@@ -56,7 +56,7 @@ async function formDateChange() {
     // Disable end day if it's before start day
     loanEndDayElement.querySelectorAll('option').forEach((option) => {
         option.disabled = false;
-        if (parseInt(option.value) < loanStartDay) {
+        if (parseInt(option.value) < loanStartDay || unavailableStartTimeSlots[parseInt(option.value)]?.length === timeslotCount) {
             option.disabled = true;
         }
     });
@@ -65,24 +65,12 @@ async function formDateChange() {
     if (unavailableStartTimeSlots[loanStartDay]) {
         unavailableStartTimeSlots[loanStartDay].forEach((timeslot) => {
             loanStartTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
-            loanEndTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true; // FIXME
         });
     }
 
     // Make sure the start date is before the end date
     if (loanEndDay < loanStartDay || (loanEndDay == loanStartDay && loanEndTimeslot <= loanStartTimeslot)) {
         document.querySelector('#creneau-error').innerText = "La date de fin doit être après la date de début.";
-        isDateValid = false;
-        return;
-    }
-    
-    // Don't exceed max loan duration
-    if(loanName == "audiovisual" && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 1){
-        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
-        isDateValid = false;
-        return;
-    } else if ((loanName == "vr" || loanName == "graphic_design") && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) > 5) {
-        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 semaine.";
         isDateValid = false;
         return;
     }
@@ -106,19 +94,33 @@ async function formDateChange() {
 
     // Check if date is not in unavailable dates
     let flag = false;
+    let skippedDays = 0;
     unavailableDays.forEach((unavailableDate) => {
         if (
             (startDate >= unavailableDate.start && startDate <= unavailableDate.end)
             || (endDate >= unavailableDate.start && endDate <= unavailableDate.end)
-            || (startDate <= unavailableDate.start && endDate >= unavailableDate.end)
+            || (startDate <= unavailableDate.start && endDate >= unavailableDate.end && unavailableDate.preventsLoans)
         ) {
             document.querySelector('#creneau-error').innerText = "Le créneau d'emprunt est indisponible.";
             isDateValid = false;
             flag = true;
             return;
+        } else if (startDate <= unavailableDate.start && endDate >= unavailableDate.end && !unavailableDate.preventsLoans)
+        {
+            skippedDays += parseInt((unavailableDate.end - unavailableDate.start) / (3600 * 24 * 1000)) + 1;
         }
     });
     if (flag) return;
+
+    if(loanName == "audiovisual" && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 1){
+        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
+        isDateValid = false;
+        return;
+    } else if ((loanName == "vr" || loanName == "graphic_design") && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 5) {
+        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 semaine.";
+        isDateValid = false;
+        return;
+    }
 
     isDateValid = true;
     document.querySelector('#creneau-error').innerText = "";
