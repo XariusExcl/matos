@@ -47,7 +47,7 @@ class ApiController extends AbstractController
             
             if (!$start || !$end)
                 return $this->json([
-                    'error' => 'Invalid date format, use YYYY-MM-DD HH:MM!',
+                    'error' => 'Invalid date format, use ISO 8601!',
                 ]);
         }
 

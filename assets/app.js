@@ -1,23 +1,6 @@
 // import './bootstrap.js';
 import './styles/app.css';
 
-// https://stackoverflow.com/questions/23593052/format-javascript-date-as-yyyy-mm-dd
-const dateFormat = function date2str(x, y) {
-    var z = {
-        M: x.getMonth() + 1,
-        d: x.getDate(),
-        h: x.getHours(),
-        m: x.getMinutes(),
-        s: x.getSeconds()
-    };
-    y = y.replace(/(M+|d+|h+|m+|s+)/g, function(v) {
-        return ((v.length > 1 ? "0" : "") + z[v.slice(-1)]).slice(-2)
-    });
-
-    return y.replace(/(y+)/g, function(v) {
-        return x.getFullYear().toString().slice(-v.length)
-    });
-}
 let cachedRequests = {};
 let isDateValid = false;
 let unavailableStartTimeSlots = {};
@@ -140,12 +123,12 @@ async function formDateChange() {
     isDateValid = true;
     document.querySelector('#creneau-error').innerText = "";
 
-    // Fetch and update unavailable equipment
-    const startDateStr = dateFormat(startDate, 'yyyy-MM-dd hh:mm')
-    const endDateStr = dateFormat(endDate, 'yyyy-MM-dd hh:mm');
+    const startDateStr = startDate.toISOString()
+    const endDateStr = endDate.toISOString()
 
     const key = String(loanStartDay) + loanStartTimeslot + loanEndDay + loanEndTimeslot;
     if (!(key in cachedRequests)) {
+        console.log(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`);
         const data = await fetch(`/api/unavailable_equipment?&s=${startDateStr}&e=${endDateStr}`)
         cachedRequests[key] = await data.json();
     }
@@ -228,16 +211,18 @@ function processTagRules() {
         if (unavailableEquipmentInputs.includes(e)) return;
         e.disabled = false;
     });
-
     tagAffectedInputs = [];
 
-    const tag = this.getAttribute('tag');
-    const tagAffected = tagRules.filter(rule => rule.arg1 === tag);
-    tagAffected.forEach(rule => {
-        tagAffectedInputs.push(...loanTaggedElementsArray.filter(e => e.getAttribute('tag') === rule.arg2));
-        tagAffectedInputs.forEach(e => {
-            e.disabled = true;
-        });
+    const enabledTags = loanTaggedElementsArray.filter(e => e.checked).map(e => e.getAttribute('tag'));
+    tagRules.forEach(rule => {
+        if (enabledTags.includes(rule.arg1)) {
+            const tagAffected = loanTaggedElementsArray.filter(e => e.getAttribute('tag') === rule.arg2);
+            tagAffected.forEach(e => {
+                e.disabled = true;
+                e.checked = false;
+                tagAffectedInputs.push(e);
+            });
+        }
     });
 }
 

@@ -25,7 +25,8 @@ class EquipmentCrudController extends AbstractCrudController
             IdField::new('id')
                 ->hideOnForm(),
             TextField::new('name'),
-            AssociationField::new('category'),
+            AssociationField::new('category')
+                ->setRequired('true'),
             AssociationField::new('subCategory'),
             TextField::new('type'),
             ImageField::new('imageName')
