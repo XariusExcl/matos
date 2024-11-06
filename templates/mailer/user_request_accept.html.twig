@@ -3,6 +3,10 @@
     <h1>Bonjour {{ loaner.name??"" }} !</h1>
     <p>Vous avez fait une demande d'emprunt de matériel sur MATOS pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
     <p>Votre demande a été acceptée !</p>
+    {% if loan.adminComment is not empty %}
+        <p>Commentaire :</p>
+        <i>{{ loan.adminComment??"" }}</i>
+    {% endif %}
     <br/>
     <p>Pour rappel, voici un récapitulatif de votre demande :</p>
     <p>Date de début de l'emprunt : <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>

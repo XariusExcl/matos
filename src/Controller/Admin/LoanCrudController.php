@@ -99,6 +99,7 @@ class LoanCrudController extends AbstractCrudController
         $emailComment = $_POST['loan-comment'];
 
         $loan->setStatus(LoanStatus::ACCEPTED->value);
+        $loan->setAdminComment($emailComment);
 
         MailerController::sendRequestAcceptMail($loan, $mailer);
 
@@ -115,6 +116,7 @@ class LoanCrudController extends AbstractCrudController
         $emailComment = $_POST['loan-comment'];
 
         $loan->setStatus(LoanStatus::REFUSED->value);
+        $loan->setAdminComment($emailComment);
 
         MailerController::sendRequestRefuseMail($loan, $mailer);
 
