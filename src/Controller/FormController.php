@@ -69,7 +69,7 @@ class FormController extends AbstractController
             if (
                 ($start >= $ud->getDateStart() && $start <= $ud->getDateEnd())
                 || ($end >= $ud->getDateStart() && $end <= $ud->getDateEnd())
-                || ($start <= $ud->getDateStart() && $end >= $ud->getDateEnd())
+                || ($start <= $ud->getDateStart() && $end >= $ud->getDateEnd() && $ud->isPreventsLoans())
             )
             {
                 $this->addFlash('error','La période sélectionnée est indisponible.');
