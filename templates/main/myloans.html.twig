@@ -18,9 +18,9 @@
                             <div class="card-body">
                                 <p class="text-right">{{ loanStatuses[loan.status] }}</p>
                                 <p class="text-xl"><b>Date de départ</b></p>
-                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y') }}</p>
+                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y H:i') }}</p>
                                 <p class="text-xl"><b>Date de retour</b></p>
-                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y') }}</p>
+                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y H:i') }}</p>
                                 <p class="text-xl"><b>Matériel</b></p>
                                 <ul>
                                 {% for equipment in loan.equipmentLoaned %}
@@ -63,9 +63,9 @@
                             <div class="card-body">
                                 <p class="text-right">{{ loanStatuses[loan.status] }}</p>
                                 <p class="text-xl"><b>Date de départ</b></p>
-                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y') }}</p>
+                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y H:i') }}</p>
                                 <p class="text-xl"><b>Date de retour</b></p>
-                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y') }}</p>
+                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y H:i') }}</p>
                                 <p class="text-xl"><b>Matériel</b></p>
                                 <ul>
                                 {% for equipment in loan.equipmentLoaned %}
