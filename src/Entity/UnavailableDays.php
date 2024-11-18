@@ -26,6 +26,9 @@ class UnavailableDays
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\ManyToOne]
+    private ?EquipmentCategory $restrictedCategory = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class UnavailableDays
     public function setComment(?string $comment): static
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getRestrictedCategory(): ?EquipmentCategory
+    {
+        return $this->restrictedCategory;
+    }
+
+    public function setRestrictedCategory(?EquipmentCategory $restrictedCategory): static
+    {
+        $this->restrictedCategory = $restrictedCategory;
 
         return $this;
     }

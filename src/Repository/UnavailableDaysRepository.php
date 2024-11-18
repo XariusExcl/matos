@@ -24,9 +24,9 @@ class UnavailableDaysRepository extends ServiceEntityRepository
     /**
      * @return UnavailableDays[] Returns an array of UnavailableDays objects
      */
-    public function findInNextTwoWeeks(\DateTime $value): array
+    public function findInNextTwoWeeks(\DateTime $value, int $categoryId): array
     {
-        return $this->createQueryBuilder('u')
+        $ud = $this->createQueryBuilder('u')
             ->where('u.dateStart BETWEEN :start AND :end')
             ->setParameter('start', $value->format('Y-m-d'))
             ->setParameter(':end', $value->modify("+14 day")->format('Y-m-d'))
@@ -35,6 +35,10 @@ class UnavailableDaysRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+
+        return array_filter($ud, function($uday) use ($categoryId) {
+            return ($uday->getRestrictedCategory() === null || $uday->getRestrictedCategory()?->getId() === $categoryId);
+        });
     }
 
     //    /**

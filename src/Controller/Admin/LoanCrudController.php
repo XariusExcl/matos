@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\ReturnLoanType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 
@@ -127,6 +128,12 @@ class LoanCrudController extends AbstractCrudController
         return $this->redirectToRoute('admin');
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setDefaultSort(['departure_date' => 'DESC']);
+    }
+    
     public function configureFields(string $pageName): iterable
     {
         return [

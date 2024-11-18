@@ -36,10 +36,10 @@ class MainController extends AbstractController
             $skippedWeekendDays = 0;
             for ($i = 0; $i < $diff->d; $i++)
             {
-                $now->modify('+1 day');
                 $dw_ = $now->format('N');
                 if ($dw_ > 5)
                     $skippedWeekendDays++;
+                $now->modify('+1 day');
             }
             return (int)($hours/12) - 2*$skippedWeekendDays;
         }
@@ -49,14 +49,15 @@ class MainController extends AbstractController
 
         $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $audiovisualCategory->getId());
 
         // Create a dictionary of unavailable timeslots
         $unavailableDaysTimeSlots = [];
         foreach($unavailableDays as $u)
             $unavailableDaysTimeSlots[$u->getId()] = [
-                "start" => getTimeslot($u->getDateStart()),
-                "end" => getTimeslot($u->getDateEnd()),
+                "slotStart" => getTimeslot($u->getDateStart()),
+                "slotEnd" => getTimeslot($u->getDateEnd()),
+                "timeStartEnd" => " (".$u->getDateStart()->format('H:i')." - ".$u->getDateEnd()->format('H:i').")",
                 "preventsLoans" => $u->isPreventsLoans(),
                 "comment" => $u->getComment()
             ];

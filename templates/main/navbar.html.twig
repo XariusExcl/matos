@@ -1,6 +1,6 @@
-<div class="navbar top-0 fixed bg-base-100 shadow">
+<div class="navbar top-0 fixed bg-base-100 shadow z-10">
   <div class="flex-1">
-    <a class="btn btn-ghost text-xl mr-0.5" href={{path('app_main')}}>MATOS<span class="inline-block align-bottom text-primary text-sm">Beta</span></a>
+    <a class="btn btn-ghost text-xl mr-0.5" href={{path('app_main')}}><img class="w-8 h-8" src="{{ asset('logo.png') }}"><span>MATOS</span><span class="inline-block align-bottom text-primary text-sm">Beta</span></a>
     {% if is_granted('ROLE_ADMIN') %}
       <a class="btn btn-outline btn-error" href={{path('admin')}}>Admin</a>
     {% endif %}
@@ -27,15 +27,12 @@
           <li><a href="{{ logout_path(key = null) }}">Se déconnecter</a></li>
         </ul>
       {% else %}
-        <div tabindex="0" role="button" class="btn btn-ghost">
+        <a href="{{ path('login') }}" class="btn btn-ghost">
           <div class="mr-4"><b>Se connecter</b></div>
           <div class="w-10 rounded-full">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Exampleavatar.png" />
           </div>
-        </div>
-        <ul tabindex="0" class="mt-3 z-10 p-2 shadow menu menu-sm dropdown-content bg-white rounded-box w-52">
-          <a href="{{ path('login') }}" class="btn btn-ghost">Se connecter</a>
-        </ul>
+        </a>
       {% endif %}
     </div>
   </div>

@@ -1,20 +1,21 @@
 # Matos
 
 ## Description
-Matos is a primitive equipment management app to track loans to students. 
+Matos is a primitive equipment management app to track loans to students.
 
 ## Installation
 1. Clone the repository.
 2. Install the required dependencies by running the following commands:
    - `composer install`
    - `npm install`
+3. Setup your desired database management system (postgresql or Mysql recommended) and add the credentials to a newly created `.env.local` file (next to the existing `.env` file in the project root).
 
 ## Development
 To start the development environment, run the following commands:
-
-- `php bin/console d:f:l` - This command will apply the database migrations.
-- `npm run watch` - This command will start the watch mode for your frontend assets.
-- `symfony server:start` - This command will start the Symfony development server.
+- `php bin/console d:m:m` - Create the database schema.
+- `php bin/console d:f:l` - Apply the database fixtures (test data).
+- `npm run watch` - Start the watch mode for your frontend assets.
+- `symfony server:start` - Start the Symfony development server.
 
 ## Usage
 1. Run the application using the development commands mentioned above.

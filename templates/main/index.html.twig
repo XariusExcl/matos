@@ -7,27 +7,48 @@
 	{% include 'main/navbar.html.twig' %}
 	<div class="flex justify-center mb-10">
 		<div class="container px-10">
-            <div class="flex justify-end pt-10">
-                <div class="flex">
-                    <div class="mx-2 w-10 h-full pending-reservation"></div>En cours de réservation
-                </div>
-                <div class="flex">
-                    <div class="mx-2 w-10 h-full bg-error"></div>Réservé
-                </div>
-                <div class="mr-5"></div>
-            </div>
-            <div id="{{ audiovisualCategory|lower }}" class="row">
-                <h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
-                    {% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
-                    {% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
-                <a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
-            </div>
-            <div class="mt-10">
-                Autres emprunts :
-                <a href="{{ path('reservation_form_vr') }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
-                <a href="{{ path('reservation_form_graphic_design') }}" class="btn btn-primary text-base-100">Emprunt de tablettes graphiques</a>
-            </div>
+			<div class="flex justify-end pt-10">
+				<div class="flex">
+					<div class="ml-4 mr-2 w-10 h-full pending-reservation"></div>En cours de réservation
+				</div>
+				<div class="flex">
+					<div class="ml-4 mr-2 w-10 h-full bg-error"></div>Réservé
+				</div>
+				<div class="flex">
+					<div class="ml-4 mr-2 w-10 h-full" style="background-color:#0003"></div>Indisponible
+				</div>
+				<div class="mr-5"></div>
+			</div>
+			<div id="{{ audiovisualCategory|lower }}" class="row">
+				<h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
+				{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
+				{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
+				<a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
+			</div>
+			<div class="mt-10">
+				<h2 class="text-3xl font-bold">Autres emprunts :</h2>
+				<div class="flex flex-wrap mt-8">
+					<div class="card bg-base-100 image-full w-96 shadow-xl mx-4 mb-4">
+						<figure class="h-64" style="background:url('{{ asset('quest2.jpg') }}') center; background-size: cover;"></figure>
+						<div class="card-body justify-between">
+							<h2 class="card-title text-3xl">Casques VR</h2>
+							<div class="card-actions self-end">
+								<a href="{{ path('reservation_form_vr') }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
+							</div>
+						</div>
+					</div>
+					<div class="card bg-base-100 image-full w-96 shadow-xl mx-4 mb-4">
+						<figure class="h-64" style="background:url('{{ asset('tablet.jpg') }}') center; background-size: cover;"></figure>
+						<div class="card-body justify-between">
+							<h2 class="card-title text-3xl">Tablettes graphiques</h2>
+							<div class="card-actions self-end">
+								<a href="{{ path('reservation_form_graphic_design') }}" class="btn btn-primary text-base-100">Emprunt de tablette</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-    {% include 'main/footer.html.twig' %}
+	{% include 'main/footer.html.twig' %}
 {% endblock %}

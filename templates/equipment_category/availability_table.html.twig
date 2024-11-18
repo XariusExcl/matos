@@ -2,7 +2,7 @@
 	<div class="grid p-2 gap-px" style="grid-template-columns:minmax(192px, 4fr) repeat(20,minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
         <div class="w-100 h-100" style="grid-area:1/2/{{equipment|length +3}}/4;background-color:#0003"></div>
         {% for u in unavailableDays %}
-            <div class="w-100 h-100" style="grid-area:1/{{u.start +2}}/{{equipment|length +3}}/{{u.end +3}};background-color:#0003"></div>
+            <div class="w-100 h-100 tooltip tooltip-right" style="grid-area:1/{{u.slotStart +2}}/{{equipment|length +3}}/{{u.slotEnd +3}};background-color:#0003" data-tip="{{ u.comment ~ u.timeStartEnd }}"></div>
         {% endfor %}
 
         {% for e in equipment %}

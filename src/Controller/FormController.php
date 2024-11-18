@@ -173,7 +173,7 @@ class FormController extends AbstractController
 
         $options['days'] = $this->createLoanableDates();
 
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
 
         // Create the form
         $form = $this->createForm(AudiovisualLoanType::class, $loan, $options);
@@ -266,7 +266,7 @@ class FormController extends AbstractController
 
         $options['days'] = $this->createLoanableDates();
 
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
 
         // Create the form
         $form = $this->createForm(VRLoanType::class, $loan, $options);
@@ -359,7 +359,7 @@ class FormController extends AbstractController
 
         $options['days'] = $this->createLoanableDates();
 
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
 
         // Create the form
         $form = $this->createForm(GraphicDesignLoanType::class, $loan, $options);
