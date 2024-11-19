@@ -1,6 +1,6 @@
 <div class="navbar top-0 fixed bg-base-100 shadow z-10">
   <div class="flex-1">
-    <a class="btn btn-ghost text-xl mr-0.5" href={{path('app_main')}}><img class="w-8 h-8" src="{{ asset('logo.png') }}"><span>MATOS</span><span class="inline-block align-bottom text-primary text-sm">Beta</span></a>
+    <a class="btn btn-ghost text-xl mr-0.5" href={{path('app_main')}}><img class="w-8 h-8" src="{{ asset('logo.png') }}"><span class="hidden md:block">MATOS</span><span class="inline-block align-bottom text-primary text-sm hidden md:block">Beta</span></a>
     {% if is_granted('ROLE_ADMIN') %}
       <a class="btn btn-outline btn-error" href={{path('admin')}}>Admin</a>
     {% endif %}

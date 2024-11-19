@@ -7,14 +7,14 @@
 	{% include 'main/navbar.html.twig' %}
 	<div class="flex justify-center mb-10">
 		<div class="container px-10">
-			<div class="flex justify-end pt-10">
-				<div class="flex">
+			<div class="flex justify-end pt-10 flex-col md:flex-row">
+				<div class="flex h-6 my-1 md:my-0">
 					<div class="ml-4 mr-2 w-10 h-full pending-reservation"></div>En cours de réservation
 				</div>
-				<div class="flex">
+				<div class="flex h-6 my-1 md:my-0">
 					<div class="ml-4 mr-2 w-10 h-full bg-error"></div>Réservé
 				</div>
-				<div class="flex">
+				<div class="flex h-6 my-1 md:my-0">
 					<div class="ml-4 mr-2 w-10 h-full" style="background-color:#0003"></div>Indisponible
 				</div>
 				<div class="mr-5"></div>

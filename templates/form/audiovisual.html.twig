@@ -32,7 +32,7 @@
         <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
             {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
             {% for equipment in form.cameras %}
-                    <label for={{ equipment.vars.id }} class="flex">
+                    <label for={{ equipment.vars.id }} class="flex justify-center">
                         {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
                         {% if equipment.vars.value != "" %}
                             <div class="card w-72 bg-white shadow-xl mb-10 self-end">
