@@ -141,8 +141,8 @@ function updateUnavailableEquipment(request) {
         input.disabled = false;
     });
 
-    Object.entries(request.equipment).forEach(([key, value]) => { 
-        if (value === 0 || equipmentInfo[key]["quantity"] > value) return;
+    Object.entries(request.equipment).forEach(([key, value]) => {
+        if (value === 0 || equipmentInfo[key] == undefined || equipmentInfo[key]["quantity"] > value) return;
 
         const input = document.querySelector('[value="'+key+'"]');
         if (!input) return;
