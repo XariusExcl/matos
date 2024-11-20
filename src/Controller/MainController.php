@@ -11,15 +11,17 @@ use App\Entity\Loan;
 use App\Entity\Equipment;
 use App\Entity\LoanStatus;
 use App\Entity\UnavailableDays;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MainController extends AbstractController
 {
     #[Route('/', name: 'app_main')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag): Response
     {
+        $skipWeekends = !$parameterBag->get('SAE_MODE');
         // Convert a date to a timeslot
-        function getTimeslot(\DateTime $date): int 
+        function getTimeslot(\DateTime $date, $skipWeekends = true): int 
         {
             $now = new \DateTime("today");
             $diff = $date->diff($now);
@@ -30,14 +32,14 @@ class MainController extends AbstractController
                 return 0;
             
             if ($hours > 14*24-12)
-                return 20;
+                return $skipWeekends?20:28;
     
             // Compute weekend days between the two dates
             $skippedWeekendDays = 0;
             for ($i = 0; $i < $diff->d; $i++)
             {
                 $dw_ = $now->format('N');
-                if ($dw_ > 5)
+                if ($dw_ > 5 && $skipWeekends)
                     $skippedWeekendDays++;
                 $now->modify('+1 day');
             }
@@ -55,8 +57,8 @@ class MainController extends AbstractController
         $unavailableDaysTimeSlots = [];
         foreach($unavailableDays as $u)
             $unavailableDaysTimeSlots[$u->getId()] = [
-                "slotStart" => getTimeslot($u->getDateStart()),
-                "slotEnd" => getTimeslot($u->getDateEnd()),
+                "slotStart" => getTimeslot($u->getDateStart(), $skipWeekends),
+                "slotEnd" => getTimeslot($u->getDateEnd(), $skipWeekends),
                 "timeStartEnd" => " (".$u->getDateStart()->format('H:i')." - ".$u->getDateEnd()->format('H:i').")",
                 "preventsLoans" => $u->isPreventsLoans(),
                 "comment" => $u->getComment()
@@ -66,14 +68,12 @@ class MainController extends AbstractController
 
         // Create dates for the next two weeks
         $dates = [];
-        $weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+        $weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
         $dt = new \DateTime("today");
         for ($i = 0; $i < 14; $i++)
         {
-            // Skip weekends
             $dw = $dt->format('N');
-
-            if ($dw <= 5)
+            if ($dw <= 5 || !$skipWeekends)
                 array_push($dates, $weekDays[$dw-1]." ".$dt->format('d/m'));
 
             $dt->modify('+1 day');
@@ -88,9 +88,19 @@ class MainController extends AbstractController
                 $categoryId = $equipment->getCategory()->getId();
 
                 if (!array_key_exists($categoryId, $equipmentLoaned) || !array_key_exists($equipment->getId(), $equipmentLoaned[$categoryId]))
-                    $equipmentLoaned[$categoryId][$equipment->getId()] = [["start" => getTimeslot($loan->getDepartureDate()),"end" => getTimeslot($loan->getReturnDate()), "status" => $loan->getStatus()]];
+                    $equipmentLoaned[$categoryId][$equipment->getId()] = [[
+                        "start" => getTimeslot($loan->getDepartureDate(), $skipWeekends),
+                        "end" => getTimeslot($loan->getReturnDate(), $skipWeekends),
+                        "status" => $loan->getStatus(),
+                        "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
+                    ]];
                 else
-                    array_push($equipmentLoaned[$categoryId][$equipment->getId()], ["start" => getTimeslot($loan->getDepartureDate()),"end" => getTimeslot($loan->getReturnDate()), "status" => $loan->getStatus()]);
+                    array_push($equipmentLoaned[$categoryId][$equipment->getId()], [
+                        "start" => getTimeslot($loan->getDepartureDate(), $skipWeekends),
+                        "end" => getTimeslot($loan->getReturnDate(), $skipWeekends),
+                        "status" => $loan->getStatus(),
+                        "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
+                    ]);
             }
         }
 

@@ -2,6 +2,7 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
         enable_urca_login: '%env(ENABLE_URCA_LOGIN)%'
+        loan_show_owner_on_table: '%env(LOAN_SHOW_OWNER_ON_TABLE)%'
 
 when@test:
     twig:

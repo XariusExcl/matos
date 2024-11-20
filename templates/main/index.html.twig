@@ -23,7 +23,7 @@
 				<h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
 				{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
 				{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
-				<a href="{{ path('reservation_form_audiovisual') }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
+				<a href="{{ path('reservation_form', { formSlug:'audiovisual' }) }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
 			</div>
 			<div class="mt-10">
 				<h2 class="text-3xl font-bold">Autres emprunts :</h2>
@@ -33,7 +33,7 @@
 						<div class="card-body justify-between">
 							<h2 class="card-title text-3xl">Casques VR</h2>
 							<div class="card-actions self-end">
-								<a href="{{ path('reservation_form_vr') }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
+								<a href="{{ path('reservation_form', { formSlug:'vr' }) }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
 							</div>
 						</div>
 					</div>
@@ -42,7 +42,7 @@
 						<div class="card-body justify-between">
 							<h2 class="card-title text-3xl">Tablettes graphiques</h2>
 							<div class="card-actions self-end">
-								<a href="{{ path('reservation_form_graphic_design') }}" class="btn btn-primary text-base-100">Emprunt de tablette</a>
+								<a href="{{ path('reservation_form', { formSlug:'graphic_design' }) }}" class="btn btn-primary text-base-100">Emprunt de tablette</a>
 							</div>
 						</div>
 					</div>

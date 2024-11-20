@@ -13,24 +13,22 @@ use Symfony\Component\Mailer\MailerInterface;
 use App\Entity\EquipmentCategory;
 use App\Entity\Loan;
 use App\Entity\Equipment;
-use App\Entity\LoanStatus;
 use App\Entity\User;
 use App\Entity\UnavailableDays;
 use App\Entity\TagRule;
 
 class FormController extends AbstractController
 {
-    function createLoanableDates(): array
+    function createLoanableDates($skipWeekends = true): array
     {
         $days = [];
-        $weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+        $weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
         $dt = new \DateTime("today");
         $dt->modify("+1 day");
         for ($i = 0; $i < 14; $i++)
         {
-            // Skip weekends
             $dw = $dt->format('N');
-            if ($dw <= 5)
+            if ($dw <= 5 || !$skipWeekends)
                 $days[$weekDays[$dw-1]." ".$dt->format('d/m')] = $i;
 
             $dt->modify('+1 day');
@@ -102,115 +100,108 @@ class FormController extends AbstractController
         return true;
     }
 
-    function groupEquipmentBySubcategoryAndById($equipmentLoanable, &$equipmentCategories, &$equipmentInfo)
+    #[Route('/form/{formSlug}', name: 'reservation_form')]
+    function reservationForm(string $formSlug, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->hasReachedMaxConcurrentLoans()) {
+            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
+            return $this->redirectToRoute('app_main');
+        }
+
+        // Create the form
+        $formTypes = [
+            'audiovisual' => AudiovisualLoanType::class,
+            'vr' => VRLoanType::class,
+            'graphic_design' => GraphicDesignLoanType::class
+        ];
+
+        if (!array_key_exists($formSlug, $formTypes))
+            return $this->redirectToRoute('app_main');
+
+        $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug($formSlug);
+        $loan = new Loan();
+
+        // Get the loanable equipment for the category
+        $equipmentLoanable = $entityManager->getRepository(Equipment::class)->findLoanableByCategory($category->getId());
+        
+        // Group equipment by subcategory
+        $options['equipmentCategories'] = [];
+        $equipmentInfo = [];
         foreach($equipmentLoanable as $equipment)
         {
             $key = $equipment->getSubCategory()?->getSlug() ?? "";
-            if (!isset($equipmentCategories[$key]))
-            $equipmentCategories[$key] = [$equipment];
+            if (!isset($options['equipmentCategories'][$key]))
+            $options['equipmentCategories'][$key] = [$equipment];
             else
-                array_push($equipmentCategories[$key], $equipment);
+                array_push($options['equipmentCategories'][$key], $equipment);
             
             // Store equipment info by id for frontend display
             $equipmentInfo[$equipment->getId()] = $equipment;
         }
-    }
 
-    function hasReachedMaxConcurrentLoans(User $loaner): bool
-    {
-        return $loaner->getLoans()->filter(function(Loan $l) {
-            return ($l->getStatus() == LoanStatus::ACCEPTED->value || $l->getStatus() == LoanStatus::PENDING->value);
-        })->count() >= 2;
-    }
+        $options['days'] = $this->createLoanableDates();
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
+       
+        $form = $this->createForm($formTypes[$formSlug], $loan, $options);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $request->request->all()[$formSlug.'_loan'];
 
-    function parseFormEquipmentData(&$data, array &$loanEquipment, array &$loanDiscriminators, array &$equipmentInfo): void
-    {
-        $ignored = ['comment', 'startDay', 'startTimeSlot', 'endDay', 'endTimeSlot', 'csrf_token', '_token'];
-        if (is_array($data)) {
-            foreach($data as $key => $value) {
-                if (in_array($key, $ignored))
-                    continue;
+            $loan->setLoaner($this->getUser());
+            $loan->setComment($data['comment']);
 
-                if (is_array($value)) {
-                    foreach($value as $v) {
-                        $qty = $equipmentInfo[$v]->getQuantity();
-                        if ($qty > 1 && $equipmentInfo[$v]->isNumbered())
-                            $loanDiscriminators[$v] = random_int(1, $qty-1); // TODO : Random for now
+            // Set the departure and return dates
+            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
+            if ($parsedDates === false)
+                return $this->redirectToRoute('reservation_form_'.$formSlug);
+
+            $loan->setDepartureDate($parsedDates['start']);
+            $loan->setReturnDate($parsedDates['end']);
+
+            // Add the equipment to the loan
+            $loanEquipment = [];
+            $loanDiscriminators = [];
+
+            $ignored = ['comment', 'startDay', 'startTimeSlot', 'endDay', 'endTimeSlot', 'csrf_token', '_token'];
+            if (is_array($data)) {
+                foreach($data as $key => $value) {
+                    if (in_array($key, $ignored))
+                        continue;
+    
+                    if (is_array($value)) {
+                        foreach($value as $v) {
+                            $qty = $equipmentInfo[$v]->getQuantity();
+                            if ($qty > 1 && $equipmentInfo[$v]->isNumbered())
+                                $loanDiscriminators[$v] = random_int(1, $qty-1); // TODO : Random for now
+                            
+                            array_push($loanEquipment, $v);
+                        }
+                    } else if (!empty($value)){
+                        $qty = $equipmentInfo[$value]->getQuantity();
+                        if ($qty > 1 && $equipmentInfo[$value]->isNumbered())
+                            $loanDiscriminators[$value] = random_int(1, $qty-1); // TODO : Random for now
                         
-                        array_push($loanEquipment, $v);
+                        array_push($loanEquipment, $value);	
                     }
-                } else if (!empty($value)){
-                    $qty = $equipmentInfo[$value]->getQuantity();
-                    if ($qty > 1 && $equipmentInfo[$value]->isNumbered())
-                        $loanDiscriminators[$value] = random_int(1, $qty-1); // TODO : Random for now
-                    
-                    array_push($loanEquipment, $value);	
                 }
             }
-        }
-    }
-
-    #[Route('/form/audiovisual', name: 'reservation_form_audiovisual')]
-    public function audiovisualForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
-    {
-        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
-            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
-            return $this->redirectToRoute('app_main');
-        }
-
-        $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('audiovisual');
-        $loan = new Loan();
-        $options = [];
-
-        // Get the loanable equipment for the category
-        $equipmentLoanable = $entityManager->getRepository(Equipment::class)->findLoanableByCategory($category->getId());
-
-        // Group equipment by subcategory
-        $options['equipmentCategories'] = [];
-        $equipmentInfo = [];
-        $this->groupEquipmentBySubcategoryAndById($equipmentLoanable, $options['equipmentCategories'], $equipmentInfo);
-
-        $options['days'] = $this->createLoanableDates();
-
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
-
-        // Create the form
-        $form = $this->createForm(AudiovisualLoanType::class, $loan, $options);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $request->request->all()['audiovisual_loan'];
-            
-            $loan->setLoaner($this->getUser());
-            $loan->setComment($data['comment']);
-            
-            // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
-            if ($parsedDates === false)
-                return $this->redirectToRoute('reservation_form_audiovisual');
-            
-            $loan->setDepartureDate($parsedDates['start']);
-            $loan->setReturnDate($parsedDates['end']);
-            
-            // Add the equipment to the loan
-            $loanEquipment = [];
-            $loanDiscriminators = [];
-            
-            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
 
             $loan->setDiscriminators($loanDiscriminators);
 
             if ($loanEquipment == [])
             {
                 $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
+                return $this->redirectToRoute('reservation_form_'.$formSlug);
             }
-
+            
             $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
                 $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
+                return $this->redirectToRoute('reservation_form_'.$formSlug);
             }
 
             $entityManager->persist($loan);
@@ -223,8 +214,8 @@ class FormController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        return $this->render('form/audiovisual.html.twig', [
-            'formName' => 'Emprunt Audiovisuel',
+        return $this->render('form/'.$formSlug.'.html.twig', [
+            'formName' => $category->getName(),
             'form' => $form,
             'equipmentInfo' => $equipmentInfo,
             'loanableDays' => json_encode(array_values($options['days'])),
@@ -234,193 +225,7 @@ class FormController extends AbstractController
             ]; }, $equipmentInfo)),
             'unavailableDays' => json_encode(array_map(function($u) { return [
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
-                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
-                "preventsLoans" => $u->isPreventsLoans()
-            ]; }, $unavailableDays)),
-            'tagRules' => json_encode(array_map(function($e) { return [
-                "arg1" => $e->getArg1(),
-                "arg2" => $e->getArg2()
-            ]; }, $entityManager->getRepository(TagRule::class)->findAll()))
-        ]);
-    }
-    
-    #[Route('/form/vr', name: 'reservation_form_vr')]
-    public function vrForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
-    {
-        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
-            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
-            return $this->redirectToRoute('app_main');
-        }
-
-        $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('vr');
-        $loan = new Loan();
-        $options = [];
-
-        // Get the loanable equipment for the category
-        $equipmentLoanable = $entityManager->getRepository(Equipment::class)->findLoanableByCategory($category->getId());
-
-        // Group equipment by subcategory
-        $options['equipmentCategories'] = [];
-        $equipmentInfo = [];
-        $this->groupEquipmentBySubcategoryAndById($equipmentLoanable, $options['equipmentCategories'], $equipmentInfo);
-
-        $options['days'] = $this->createLoanableDates();
-
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
-
-        // Create the form
-        $form = $this->createForm(VRLoanType::class, $loan, $options);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $request->request->all()['vr_loan'];
-            
-            $loan->setLoaner($this->getUser());
-            $loan->setComment($data['comment']);
-            
-            // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
-            if ($parsedDates === false)
-                return $this->redirectToRoute('reservation_form_vr');
-
-            $loan->setDepartureDate($parsedDates['start']);
-            $loan->setReturnDate($parsedDates['end']);
-
-            // Add the equipment to the loan
-            $loanEquipment = [];
-            $loanDiscriminators = [];
-            
-            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
-
-            $loan->setDiscriminators($loanDiscriminators);
-
-            if ($loanEquipment == [])
-            {
-                $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
-            }
-
-            $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
-            if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
-            {
-                $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
-            }
-
-            $entityManager->persist($loan);
-            $entityManager->flush();
-
-            MailerController::sendRequestConfirmMail($loan, $mailer);
-            MailerController::sendNewRequestMail($loan, $mailer);
-
-            $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
-            return $this->redirectToRoute('app_main');
-        }
-
-        return $this->render('form/vr.html.twig', [
-            'formName' => 'Emprunt VR',
-            'form' => $form,
-            'equipmentInfo' => $equipmentInfo,
-            'loanableDays' => json_encode(array_values($options['days'])),
-            'equipmentInfoJson' => json_encode(array_map(function($e) { return [
-                "quantity" => $e->getQuantity(),
-                "name" => $e->getName()
-            ]; }, $equipmentInfo)),
-            'unavailableDays' => json_encode(array_map(function($u) { return [
-                "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
-                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
-                "preventsLoans" => $u->isPreventsLoans()
-            ]; }, $unavailableDays)),
-            'tagRules' => json_encode(array_map(function($e) { return [
-                "arg1" => $e->getArg1(),
-                "arg2" => $e->getArg2()
-            ]; }, $entityManager->getRepository(TagRule::class)->findAll()))
-        ]);
-    }
-
-    #[Route('/form/graphic-design', name: 'reservation_form_graphic_design')]
-    public function graphicDesignForm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
-    {
-        if (!$this->isGranted('ROLE_ADMIN') && $this->hasReachedMaxConcurrentLoans($this->getUser())) {
-            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
-            return $this->redirectToRoute('app_main');
-        }
-
-        $category = $entityManager->getRepository(EquipmentCategory::class)->findBySlug('graphic_design');
-        $loan = new Loan();
-        $options = [];
-
-        // Get the loanable equipment for the category
-        $equipmentLoanable = $entityManager->getRepository(Equipment::class)->findLoanableByCategory($category->getId());
-
-        // Group equipment by subcategory
-        $options['equipmentCategories'] = [];
-        $equipmentInfo = [];
-        $this->groupEquipmentBySubcategoryAndById($equipmentLoanable, $options['equipmentCategories'], $equipmentInfo);
-
-        $options['days'] = $this->createLoanableDates();
-
-        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
-
-        // Create the form
-        $form = $this->createForm(GraphicDesignLoanType::class, $loan, $options);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $request->request->all()['graphic_design_loan'];
-            
-            $loan->setLoaner($this->getUser());
-            $loan->setComment($data['comment']);
-            
-            // Set the departure and return dates
-            $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
-            if ($parsedDates === false)
-                return $this->redirectToRoute('reservation_form_graphic_design');
-            
-            $loan->setDepartureDate($parsedDates['start']);
-            $loan->setReturnDate($parsedDates['end']);
-
-            // Add the equipment to the loan
-            $loanEquipment = [];
-            $loanDiscriminators = [];
-            
-            $this->parseFormEquipmentData($data, $loanEquipment, $loanDiscriminators, $equipmentInfo);
-
-            $loan->setDiscriminators($loanDiscriminators);
-            
-            if ($loanEquipment == [])
-            {
-                $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
-            }
-        
-            $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
-            if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
-            {
-                $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
-                return $this->redirectToRoute('reservation_form_audiovisual');
-            }
-    
-            $entityManager->persist($loan);
-            $entityManager->flush();
-
-            MailerController::sendRequestConfirmMail($loan, $mailer);
-            MailerController::sendNewRequestMail($loan, $mailer);
-
-            $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
-            return $this->redirectToRoute('app_main');
-        }
-
-        return $this->render('form/graphic_design.html.twig', [
-            'formName' => 'Emprunt Graphisme & Infographie',
-            'form' => $form,
-            'equipmentInfo' => $equipmentInfo,
-            'loanableDays' => json_encode(array_values($options['days'])),
-            'equipmentInfoJson' => json_encode(array_map(function($e) { return [
-                "quantity" => $e->getQuantity(),
-                "name" => $e->getName()
-            ]; }, $equipmentInfo)),
-            'unavailableDays' => json_encode(array_map(function($u) { return [
-                "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
-                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),
+                "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),     //
                 "preventsLoans" => $u->isPreventsLoans()
             ]; }, $unavailableDays)),
             'tagRules' => json_encode(array_map(function($e) { return [

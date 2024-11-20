@@ -10,6 +10,8 @@ parameters:
   CAS_CLIENT_SERVICE_NAME: '%env(resolve:CAS_CLIENT_SERVICE_NAME)%'
   ENABLE_URCA_LOGIN: '%env(resolve:ENABLE_URCA_LOGIN)%'
   MESSAGE_CONTENT: '%env(resolve:MESSAGE_CONTENT)%'
+  SAE_MODE: '%env(resolve:SAE_MODE)%'
+  LOAN_SHOW_OWNER_ON_TABLE: '%env(resolve:LOAN_SHOW_OWNER_ON_TABLE)%'
 
 services:
     # default configuration for services in *this* file
