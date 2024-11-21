@@ -49,6 +49,9 @@ class Loan
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $adminComment = null;
 
+    #[ORM\ManyToOne]
+    private ?User $assignee = null;
+
     public function __construct()
     {
         $this->equipmentLoaned = new ArrayCollection();
@@ -168,6 +171,18 @@ class Loan
     public function setAdminComment(?string $adminComment): static
     {
         $this->adminComment = $adminComment;
+
+        return $this;
+    }
+
+    public function getAssignee(): ?User
+    {
+        return $this->assignee;
+    }
+
+    public function setAssignee(?User $assignee): static
+    {
+        $this->assignee = $assignee;
 
         return $this;
     }

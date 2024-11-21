@@ -101,6 +101,7 @@ class LoanCrudController extends AbstractCrudController
 
         $loan->setStatus(LoanStatus::ACCEPTED->value);
         $loan->setAdminComment($emailComment);
+        $loan->setAssignee($this->getUser());
 
         MailerController::sendRequestAcceptMail($loan, $mailer);
 
@@ -142,6 +143,7 @@ class LoanCrudController extends AbstractCrudController
             DateTimeField::new('return_date'),
             ChoiceField::new('status')->setChoices(LoanStatus::cases())->hideOnForm(),
             TextareaField::new('comment')->setFormTypeOption('disabled','disabled'),
+            AssociationField::new('assignee'),
             AssociationField::new('equipmentLoaned')
         ];
     }

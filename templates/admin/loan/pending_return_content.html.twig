@@ -6,6 +6,7 @@
             <td>Date de départ</td>
             <td>Date de retour</td>
             <td>Équipment emprunté</td>
+            <td>Géré par</td>
             <td>Actions</td>
         </tr>
     </thead>
@@ -16,6 +17,7 @@
                 <td>{{ loan.departuredate|date() }}</td>
                 <td>{{ loan.returndate|date() }}</td>
                 <td>{{ loan.equipmentloaned|length }}</td>
+                <td>{{ loan.assignee.name ?? "[Personne]" }}</td>
                 <td>
                     <a class="btn btn-primary" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>
                 </td>
