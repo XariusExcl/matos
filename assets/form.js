@@ -1,6 +1,6 @@
 let cachedRequests = {};
 let isDateValid = false;
-let unavailableStartTimeSlots = {};
+let unavailableTimeSlots = {};
 
 // To grey out the days/timeslots that are not available
 function processUnavailableDays() {
@@ -25,13 +25,13 @@ function processUnavailableDays() {
             }
 
             if (inUnavailablePeriod) {
-                if (unavailableStartTimeSlots[day] === undefined) {
-                    unavailableStartTimeSlots[day] = [];
+                if (unavailableTimeSlots[day] === undefined) {
+                    unavailableTimeSlots[day] = [];
                 }
-                unavailableStartTimeSlots[day].push(o.value);
+                unavailableTimeSlots[day].push(o.value);
             }
         });
-        if (unavailableStartTimeSlots[day]?.length === loanStartTimeslotElement.options.length) {
+        if (unavailableTimeSlots[day]?.length === loanStartTimeslotElement.options.length) {
             loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
             loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true; // FIXME
         }
@@ -52,15 +52,24 @@ async function formDateChange() {
     // Disable end day if it's before start day
     loanEndDayElement.querySelectorAll('option').forEach((option) => {
         option.disabled = false;
-        if (parseInt(option.value) < loanStartDay || unavailableStartTimeSlots[parseInt(option.value)]?.length === loanStartTimeslotElement.options.length) {
+        if (parseInt(option.value) < loanStartDay || unavailableTimeSlots[parseInt(option.value)]?.length === loanStartTimeslotElement.options.length) {
             option.disabled = true;
         }
     });
 
     // Disable preprocessed unavailable timeslots
-    if (unavailableStartTimeSlots[loanStartDay]) {
-        unavailableStartTimeSlots[loanStartDay].forEach((timeslot) => {
+    if (unavailableTimeSlots[loanStartDay]) {
+        console.log("start day", loanStartDay);
+        unavailableTimeSlots[loanStartDay].forEach((timeslot) => {
             loanStartTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
+        });
+    }
+
+    if (unavailableTimeSlots[loanEndDay]) {
+        console.log("end day", loanEndDay);
+        unavailableTimeSlots[loanEndDay].forEach((timeslot) => {
+            loanEndTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
+            console.log("disabling", timeslot);
         });
     }
 
@@ -97,7 +106,7 @@ async function formDateChange() {
             || (endDate >= unavailableDate.start && endDate <= unavailableDate.end)
             || (startDate <= unavailableDate.start && endDate >= unavailableDate.end && unavailableDate.preventsLoans)
         ) {
-            document.querySelector('#creneau-error').innerText = "Le créneau d'emprunt est indisponible.";
+            document.querySelector('#creneau-error').innerText = `Le créneau d'emprunt est indisponible (${ unavailableDate.comment }).`;
             isDateValid = false;
             flag = true;
             return;

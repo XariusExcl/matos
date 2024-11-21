@@ -25,3 +25,19 @@ label > input[disabled] + .card {
 .pending-reservation {
   background: repeating-linear-gradient(45deg, #00BE8F, #00BE8F 5px, #00BE8F00 6px, #00BE8F00 11px, #00BE8F 12px);
 }
+
+.table-vertical-lines {
+  border-left: #0003 dashed 1px;
+}
+
+.table-horizontal-lines {
+  border-top: #0003 dashed 1px;
+}
+
+.ud-content {
+  display: none;
+}
+
+.ud:hover .ud-content {
+  display: block;
+}

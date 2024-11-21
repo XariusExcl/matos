@@ -1,32 +1,36 @@
 <div class="overflow-scroll my-5 rounded-lg bg-base-200 shadow-inner" style="width:100%;max-height:calc(70vh - 60px)">
 	<div class="grid p-2 gap-px" style="grid-template-columns:minmax(192px, 4fr) repeat({{ dates|length * 2 }},minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
-        <div class="w-100 h-100" style="grid-area:1/2/{{equipment|length +3}}/4;background-color:#0003"></div>
-        {% for u in unavailableDays %}
-            <div class="w-100 h-100 tooltip tooltip-right" style="grid-area:1/{{u.slotStart +2}}/{{equipment|length +3}}/{{u.slotEnd +3}};background-color:#0003" data-tip="{{ u.comment ~ u.timeStartEnd }}"></div>
-        {% endfor %}
-
-        {% for e in equipment %}
-            {% set i = loop.index0 %}
-		    <div class="text-right text-clip overflow-hidden font-bold text-sm mt-1 mr-2" style="grid-row:{{i+3}}; grid-column:1">{{e.name}}</div>
-            {% if loans is defined and e.id in loans|keys %}
-                {% for loan in loans[e.id] %}
-                    {% if loan.status == 0 or loan.status == 1 %}
-                        {% if (loan_show_owner_on_table) %}
-                            <div class="{{ (loan.status == 0)? "pending-reservation" : "bg-error" }} w-100 h-100 tooltip" style="grid-area: {{i+3}} / {{loan.start +2}} / {{i+4}} / {{loan.end +3}};" data-tip="{{ loan.info }}"></div>
-                        {% else %}
-                            <div class="{{ (loan.status == 0)? "pending-reservation" : "bg-error" }} w-100 h-100" style="grid-area: {{i+3}} / {{loan.start +2}} / {{i+4}} / {{loan.end +3}};"></div>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            <div class="w-100 h-100 hoverdiv" style="grid-area:{{i+3}}/1/{{i+4}}/{{ dates|length * 2 + 2}};"></div>
-        {% endfor %}
-
+        <div class="w-100 h-100" style="grid-area:1/2/last-line/4;background-color:#0003"></div>
+        
         {% for date in dates %}
             {% set i = loop.index0 %}
             <div class="text-center font-bold text-sm" style="grid-area:1/{{i*2+2}}/2/{{i*2+4}}">{{ date }}</div>
             <div class="text-center font-bold text-sm" style="grid-area:2/{{i*2+2}}/3/{{i*2+3}}">M</div>
             <div class="text-center font-bold text-sm" style="grid-area:2/{{i*2+3}}/3/{{i*2+4}}">A-M</div>
+            <div class="table-vertical-lines" style="grid-area:1/{{i*2+2}}/last-line/{{i*2+4}}"></div>
+        {% endfor %}
+
+        {% for u in unavailableDays %}
+            <div class="ud w-100 h-100" style="grid-area:1/{{u.slotStart +2}}/last-line/{{u.slotEnd +3}};background-color:#0003">
+                <div class="ud-content text-center font-bold text-sm relative bg-slate-400" style="grid-area:1/{{u.slotStart +2}}/2/{{u.slotEnd +3}}">{{ u.comment ~ " " ~ u.timeStartEnd}}</div>
+            </div>
+        {% endfor %}
+
+        {% for e in equipment %}
+            {% set i = loop.index0 %}
+            <div class="w-100 h-100 hoverdiv table-horizontal-lines relative" style="grid-area:{{i+3}}/1/{{i+4}}/end;"></div>
+		    <div class="text-right text-clip overflow-hidden font-bold text-sm mt-1 mr-2" style="grid-row:{{i+3}}; grid-column:1">{{e.name}}</div>
+            {% if loans is defined and e.id in loans|keys %}
+                {% for loan in loans[e.id] %}
+                    {% if loan.status == 0 or loan.status == 1 %}
+                        {% if (loan_show_owner_on_table) %}
+                            <div class="{{ (loan.status == 0)? "pending-reservation" : "bg-error" }} w-100 h-100 tooltip" style="grid-area:{{i+3}}/{{loan.start +2}}/{{i+4}}/{{loan.end +3}};" data-tip="{{ loan.info }}"></div>
+                        {% else %}
+                            <div class="{{ (loan.status == 0)? "pending-reservation" : "bg-error" }} w-100 h-100" style="grid-area:{{i+3}}/{{loan.start +2}}/{{i+4}}/{{loan.end +3}};"></div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         {% endfor %}
 	</div>
 </div>

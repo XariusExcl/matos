@@ -57,9 +57,9 @@ class MainController extends AbstractController
         $unavailableDaysTimeSlots = [];
         foreach($unavailableDays as $u)
             $unavailableDaysTimeSlots[$u->getId()] = [
-                "slotStart" => getTimeslot($u->getDateStart(), $skipWeekends),
+                "slotStart" => max(getTimeslot($u->getDateStart(), $skipWeekends), 2), // To not overlap with the first day of the table (always unavailable)
                 "slotEnd" => getTimeslot($u->getDateEnd(), $skipWeekends),
-                "timeStartEnd" => " (".$u->getDateStart()->format('H:i')." - ".$u->getDateEnd()->format('H:i').")",
+                "timeStartEnd" => "({$u->getDateStart()->format('H:i')} - {$u->getDateEnd()->format('H:i')})",
                 "preventsLoans" => $u->isPreventsLoans(),
                 "comment" => $u->getComment()
             ];
