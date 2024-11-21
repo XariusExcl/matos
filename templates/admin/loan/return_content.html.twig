@@ -1,3 +1,9 @@
+<script>
+    if({{ redirect?"true":"false" }}) {
+        window.location.href = "{{ path('admin') }}";
+    }
+</script>
+
 {{ form_start(form) }}
     <div class="ml-3">
         {% for equipment in form.equipment %}

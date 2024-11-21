@@ -52,6 +52,7 @@ class LoanCrudController extends AbstractCrudController
 
     public function loanReturn(Loan $loan, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
+        $redirect = false;
         if ($loan->getStatus() == LoanStatus::ACCEPTED->value)
         {
             // Create the form
@@ -74,6 +75,7 @@ class LoanCrudController extends AbstractCrudController
                     return $this->render('admin/loan/return_content.html.twig', [
                         'loan' => $loan,
                         'form' => $form->createView(),
+                        'redirect' => $redirect,
                     ]);
                 }
                 
@@ -84,13 +86,14 @@ class LoanCrudController extends AbstractCrudController
                 $em->flush();
                 
                 $this->addFlash('success', 'Le rendu du matériel a bien été enregistré.'); // FIXME : This message is displayed after one extra refresh somehow?
-                // return $this->redirectToRoute('admin'); // Can't reroute because we're in a nested controller render.
+                $redirect = true;
             }
         }
 
         return $this->render('admin/loan/return_content.html.twig', [
             'loan' => $loan,
             'form' => $form->createView(),
+            'redirect' => $redirect,
         ]);
     }
 
