@@ -9,14 +9,20 @@ function processUnavailableDays() {
 
     loanableDays.forEach((day) => {
         [...loanStartTimeslotElement.options].map((o) => {
+            if (!unavailableDays[index])
+                return;
+
             const date = new Date();
             date.setDate(date.getDate() + day + 1);
             date.setHours(parseInt(o.value.substring(0, 2)), parseInt(o.value.substring(2, 4)), 0, 0);
             const dateTime = date.getTime();
             
             if (!inUnavailablePeriod) {
-                if (unavailableDays[index] && dateTime > unavailableDays[index].startTime && dateTime < unavailableDays[index].endTime) {
-                    inUnavailablePeriod = true;
+                if (dateTime > unavailableDays[index].startTime) {
+                    if(dateTime < unavailableDays[index].endTime)
+                        inUnavailablePeriod = true;
+                    else
+                        index++;
                 }
             } else {
                 if (unavailableDays[index] && dateTime >= unavailableDays[index].endTime) {

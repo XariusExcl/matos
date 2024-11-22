@@ -31,7 +31,7 @@ class UnavailableDaysRepository extends ServiceEntityRepository
             ->setParameter('start', $value->format('Y-m-d'))
             ->setParameter(':end', $value->modify("+14 day")->format('Y-m-d'))
             ->orWhere('u.dateEnd BETWEEN :start AND :end')
-            ->orderBy('u.id', 'ASC')
+            ->orderBy('u.dateStart', 'ASC')
             ->getQuery()
             ->getResult()
         ;
