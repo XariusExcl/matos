@@ -156,7 +156,7 @@ class FormController extends AbstractController
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
             if ($parsedDates === false)
-                return $this->redirectToRoute('reservation_form_'.$formSlug);
+                return $this->redirectToRoute('reservation_form', ["formSlug" => $formSlug]);
 
             $loan->setDepartureDate($parsedDates['start']);
             $loan->setReturnDate($parsedDates['end']);
@@ -194,14 +194,14 @@ class FormController extends AbstractController
             if ($loanEquipment == [])
             {
                 $this->addFlash('error','Vous devez sélectionner au moins un équipement.');
-                return $this->redirectToRoute('reservation_form_'.$formSlug);
+                return $this->redirectToRoute('reservation_form', ["formSlug" => $formSlug]);
             }
             
             $loans = $entityManager->getRepository(Loan::class)->findUnavailableBetweenDates($parsedDates['start'], $parsedDates['end']);
             if (!$this->addAndCheckEquipmentAvailability($loan, $loanEquipment, $loans, $equipmentInfo))
             {
                 $this->addFlash('error','Un ou plusieurs équipements sont déjà réservés pour cette période.');
-                return $this->redirectToRoute('reservation_form_'.$formSlug);
+                return $this->redirectToRoute('reservation_form', ["formSlug" => $formSlug]);
             }
 
             $entityManager->persist($loan);

@@ -33,6 +33,8 @@ class ApiController extends AbstractController
         } else {
             $start = new \DateTime($s);
             $end = new \DateTime($e);
+            $start->setTimezone(new \DateTimeZone('Europe/Paris'));
+            $end->setTimezone(new \DateTimeZone('Europe/Paris'));
             
             // Sanitize the dates to never exceed 14 days
             $start = ($start < new \DateTime() || $start > new \DateTime("+14 day")) ? new \DateTime() : $start;
