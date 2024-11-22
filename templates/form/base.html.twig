@@ -3,9 +3,8 @@
 {% block title %}Nouvel emprunt{% endblock %}
 
 {% block javascripts %}
-    {% for path in encore_entry_js_files('form') %}
-        <script src="{{ absolute_url(path) }}"></script>
-    {% endfor %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('form') }}
 {% endblock %}
 
 {% block body %}
