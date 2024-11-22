@@ -9,16 +9,17 @@ function processUnavailableDays() {
 
     loanableDays.forEach((day) => {
         [...loanStartTimeslotElement.options].map((o) => {
-            let date = new Date();
+            const date = new Date();
             date.setDate(date.getDate() + day + 1);
-            date.setHours(parseInt(o.value.substring(0, 2)), parseInt(o.value.substring(2, 4)), 0);
-    
+            date.setHours(parseInt(o.value.substring(0, 2)), parseInt(o.value.substring(2, 4)), 0, 0);
+            const dateTime = date.getTime();
+            
             if (!inUnavailablePeriod) {
-                if (unavailableDays[index] && date >= unavailableDays[index].start && date <= unavailableDays[index].end) {
+                if (unavailableDays[index] && dateTime > unavailableDays[index].startTime && dateTime < unavailableDays[index].endTime) {
                     inUnavailablePeriod = true;
                 }
             } else {
-                if (unavailableDays[index] && date > unavailableDays[index].end) {
+                if (unavailableDays[index] && dateTime >= unavailableDays[index].endTime) {
                     inUnavailablePeriod = false;
                     index++;
                 }
@@ -33,7 +34,7 @@ function processUnavailableDays() {
         });
         if (unavailableTimeSlots[day]?.length === loanStartTimeslotElement.options.length) {
             loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
-            loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true; // FIXME
+            loanEndDayElement.querySelector(`option[value="${day}"]`).disabled = true;
         }
     });
 }
@@ -48,6 +49,9 @@ async function formDateChange() {
     loanStartTimeslotElement.querySelectorAll('option').forEach((option) => {
         option.disabled = false;
     });
+    loanEndTimeslotElement.querySelectorAll('option').forEach((option) => {
+        option.disabled = false;
+    });
 
     // Disable end day if it's before start day
     loanEndDayElement.querySelectorAll('option').forEach((option) => {
@@ -59,17 +63,13 @@ async function formDateChange() {
 
     // Disable preprocessed unavailable timeslots
     if (unavailableTimeSlots[loanStartDay]) {
-        console.log("start day", loanStartDay);
         unavailableTimeSlots[loanStartDay].forEach((timeslot) => {
             loanStartTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
         });
     }
-
     if (unavailableTimeSlots[loanEndDay]) {
-        console.log("end day", loanEndDay);
         unavailableTimeSlots[loanEndDay].forEach((timeslot) => {
             loanEndTimeslotElement.querySelector(`option[value="${timeslot}"]`).disabled = true;
-            console.log("disabling", timeslot);
         });
     }
 
@@ -87,6 +87,7 @@ async function formDateChange() {
     startDate.setHours(
         parseInt(loanStartTimeslotElement.value.substring(0, 2)),
         parseInt(loanStartTimeslotElement.value.substring(2, 4)),
+        0,
         0
     );
 
@@ -94,6 +95,7 @@ async function formDateChange() {
     endDate.setHours(
         parseInt(loanEndTimeslotElement.value.substring(0, 2)),
         parseInt(loanEndTimeslotElement.value.substring(2, 4)),
+        0,
         0
     );
 
@@ -101,16 +103,16 @@ async function formDateChange() {
     let flag = false;
     let skippedDays = 0;
     unavailableDays.forEach((unavailableDate) => {
-        if (
-            (startDate >= unavailableDate.start && startDate <= unavailableDate.end)
-            || (endDate >= unavailableDate.start && endDate <= unavailableDate.end)
-            || (startDate <= unavailableDate.start && endDate >= unavailableDate.end && unavailableDate.preventsLoans)
-        ) {
+        const startDateTime = startDate.getTime();
+        const endDateTime = endDate.getTime();
+
+        if (startDateTime < unavailableDate.endTime && endDateTime > unavailableDate.startTime && unavailableDate.preventsLoans)
+        {
             document.querySelector('#creneau-error').innerText = `Le créneau d'emprunt est indisponible (${ unavailableDate.comment }).`;
             isDateValid = false;
             flag = true;
             return;
-        } else if (startDate <= unavailableDate.start && endDate >= unavailableDate.end && !unavailableDate.preventsLoans)
+        } else if (startDate <= unavailableDate.startTime && endDate >= unavailableDate.endTime && !unavailableDate.preventsLoans)
         {
             skippedDays += parseInt((unavailableDate.end - unavailableDate.start) / (3600 * 24 * 1000)) + 1;
         }
