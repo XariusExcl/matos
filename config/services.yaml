@@ -11,6 +11,7 @@ parameters:
   ENABLE_URCA_LOGIN: '%env(resolve:ENABLE_URCA_LOGIN)%'
   MESSAGE_CONTENT: '%env(resolve:MESSAGE_CONTENT)%'
   SAE_MODE: '%env(resolve:SAE_MODE)%'
+  LOAN_DISABLE_WEEKENDS: '%env(resolve:LOAN_DISABLE_WEEKENDS)%'
   LOAN_SHOW_OWNER_ON_TABLE: '%env(resolve:LOAN_SHOW_OWNER_ON_TABLE)%'
 
 services:

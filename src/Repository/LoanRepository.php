@@ -44,20 +44,13 @@ class LoanRepository extends ServiceEntityRepository
      */
     public function findUnavailableBetweenDates(\DateTime $start, \DateTime $end): array
     {
-        /*
-        // Sanitize the dates to never exceed 14 days
-        $start = ($start < new \DateTime() || $start > new \DateTime("+14 day")) ? new \DateTime() : $start;
-        $end = $end < new \DateTime("+14 day") ? $end : new \DateTime("+14 day");
-        */
-
         return $this->createQueryBuilder('l')
             ->where('l.departure_date BETWEEN :start AND :end')
             ->setParameter('start', $start->format('Y-m-d H:i'))
             ->setParameter(':end', $end->format('Y-m-d H:i'))
             ->orWhere('l.return_date BETWEEN :start AND :end')
             ->orWhere('l.departure_date < :start AND l.return_date > :end')
-            ->andWhere('l.status = :status')
-            ->setParameter('status', LoanStatus::ACCEPTED->value)
+            ->andWhere('l.status < 3') // PENDING or ACCEPTED
             ->orderBy('l.id', 'ASC')
             ->getQuery()
             ->getResult()

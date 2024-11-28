@@ -1,7 +1,5 @@
 <div class="overflow-scroll my-5 rounded-lg bg-base-200 shadow-inner" style="width:100%;max-height:calc(70vh - 60px)">
 	<div class="grid p-2 gap-px" style="grid-template-columns:minmax(192px, 4fr) repeat({{ dates|length * 2 }},minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
-        <div class="w-100 h-100" style="grid-area:1/2/last-line/4;background-color:#0003"></div>
-        
         {% for date in dates %}
             {% set i = loop.index0 %}
             <div class="text-center font-bold text-sm" style="grid-area:1/{{i*2+2}}/2/{{i*2+4}}">{{ date }}</div>

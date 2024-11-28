@@ -16,6 +16,8 @@ use App\Entity\Equipment;
 use App\Entity\User;
 use App\Entity\UnavailableDays;
 use App\Entity\TagRule;
+use App\Form\AudiovisualSaeLoanType;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class FormController extends AbstractController
 {
@@ -101,7 +103,7 @@ class FormController extends AbstractController
     }
 
     #[Route('/form/{formSlug}', name: 'reservation_form')]
-    function reservationForm(string $formSlug, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    function reservationForm(string $formSlug, Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, ParameterBagInterface $parameterBag): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -115,7 +117,8 @@ class FormController extends AbstractController
         $formTypes = [
             'audiovisual' => AudiovisualLoanType::class,
             'vr' => VRLoanType::class,
-            'graphic_design' => GraphicDesignLoanType::class
+            'graphic_design' => GraphicDesignLoanType::class,
+            'audiovisual_sae' => AudiovisualSaeLoanType::class
         ];
 
         if (!array_key_exists($formSlug, $formTypes))
@@ -142,7 +145,7 @@ class FormController extends AbstractController
             $equipmentInfo[$equipment->getId()] = $equipment;
         }
 
-        $options['days'] = $this->createLoanableDates();
+        $options['days'] = $this->createLoanableDates($parameterBag->get('LOAN_DISABLE_WEEKENDS'));
         $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $category->getId());
        
         $form = $this->createForm($formTypes[$formSlug], $loan, $options);
@@ -166,7 +169,7 @@ class FormController extends AbstractController
             $loanDiscriminators = [];
 
             $ignored = ['comment', 'startDay', 'startTimeSlot', 'endDay', 'endTimeSlot', 'csrf_token', '_token'];
-            if (is_array($data)) {
+            // if (is_array($data)) {
                 foreach($data as $key => $value) {
                     if (in_array($key, $ignored))
                         continue;
@@ -187,7 +190,7 @@ class FormController extends AbstractController
                         array_push($loanEquipment, $value);	
                     }
                 }
-            }
+            // }
 
             $loan->setDiscriminators($loanDiscriminators);
 

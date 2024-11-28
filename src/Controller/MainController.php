@@ -19,7 +19,7 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag): Response
     {
-        $skipWeekends = !$parameterBag->get('SAE_MODE');
+        $skipWeekends = $parameterBag->get('LOAN_DISABLE_WEEKENDS');
         // Convert a date to a timeslot
         function getTimeslot(\DateTime $date, $skipWeekends = true): int 
         {
@@ -43,7 +43,7 @@ class MainController extends AbstractController
                     $skippedWeekendDays++;
                 $now->modify('+1 day');
             }
-            return (int)($hours/12) - 2*$skippedWeekendDays;
+            return $diff->d*2 + (($diff->h > 13)?1:0) - 2*$skippedWeekendDays;
         }
 
         if ($this->getParameter(('MESSAGE_CONTENT')) != null)
@@ -57,7 +57,7 @@ class MainController extends AbstractController
         $unavailableDaysTimeSlots = [];
         foreach($unavailableDays as $u)
             $unavailableDaysTimeSlots[$u->getId()] = [
-                "slotStart" => max(getTimeslot($u->getDateStart(), $skipWeekends), 2), // To not overlap with the first day of the table (always unavailable)
+                "slotStart" => getTimeslot($u->getDateStart(), $skipWeekends),
                 "slotEnd" => getTimeslot($u->getDateEnd(), $skipWeekends),
                 "timeStartEnd" => "({$u->getDateStart()->format('H:i')} - {$u->getDateEnd()->format('H:i')})",
                 "preventsLoans" => $u->isPreventsLoans(),

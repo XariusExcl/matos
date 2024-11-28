@@ -1,0 +1,56 @@
+{% extends 'form/base.html.twig' %}
+
+{% block form %}
+    <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
+    <ul class="ml-10">
+        <li>• Les demandes doivent être faites au
+            <b>minimum 24h à l'avance</b>.</li>
+        <li>• La durée maximale d'emprunt est de <b>1 jour</b>.</li>
+        <li>• Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
+    </ul>
+    <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
+    <ul class="ml-10">
+        <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b>
+        </li>
+        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
+    </ul>
+
+    {{ form_start(form) }}
+
+    {% include 'form/_creneau.html.twig' %}
+
+    <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
+    <div id="equipmentSelection">
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.packs) }}</h3>
+        <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+            {{ form_errors(form.packs, {'attr': {'class': 'text-red-500'}}) }}
+            {% for equipment in form.packs %}
+                    <label for={{ equipment.vars.id }} class="flex justify-center">
+                        {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
+                        <div class="card w-72 bg-white shadow-xl mb-10 self-end">
+                            <figure class="h-52 bg-slate-300" style="
+                                {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
+                                {{ equipmentInfo[equipment.vars.value].description|raw }}
+                            </div>
+                        </div>
+                    </label>
+            {% endfor %}
+        </div>
+    </div>
+    {{ form_end(form) }}
+    <button onclick="checkFormValidity()" id="camera_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
+
+    {% include 'form/_form_modals.html.twig' %}
+    {% include 'main/footer.html.twig' %}
+    <script>
+        const loanName = "audiovisual_sae";
+        const loanStartDayElement = document.getElementById("audiovisual_sae_loan_startDay");
+        const loanStartTimeslotElement = document.getElementById("audiovisual_sae_loan_startTimeSlot");
+        const loanEndDayElement = document.getElementById("audiovisual_sae_loan_endDay");
+        const loanEndTimeslotElement = document.getElementById("audiovisual_sae_loan_endTimeSlot");
+        const loanTaggedElementsArray = Array.from(document.querySelectorAll('[tag]'));
+    </script>
+{% endblock %}
