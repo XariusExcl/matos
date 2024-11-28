@@ -67,9 +67,9 @@ class FormController extends AbstractController
         foreach ($unavailableDays as $ud)
         {
             if (
-                ($start >= $ud->getDateStart() && $start <= $ud->getDateEnd())
-                || ($end >= $ud->getDateStart() && $end <= $ud->getDateEnd())
-                || ($start <= $ud->getDateStart() && $end >= $ud->getDateEnd() && $ud->isPreventsLoans())
+                ($start > $ud->getDateStart() && $start < $ud->getDateEnd())
+                || ($end > $ud->getDateStart() && $end < $ud->getDateEnd())
+                || ($start < $ud->getDateStart() && $end > $ud->getDateEnd() && $ud->isPreventsLoans())
             )
             {
                 $this->addFlash('error','La période sélectionnée est indisponible.');
