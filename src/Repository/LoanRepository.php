@@ -66,7 +66,7 @@ class LoanRepository extends ServiceEntityRepository
             ->andWhere('l.status = :status')
             ->setParameter('date', $date->format('Y-m-d H:i'))
             ->setParameter('status', LoanStatus::PENDING)
-            ->orderBy('l.departure_date', 'ASC')
+            ->orderBy('l.id', 'ASC')
             ->getQuery()
             ->getResult()
         ;
