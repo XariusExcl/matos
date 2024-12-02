@@ -227,12 +227,12 @@ class FormController extends AbstractController
                 "quantity" => $e->getQuantity(),
                 "name" => $e->getName()
             ]; }, $equipmentInfo)),
-            'unavailableDays' => json_encode(array_map(function($u) { return [
+            'unavailableDays' => json_encode(array_values(array_map(function($u) { return [
                 "start" => $u->getDateStart()->format('Y-m-d H:i:s'), // FIXME : ->format('c') returns ISO 8601 date, but timezone info is probably not configured properly. This will do :tm:
                 "end" => $u->getDateEnd()->format('Y-m-d H:i:s'),     //
                 "preventsLoans" => $u->isPreventsLoans(),
                 "comment" => $u->getComment()
-            ]; }, $unavailableDays)),
+            ]; }, $unavailableDays))),
             'tagRules' => json_encode(array_map(function($e) { return [
                 "arg1" => $e->getArg1(),
                 "arg2" => $e->getArg2()
