@@ -154,7 +154,7 @@ class FormController extends AbstractController
             $data = $request->request->all()[$formSlug.'_loan'];
 
             $loan->setLoaner($this->getUser());
-            $loan->setComment($data['comment']);
+            $loan->setComment($data['comment']??"");
 
             // Set the departure and return dates
             $parsedDates = $this->parseDepartureReturnDates($data, $unavailableDays);
