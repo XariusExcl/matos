@@ -23,7 +23,7 @@
 				<h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
 				{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
 				{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
-				<a href="{{ path('reservation_form', { formSlug:'audiovisual' }) }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
+				<a href="{{ path('reservation_form', { formSlug:audiovisualCategory.slug }) }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
 			</div>
 			<div class="mt-10">
 				<h2 class="text-3xl font-bold">Autres emprunts :</h2>
