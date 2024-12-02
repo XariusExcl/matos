@@ -49,7 +49,7 @@ class MainController extends AbstractController
         if ($this->getParameter(('MESSAGE_CONTENT')) != null)
             $this->addFlash('info', $this->getParameter(('MESSAGE_CONTENT')));
 
-        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
+        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => $parameterBag->get('SAE_MODE')?'audiovisual_sae':'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
         $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $audiovisualCategory->getId());
 
