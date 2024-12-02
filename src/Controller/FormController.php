@@ -47,8 +47,9 @@ class FormController extends AbstractController
         || $data['endDay'] < 0
         || $data['endDay'] > 13
         || $data['startDay'] > $data['endDay']
-        || !in_array($data['startTimeSlot'], $timeSlots)
-        || !in_array($data['endTimeSlot'], $timeSlots))
+        //|| !in_array($data['startTimeSlot'], $timeSlots)
+        //|| !in_array($data['endTimeSlot'], $timeSlots)
+        )
         {
             $this->addFlash('error','La date d\'emprunt est invalide.');
             return false;

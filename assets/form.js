@@ -125,14 +125,31 @@ async function formDateChange() {
     });
     if (flag) return;
 
-    if(loanName == "audiovisual" && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 1){
-        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
-        isDateValid = false;
-        return;
-    } else if ((loanName == "vr" || loanName == "graphic_design") && loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 5) {
-        document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 semaine.";
-        isDateValid = false;
-        return;
+   switch (loanName) {
+        case "audiovisual_sae":
+            const loanStartTimeslotId = loanStartTimeslotElement.options.selectedIndex;
+            const loanEndTimeslotId = loanEndTimeslotElement.options.selectedIndex;
+            const timeslotsLength = loanEndTimeslotElement.options.length;
+            if ((loanEndTimeslotId - loanStartTimeslotId > 1) || (loanEndDay - loanStartDay > 0 && (loanEndTimeslotId != 0 || loanStartTimeslotId != timeslotsLength - 1))) {
+                document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 créneau horaire.";
+                isDateValid = false;
+                return;
+            }
+            break;
+        case "audiovisual":
+            if (loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 1) {
+                document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 jour.";
+                isDateValid = false;
+                return;
+            }
+            break;
+        case "vr": case "graphic_design":
+            if (loanableDays.indexOf(loanEndDay) - loanableDays.indexOf(loanStartDay) - skippedDays > 5) {
+                document.querySelector('#creneau-error').innerText = "La durée maximale d'emprunt est de 1 semaine.";
+                isDateValid = false;
+                return;
+            }
+            break;
     }
 
     isDateValid = true;
