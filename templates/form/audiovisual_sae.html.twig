@@ -25,18 +25,36 @@
         <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
             {{ form_errors(form.packs, {'attr': {'class': 'text-red-500'}}) }}
             {% for equipment in form.packs %}
-                    <label for={{ equipment.vars.id }} class="flex justify-center">
-                        {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                        <div class="card w-72 bg-white shadow-xl mb-10 self-end">
-                            <figure class="h-52 bg-slate-300" style="
-                                {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
-                            </figure>
-                            <div class="card-body">
-                                <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
-                                {{ equipmentInfo[equipment.vars.value].description|raw }}
-                            </div>
+                <label for={{ equipment.vars.id }} class="flex justify-center">
+                    {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
+                    <div class="card w-72 bg-white shadow-xl mb-10 self-end">
+                        <figure class="h-52 bg-slate-300" style="
+                            {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
+                            {{ equipmentInfo[equipment.vars.value].description|raw }}
                         </div>
-                    </label>
+                    </div>
+                </label>
+            {% endfor %}
+        </div>
+        <h3 class="text-xl font-bold my-5">{{ form_label(form.pack_bonus) }}</h3>
+        <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
+            {{ form_errors(form.pack_bonus, {'attr': {'class': 'text-red-500'}}) }}
+            {% for equipment in form.pack_bonus %}
+                <label for={{ equipment.vars.id }} class="flex justify-center">
+                    {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
+                    <div class="card w-72 bg-white shadow-xl mb-10 self-end">
+                        <figure class="h-52 bg-slate-300" style="
+                            {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
+                            {{ equipmentInfo[equipment.vars.value].description|raw }}
+                        </div>
+                    </div>
+                </label>
             {% endfor %}
         </div>
     </div>

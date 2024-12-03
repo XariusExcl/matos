@@ -57,6 +57,17 @@ class AudiovisualSaeLoanType extends AbstractType
                 'choices' => $options['equipmentCategories']['packs'],
                 'required' => true
             ])
+            ->add('pack_bonus', EntityType::class, [
+                'mapped' => false,
+                'class' => Equipment::class,
+                'choice_label' => 'name',
+                'choice_value' => 'id',
+                'label' => 'Bonus',
+                'multiple' => false,
+                'expanded' => true,
+                'choices' => $options['equipmentCategories']['pack_bonus'],
+                'required' => true
+            ])
         ;
     }
 
