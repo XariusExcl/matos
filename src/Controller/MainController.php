@@ -19,6 +19,9 @@ class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag): Response
     {
+        if ($parameterBag->get('SAE_MODE'))
+            return $this->redirectToRoute('app_main_sae');
+
         $skipWeekends = $parameterBag->get('LOAN_DISABLE_WEEKENDS');
         // Convert a date to a timeslot
         function getTimeslot(\DateTime $date, $skipWeekends = true): int 
@@ -49,7 +52,7 @@ class MainController extends AbstractController
         if ($this->getParameter(('MESSAGE_CONTENT')) != null)
             $this->addFlash('info', $this->getParameter(('MESSAGE_CONTENT')));
 
-        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => $parameterBag->get('SAE_MODE')?'audiovisual_sae':'audiovisual']);
+        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
         $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $audiovisualCategory->getId());
 
@@ -87,20 +90,17 @@ class MainController extends AbstractController
             {
                 $categoryId = $equipment->getCategory()->getId();
 
+                $equipmentTimeSlot = [
+                    "start" => getTimeslot($loan->getDepartureDate()),
+                    "end" => getTimeslot($loan->getReturnDate()),
+                    "status" => $loan->getStatus(),
+                    "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
+                ];
+
                 if (!array_key_exists($categoryId, $equipmentLoaned) || !array_key_exists($equipment->getId(), $equipmentLoaned[$categoryId]))
-                    $equipmentLoaned[$categoryId][$equipment->getId()] = [[
-                        "start" => getTimeslot($loan->getDepartureDate(), $skipWeekends),
-                        "end" => getTimeslot($loan->getReturnDate(), $skipWeekends),
-                        "status" => $loan->getStatus(),
-                        "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
-                    ]];
+                    $equipmentLoaned[$categoryId][$equipment->getId()] = [$equipmentTimeSlot];
                 else
-                    array_push($equipmentLoaned[$categoryId][$equipment->getId()], [
-                        "start" => getTimeslot($loan->getDepartureDate(), $skipWeekends),
-                        "end" => getTimeslot($loan->getReturnDate(), $skipWeekends),
-                        "status" => $loan->getStatus(),
-                        "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
-                    ]);
+                    array_push($equipmentLoaned[$categoryId][$equipment->getId()], $equipmentTimeSlot);
             }
         }
 
@@ -110,6 +110,70 @@ class MainController extends AbstractController
             'equipmentLoaned'=> $equipmentLoaned,
             'dates' => $dates,
             'unavailableDays' => $unavailableDaysTimeSlots
+        ]);
+    }
+
+    #[Route('/sae', name: 'app_main_sae')]
+    public function indexSae(EntityManagerInterface $entityManager): Response
+    {
+        $startDate = new \DateTime("12/09/2024");
+        $endDate = new \DateTime("12/11/2024");
+
+        function getTimeslotSae(\DateTime $date, $startDate, $endDate): int 
+        {
+            $diff = $startDate->diff($date);
+            if ($diff->invert == 1)
+                return 0;
+            if ($date > $endDate)
+                return 10;
+
+            return $diff->d*3 + ($diff->h >= 20 ? 2 : ($diff->h >= 15 ? 1 : 0));
+        }
+
+        if ($this->getParameter(('MESSAGE_CONTENT')) != null)
+            $this->addFlash('info', $this->getParameter(('MESSAGE_CONTENT')));
+
+        $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual_sae']);
+        $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
+
+        $loans = $entityManager->getRepository(Loan::class)->findInNextTwoWeeks(new \DateTime());
+
+        $dates = [];
+        $weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+        $dt = clone $startDate;
+        for ($i = 0; $dt < $endDate; $i++)
+        {
+            $dw = $dt->format('N');
+            array_push($dates, $weekDays[$dw-1]." ".$dt->format('d/m'));
+            $dt->modify('+1 day');
+        }
+
+        $equipmentLoaned = [];
+        foreach($loans as $loan)
+        {
+            foreach($loan->getEquipmentLoaned() as $equipment)
+            {
+                $categoryId = $equipment->getCategory()->getId();
+                $equipmentTimeSlot = [
+                    "start" => getTimeslotSae($loan->getDepartureDate(), $startDate, $endDate),
+                    "end" => getTimeslotSae($loan->getReturnDate(), $startDate, $endDate),
+                    "status" => $loan->getStatus(),
+                    "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
+                ];
+
+                if (!array_key_exists($categoryId, $equipmentLoaned) || !array_key_exists($equipment->getId(), $equipmentLoaned[$categoryId]))
+                    $equipmentLoaned[$categoryId][$equipment->getId()] = [$equipmentTimeSlot];
+                else
+                    array_push($equipmentLoaned[$categoryId][$equipment->getId()], $equipmentTimeSlot);
+            }
+        }
+
+        return $this->render('main/index.html.twig', [
+            'audiovisualCategory' => $audiovisualCategory,
+            'tableEquipment' => $tableEquipment, 
+            'equipmentLoaned'=> $equipmentLoaned,
+            'dates' => $dates,
+            'saeMode' => true
         ]);
     }
 

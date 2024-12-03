@@ -22,7 +22,11 @@
 			<div id="{{ audiovisualCategory|lower }}" class="row">
 				<h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
 				{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
-				{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
+				{% if saeMode %}
+					{% include 'equipment_category/availability_table_sae.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans} %}
+				{% else %}
+					{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
+				{% endif %}
 				<a href="{{ path('reservation_form', { formSlug:audiovisualCategory.slug }) }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
 			</div>
 			<div class="mt-10">
