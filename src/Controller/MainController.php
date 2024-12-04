@@ -195,16 +195,20 @@ class MainController extends AbstractController
         $loan = $entityManager->getRepository(Loan::class)->find($id);
         $user = $this->getUser();
         
-        if ($loan->getLoaner() != $user)
-        {
+        if ($loan->getLoaner() != $user) {
             $this->addFlash('error', 'Vous ne pouvez pas annuler un prêt qui ne vous appartient pas !');
             return $this->redirectToRoute('app_myloans');
-        } else {
-            $loan->setStatus(LoanStatus::CANCELLED_BY_LOANER->value);
-            $entityManager->flush();
-            $this->addFlash('success', 'Le prêt a bien été annulé.');
-            # TODO : Send an email
+        }
+
+        if ($loan->getStatus() != LoanStatus::PENDING->value) {
+            $this->addFlash('error', 'Vous ne pouvez plus annuler ce prêt !');
             return $this->redirectToRoute('app_myloans');
         }
+
+        $loan->setStatus(LoanStatus::CANCELLED_BY_LOANER->value);
+        $entityManager->flush();
+        $this->addFlash('success', 'Le prêt a bien été annulé.');
+        # TODO : Send an email
+        return $this->redirectToRoute('app_myloans');
     }
 }

@@ -109,8 +109,8 @@ class FormController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($user->hasReachedMaxConcurrentLoans()) {
-            $this->addFlash('error','Vous avez atteint le maximum (2) de réservations en même temps.');
+        if ($user->hasReachedMaxConcurrentLoans($parameterBag->get('SAE_MODE')? 1 : 2)) {
+            $this->addFlash('error','Vous avez atteint le maximum ('. $parameterBag->get('SAE_MODE')? 1 : 2 .') de réservations en même temps.');
             return $this->redirectToRoute('app_main');
         }
 

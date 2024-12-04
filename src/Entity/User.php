@@ -188,13 +188,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function hasReachedMaxConcurrentLoans(): bool
+    public function hasReachedMaxConcurrentLoans(int $max = 2): bool
     {
         if ($this->roles[0] == 'ROLE_ADMIN')
             return false;
         
         return $this->loans->filter(function(Loan $l) {
             return ($l->getStatus() == LoanStatus::ACCEPTED->value || $l->getStatus() == LoanStatus::PENDING->value);
-        })->count() >= 2;
+        })->count() >= $max;
     }
 }
