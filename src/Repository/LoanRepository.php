@@ -45,16 +45,16 @@ class LoanRepository extends ServiceEntityRepository
     public function findUnavailableBetweenDates(\DateTime $start, \DateTime $end): array
     {
         return $this->createQueryBuilder('l')
-            ->where('l.departure_date BETWEEN :start AND :end')
-            ->setParameter('start', $start->format('Y-m-d H:i'))
-            ->setParameter(':end', $end->format('Y-m-d H:i'))
-            ->orWhere('l.return_date BETWEEN :start AND :end')
-            ->orWhere('l.departure_date < :start AND l.return_date > :end')
-            ->andWhere('l.status < 3') // PENDING or ACCEPTED
-            ->orderBy('l.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
+        ->where('l.departure_date > :start AND l.departure_date < :end')
+        ->setParameter('start', $start->format('Y-m-d H:i'))
+        ->setParameter('end', $end->format('Y-m-d H:i'))
+        ->where('l.return_date > :start AND l.return_date < :end')
+        ->orWhere('l.departure_date <= :start AND l.return_date >= :end')
+        ->andWhere('l.status < 2') // PENDING or ACCEPTED
+        ->orderBy('l.id', 'ASC')
+        ->getQuery()
+        ->getResult()
+    ;
     }
 
     public function findPending(): array

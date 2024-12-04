@@ -66,7 +66,7 @@ class AudiovisualSaeLoanType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'choices' => $options['equipmentCategories']['pack_bonus'],
-                'required' => true
+                'required' => false
             ])
         ;
     }

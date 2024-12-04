@@ -45,6 +45,7 @@
             {% for equipment in form.pack_bonus %}
                 <label for={{ equipment.vars.id }} class="flex justify-center">
                     {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
+                    {% if equipment.vars.value != "" %}
                     <div class="card w-72 bg-white shadow-xl mb-10 self-end">
                         <figure class="h-52 bg-slate-300" style="
                             {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
@@ -54,6 +55,14 @@
                             {{ equipmentInfo[equipment.vars.value].description|raw }}
                         </div>
                     </div>
+                    {% else %}
+                        <div class="card w-72 bg-white shadow-xl mb-10 self-end">
+                            <div class="card-body">
+                                <h2 class="card-title"><i>Aucun</i></h2>
+                                <i>Pas de matériel bonus nécessaire pour ce projet.</i>
+                            </div>
+                        </div>
+                    {% endif %}
                 </label>
             {% endfor %}
         </div>
