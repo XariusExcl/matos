@@ -31,6 +31,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-/public/adminer-4.8.3.php
+/public/adminer*.php
 /public/images/*
 /public/images/*/*
