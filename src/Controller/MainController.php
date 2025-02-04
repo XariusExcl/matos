@@ -109,7 +109,8 @@ class MainController extends AbstractController
             'tableEquipment' => $tableEquipment, 
             'equipmentLoaned'=> $equipmentLoaned,
             'dates' => $dates,
-            'unavailableDays' => $unavailableDaysTimeSlots
+            'unavailableDays' => $unavailableDaysTimeSlots,
+            'saeMode' => false
         ]);
     }
 

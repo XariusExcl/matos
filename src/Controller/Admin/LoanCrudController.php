@@ -37,9 +37,26 @@ class LoanCrudController extends AbstractCrudController
     public function loansPendingReturn(EntityManagerInterface $em): Response
     {
         $pendingLoans = $em->getRepository(Loan::class)->findPendingReturn();
+        
+        $loans = [];
+
+        foreach($pendingLoans as &$loan) {
+            $loanDisplay = [
+                "id" => $loan->getId(),
+                "loaner" => $loan->getLoaner()->getName() ?? str_split($loan->getLoaner()->getEmail(), '@')[0],
+                "equipmentLoaned" => count($loan->getEquipmentLoaned()),
+                "assignee" => $loan->getAssignee()->getName() ?? "[Personne]",
+            ];
+            array_push($loans, ["type" => "D", "date" => $loan->getDepartureDate(),...$loanDisplay]);
+            array_push($loans, ["type" => "R", "date" => $loan->getReturnDate(),...$loanDisplay]);
+        }
+
+        usort($loans, function($a, $b) {
+            return $a['date'] <=> $b['date'];
+        });
 
         return $this->render('admin/loan/pending_return_content.html.twig', [
-            'loans' => $pendingLoans,
+            'loans' => $loans,
         ]);
     }
     

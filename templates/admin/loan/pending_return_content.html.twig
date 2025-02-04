@@ -1,10 +1,11 @@
-<h3>Emprunts en attente de retour : {{loans|length}}</h3>
+<h3>Évènements à venir / en cours : {{loans|length}}</h3>
 <table class="datagrid">
     <thead>
         <tr>
+            <td></td>
+            <td>Id</td>
+            <td>Date</td>
             <td>Responsable</td>
-            <td>Date de départ</td>
-            <td>Date de retour</td>
             <td>Équipment emprunté</td>
             <td>Géré par</td>
             <td>Actions</td>
@@ -12,16 +13,31 @@
     </thead>
     <tbody>
         {% for loan in loans %}
-            <tr>
-                <td>{{ loan.loaner.name ?? loan.loaner.email|split('@')[0] }}</td>
-                <td>{{ loan.departuredate|date() }}</td>
-                <td>{{ loan.returndate|date() }}</td>
-                <td>{{ loan.equipmentloaned|length }}</td>
-                <td>{{ loan.assignee.name ?? "[Personne]" }}</td>
-                <td>
-                    <a class="btn btn-primary" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>
-                </td>
-            </tr>
+            {% if loan.type == "D" %}
+                <tr style="background:var(--alert-success-bg);">
+                    <td>-></td>
+                    <td>#{{ loan.id }}</td>
+                    <td>{{ loan.date|date() }}</td>
+                    <td>{{ loan.loaner }}</td>
+                    <td>{{ loan.equipmentLoaned }}</td>
+                    <td>{{ loan.assignee }}</td>
+                    <td>
+                        <a class="btn btn-secondary" href="/admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\LoanCrudController&entityId={{ loan.id }}" {# lol #}>Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr style="background:var(--alert-warning-bg);">
+                    <td><-</td>
+                    <td>#{{ loan.id }}</td>
+                    <td>{{ loan.date|date() }}</td>
+                    <td>{{ loan.loaner }}</td>
+                    <td>{{ loan.equipmentLoaned }}</td>
+                    <td>{{ loan.assignee }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
     </tbody>
 </table>
