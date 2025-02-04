@@ -15,7 +15,7 @@
         {% for loan in loans %}
             {% if loan.type == "D" %}
                 <tr style="background:var(--alert-success-bg);">
-                    <td>-></td>
+                    <td><i class="fa-solid fa-arrow-right"></i></td>
                     <td>#{{ loan.id }}</td>
                     <td>{{ loan.date|date() }}</td>
                     <td>{{ loan.loaner }}</td>
@@ -27,7 +27,7 @@
                 </tr>
             {% else %}
                 <tr style="background:var(--alert-warning-bg);">
-                    <td><-</td>
+                    <td><i class="fa-solid fa-arrow-left"></i></td>
                     <td>#{{ loan.id }}</td>
                     <td>{{ loan.date|date() }}</td>
                     <td>{{ loan.loaner }}</td>
