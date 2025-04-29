@@ -182,6 +182,7 @@ function updateUnavailableEquipment(request) {
         if (!input) return;
 
         input.disabled = true;
+        input.checked = false;
         unavailableEquipmentInputs.push(input);
     });
 }
