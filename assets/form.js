@@ -183,6 +183,7 @@ function updateUnavailableEquipment(request) {
 
         input.disabled = true;
         input.checked = false;
+        processTagRules();
         unavailableEquipmentInputs.push(input);
     });
 }
