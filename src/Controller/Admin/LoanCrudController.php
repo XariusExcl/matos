@@ -162,7 +162,7 @@ class LoanCrudController extends AbstractCrudController
             DateTimeField::new('departure_date'),
             DateTimeField::new('return_date'),
             ChoiceField::new('status')->setChoices(LoanStatus::cases())->hideOnForm(),
-            TextareaField::new('comment')->setFormTypeOption('disabled','disabled'),
+            TextareaField::new('comment'),
             AssociationField::new('assignee'),
             AssociationField::new('equipmentLoaned')
         ];
