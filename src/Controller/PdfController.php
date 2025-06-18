@@ -33,6 +33,11 @@ class PdfController extends AbstractController
     #[Route('/pdf/loan_html/{id}', name: 'pdf_loan_html')]
     public function loanAction(Loan $loan)
     {
+        if ($loan->getLoaner() !== $this->getUser()) {
+            $this->addFlash('error', 'Vous ne pouvez pas accéder à ce document.');
+            return $this->redirectToRoute('app_main');
+        }
+
         return $this->render('pdf/loan.html.twig', [
             'loan' => $loan
         ]);
