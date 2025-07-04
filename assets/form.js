@@ -28,15 +28,15 @@ function processUnavailableDays() {
                 if (unavailableDays[index] && dateTime >= unavailableDays[index].endTime) {
                     inUnavailablePeriod = false;
                     index++;
+                    return;
                 }
-            }
 
-            if (inUnavailablePeriod) {
                 if (unavailableTimeSlots[day] === undefined) {
                     unavailableTimeSlots[day] = [];
                 }
                 unavailableTimeSlots[day].push(o.value);
             }
+
         });
         if (unavailableTimeSlots[day]?.length === loanStartTimeslotElement.options.length) {
             loanStartDayElement.querySelector(`option[value="${day}"]`).disabled = true;
