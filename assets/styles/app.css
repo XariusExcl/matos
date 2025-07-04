@@ -14,12 +14,17 @@
     outline: 4px oklch(var(--p)) solid;
 }
 
-label > input[disabled] + .card {
+input:disabled + .card {
   background-color: #0003;
 }
 
-.hoverdiv:hover {
-  background-color: #0003;
+/* doesnt work? */
+input:disabled + .card figure {
+  filter: grayscale(0.8);
+}
+
+input:disabled + label {
+  color: grey;
 }
 
 .pending-reservation {
