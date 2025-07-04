@@ -16,9 +16,9 @@
 
 input:disabled + .card {
   background-color: #0003;
+  color: #666;
 }
 
-/* doesnt work? */
 input:disabled + .card figure {
   filter: grayscale(0.8);
 }
