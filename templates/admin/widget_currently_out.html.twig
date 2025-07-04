@@ -1,0 +1,6 @@
+<h3>Matériel actuellement emprunté : </h3>
+<ul>
+{% for e in equipments %}
+<li><b>{{ quantities[e.id] > 1 ? quantities[e.id]~"x " : "" }}</b>{{ e.name }}</li>
+{% endfor %}
+</ul>

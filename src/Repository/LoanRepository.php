@@ -89,4 +89,18 @@ class LoanRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findOutPendingReturn(): array
+    {
+        $now = new \DateTime('now');
+
+        return $this->createQueryBuilder('l')
+            ->where('l.departure_date < :now')
+            ->setParameter('now', $now->format('Y-m-d H:i'))
+            ->andWhere('l.status = :status')
+            ->setParameter('status', LoanStatus::ACCEPTED)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

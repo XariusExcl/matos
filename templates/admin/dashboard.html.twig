@@ -4,8 +4,9 @@
 
 {% block main %}
     <p>Bienvenue sur le back-office de Matos.</p>
-    <p>Les emprunts en attente sont triés par date d'émission de la demande (le plus ancien en haut).</p>
-    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loansPending')) }}
+    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::equipmentCurrentlyOut')) }}
     <br/>
-    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loansPendingReturn')) }}
+    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPending')) }}
+    <br/>
+    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPendingReturn')) }}
 {% endblock %}
