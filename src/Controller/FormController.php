@@ -40,16 +40,10 @@ class FormController extends AbstractController
 
     function parseDepartureReturnDates(array &$data, array &$unavailableDays): array|bool
     {
-        $timeSlots = ["0930", "1100", "1230", "1400", "1530", "1700"];
-
         if ($data['startDay'] < 0
         || $data['startDay'] > 13
         || $data['endDay'] < 0
-        || $data['endDay'] > 13
-        || $data['startDay'] > $data['endDay']
-        //|| !in_array($data['startTimeSlot'], $timeSlots)
-        //|| !in_array($data['endTimeSlot'], $timeSlots)
-        )
+        || $data['endDay'] > 13)
         {
             $this->addFlash('error','La date d\'emprunt est invalide.');
             return false;
@@ -64,6 +58,12 @@ class FormController extends AbstractController
             ->modify("+".($data['endDay'] + 1)." day")
             ->modify("+".substr($data['endTimeSlot'], 0, 2)." hours")
             ->modify("+".substr($data['endTimeSlot'], 2, 2)." minutes");
+
+        if ($start >= $end)
+        {
+            $this->addFlash('error','La date d\'emprunt est invalide.');
+            return false;
+        }
 
         foreach ($unavailableDays as $ud)
         {
