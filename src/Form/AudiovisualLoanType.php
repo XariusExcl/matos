@@ -6,7 +6,6 @@ use App\Entity\Equipment;
 use App\Entity\Loan;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -27,10 +26,8 @@ class AudiovisualLoanType extends AbstractType
                 'label' => 'Créneau horaire',
                 'choices' => [
                     '9h30' => '0930',
-                    '11h' => '1100',
                     '12h30' => '1230',
                     '14h' => '1400',
-                    '15h30' => '1530',
                     '17h00' => '1700',
                 ],
                 'required' => true
@@ -45,10 +42,8 @@ class AudiovisualLoanType extends AbstractType
                 'label' => 'Créneau horaire',
                 'choices' => [
                     '9h30' => '0930',
-                    '11h' => '1100',
                     '12h30' => '1230',
                     '14h' => '1400',
-                    '15h30' => '1530',
                     '17h00' => '1700',
                 ],
                 'required' => true
