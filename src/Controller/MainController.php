@@ -117,8 +117,8 @@ class MainController extends AbstractController
     #[Route('/sae', name: 'app_main_sae')]
     public function indexSae(EntityManagerInterface $entityManager): Response
     {
-        $startDate = new \DateTime("10/12/2025");
-        $endDate = new \DateTime("18/12/2025");
+        $startDate = new \DateTime("12/10/2025");
+        $endDate = new \DateTime("12/18/2025");
 
         function getTimeslotSae(\DateTime $date, $startDate, $endDate): int 
         {
