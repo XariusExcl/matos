@@ -1,5 +1,5 @@
 <div class="overflow-scroll my-5 rounded-lg bg-base-200 shadow-inner" style="width:100%;max-height:calc(70vh - 60px)">
-	<div class="grid p-2 gap-px" style="grid-template-columns:1fr repeat({{ dates|length * 3 }},minmax(54px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
+	<div class="grid p-2 gap-px" style="grid-template-columns:4fr repeat({{ dates|length * 3 }},minmax(48px, 1fr)); grid-template-rows:repeat({{equipment|length +2}},24px)">
         {% for date in dates %}
             {% set i = loop.index0 %}
             <div class="text-center font-bold text-sm" style="grid-area:1/{{i*3+2}}/2/{{i*3+5}}">{{ date }}</div>
@@ -7,6 +7,12 @@
             <div class="text-center font-bold text-sm" style="grid-area:2/{{i*3+3}}/3/{{i*3+4}}">A-M</div>
             <div class="text-center font-bold text-sm" style="grid-area:2/{{i*3+4}}/3/{{i*3+5}}">Soir</div>
             <div class="table-vertical-lines" style="grid-area:1/{{i*3+2}}/last-line/{{i*3+5}}"></div>
+        {% endfor %}
+
+        {% for u in unavailableDays %}
+            <div class="ud w-100 h-100" style="grid-area:1/{{u.slotStart +2}}/last-line/{{u.slotEnd +3}};background-color:#0003">
+                <div class="ud-content text-center font-bold text-sm relative bg-slate-400" style="grid-area:1/{{u.slotStart +2}}/2/{{u.slotEnd +3}}">{{ u.comment ~ " " ~ u.timeStartEnd}}</div>
+            </div>
         {% endfor %}
 
         {% for e in equipment %}

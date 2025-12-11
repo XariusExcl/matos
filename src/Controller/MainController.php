@@ -16,6 +16,32 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MainController extends AbstractController
 {
+    // Convert a date to a timeslot
+    public function getTimeslot(\DateTime $date, $skipWeekends = true): int 
+    {
+        $now = new \DateTime("today");
+        $diff = $date->diff($now);
+
+        $hours = $diff->d*24 + $diff->h;
+
+        if ($hours < 13 || $diff->invert == 0)
+            return 0;
+        
+        if ($hours > 14*24-12)
+            return $skipWeekends?20:28;
+
+        // Compute weekend days between the two dates
+        $skippedWeekendDays = 0;
+        for ($i = 0; $i < $diff->d; $i++)
+        {
+            $dw_ = $now->format('N');
+            if ($dw_ > 5 && $skipWeekends)
+                $skippedWeekendDays++;
+            $now->modify('+1 day');
+        }
+        return $diff->d*2 + (($diff->h > 13)?1:0) - 2*$skippedWeekendDays;
+    }
+
     #[Route('/', name: 'app_main')]
     public function index(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag): Response
     {
@@ -23,31 +49,6 @@ class MainController extends AbstractController
             return $this->redirectToRoute('app_main_sae');
 
         $skipWeekends = $parameterBag->get('LOAN_DISABLE_WEEKENDS');
-        // Convert a date to a timeslot
-        function getTimeslot(\DateTime $date, $skipWeekends = true): int 
-        {
-            $now = new \DateTime("today");
-            $diff = $date->diff($now);
-
-            $hours = $diff->d*24 + $diff->h;
-
-            if ($hours < 13 || $diff->invert == 0)
-                return 0;
-            
-            if ($hours > 14*24-12)
-                return $skipWeekends?20:28;
-    
-            // Compute weekend days between the two dates
-            $skippedWeekendDays = 0;
-            for ($i = 0; $i < $diff->d; $i++)
-            {
-                $dw_ = $now->format('N');
-                if ($dw_ > 5 && $skipWeekends)
-                    $skippedWeekendDays++;
-                $now->modify('+1 day');
-            }
-            return $diff->d*2 + (($diff->h > 13)?1:0) - 2*$skippedWeekendDays;
-        }
 
         if ($this->getParameter(('MESSAGE_CONTENT')) != null)
             $this->addFlash('info', $this->getParameter(('MESSAGE_CONTENT')));
@@ -60,8 +61,8 @@ class MainController extends AbstractController
         $unavailableDaysTimeSlots = [];
         foreach($unavailableDays as $u)
             $unavailableDaysTimeSlots[$u->getId()] = [
-                "slotStart" => getTimeslot($u->getDateStart(), $skipWeekends),
-                "slotEnd" => getTimeslot($u->getDateEnd(), $skipWeekends),
+                "slotStart" => $this->getTimeslot($u->getDateStart(), $skipWeekends),
+                "slotEnd" => $this->getTimeslot($u->getDateEnd(), $skipWeekends),
                 "timeStartEnd" => "({$u->getDateStart()->format('H:i')} - {$u->getDateEnd()->format('H:i')})",
                 "preventsLoans" => $u->isPreventsLoans(),
                 "comment" => $u->getComment()
@@ -91,8 +92,8 @@ class MainController extends AbstractController
                 $categoryId = $equipment->getCategory()->getId();
 
                 $equipmentTimeSlot = [
-                    "start" => getTimeslot($loan->getDepartureDate()),
-                    "end" => getTimeslot($loan->getReturnDate()),
+                    "start" => $this->getTimeslot($loan->getDepartureDate()),
+                    "end" => $this->getTimeslot($loan->getReturnDate()),
                     "status" => $loan->getStatus(),
                     "info" => "{$loan->getLoaner()->getName()} ({$loan->getDepartureDate()->format("H:i")} - {$loan->getReturnDate()->format("H:i")})"
                 ];
@@ -115,8 +116,11 @@ class MainController extends AbstractController
     }
 
     #[Route('/sae', name: 'app_main_sae')]
-    public function indexSae(EntityManagerInterface $entityManager): Response
+    public function indexSae(EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag): Response
     {
+        if (!$parameterBag->get('SAE_MODE'))
+            return $this->redirectToRoute('app_main');
+
         $startDate = new \DateTime("12/10/2025");
         $endDate = new \DateTime("12/18/2025");
 
@@ -136,6 +140,18 @@ class MainController extends AbstractController
 
         $audiovisualCategory = $entityManager->getRepository(EquipmentCategory::class)->findOneBy(['slug' => 'audiovisual_sae']);
         $tableEquipment = $entityManager->getRepository(Equipment::class)->findShownInTableByCategory($audiovisualCategory->getId());
+        $unavailableDays = $entityManager->getRepository(UnavailableDays::class)->findInNextTwoWeeks(new \DateTime(), $audiovisualCategory->getId());
+
+        // Create a dictionary of unavailable timeslots
+        $unavailableDaysTimeSlots = [];
+        foreach($unavailableDays as $u)
+            $unavailableDaysTimeSlots[$u->getId()] = [
+                "slotStart" => $this->getTimeslot($u->getDateStart(), false),
+                "slotEnd" => $this->getTimeslot($u->getDateEnd(), false),
+                "timeStartEnd" => "({$u->getDateStart()->format('H:i')} - {$u->getDateEnd()->format('H:i')})",
+                "preventsLoans" => $u->isPreventsLoans(),
+                "comment" => $u->getComment()
+            ];
 
         $loans = $entityManager->getRepository(Loan::class)->findInNextTwoWeeks(new \DateTime());
 
@@ -174,6 +190,7 @@ class MainController extends AbstractController
             'tableEquipment' => $tableEquipment, 
             'equipmentLoaned'=> $equipmentLoaned,
             'dates' => $dates,
+            'unavailableDays' => $unavailableDaysTimeSlots,
             'saeMode' => true
         ]);
     }
