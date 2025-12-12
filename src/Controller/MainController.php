@@ -121,8 +121,8 @@ class MainController extends AbstractController
         if (!$parameterBag->get('SAE_MODE'))
             return $this->redirectToRoute('app_main');
 
-        $startDate = new \DateTime("12/10/2025");
-        $endDate = new \DateTime("12/18/2025");
+        $startDate = new \DateTime("12/12/2025");
+        $endDate = new \DateTime("12/17/2025");
 
         function getTimeslotSae(\DateTime $date, $startDate, $endDate): int 
         {
