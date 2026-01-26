@@ -55,7 +55,7 @@ class DashboardWidgetsController extends AbstractCrudController
             $loanDisplay = [
                 "id" => $loan->getId(),
                 "loaner" => $loan->getLoaner()->getName() ?? str_split($loan->getLoaner()->getEmail(), '@')[0],
-                "equipmentLoaned" => count($loan->getEquipmentLoaned()),
+                "equipmentLoaned" => $loan->getEquipmentLoaned(),
                 "assignee" => $loan->getAssignee()->getName() ?? "[Personne]",
             ];
             array_push($loans, ["type" => "D", "date" => $loan->getDepartureDate(),...$loanDisplay]);
