@@ -19,7 +19,7 @@
                     <td>#{{ loan.id }}</td>
                     <td>{{ loan.date|date() }}</td>
                     <td>{{ loan.loaner }}</td>
-                    <td>{{ loan.equipmentLoaned }}</td>
+                    <td>{{ loan.equipmentLoaned[0].category }}</td>
                     <td>{{ loan.assignee }}</td>
                     <td>
                         <a class="btn btn-secondary" href="/admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\LoanCrudController&entityId={{ loan.id }}" {# lol #}>Modifier</a>
@@ -31,7 +31,7 @@
                     <td>#{{ loan.id }}</td>
                     <td>{{ loan.date|date() }}</td>
                     <td>{{ loan.loaner }}</td>
-                    <td>{{ loan.equipmentLoaned }}</td>
+                    <td>{{ loan.equipmentLoaned[0].category }}</td>
                     <td>{{ loan.assignee }}</td>
                     <td>
                         <a class="btn btn-primary" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>

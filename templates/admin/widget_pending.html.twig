@@ -16,7 +16,7 @@
                 <td>{{ loan.loaner.name ?? loan.loaner.email|split('@')[0] }}</td>
                 <td>{{ loan.departuredate|date() }}</td>
                 <td>{{ loan.returndate|date() }}</td>
-                <td>{{ loan.equipmentloaned|length }}</td>
+                <td>{{ loan.equipmentloaned[0].category }}</td>
                 <td>
                     <a class="btn btn-primary" href="{{ path('admin_loan_review', {'id': loan.id}) }}">Répondre</a>
                 </td>
