@@ -60,9 +60,7 @@ class LoanRepository extends ServiceEntityRepository
         $date = new \DateTime();
 
         return $this->createQueryBuilder('l')
-            ->where('l.departure_date > :date')
-            ->andWhere('l.status = :status')
-            ->setParameter('date', $date->format('Y-m-d H:i'))
+            ->where('l.status = :status')
             ->setParameter('status', LoanStatus::PENDING)
             ->orderBy('l.id', 'ASC')
             ->getQuery()
