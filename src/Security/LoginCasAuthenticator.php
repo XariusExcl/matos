@@ -108,12 +108,8 @@ class LoginCasAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ];
-
         $def_response = new RedirectResponse(
-            $this->router->generate('login', ['message' => $data])
+            $this->router->generate('login', ['message' => strtr($exception->getMessageKey(), $exception->getMessageData())])
         ); // new JsonResponse($data, Response::HTTP_FORBIDDEN);
 
         return $def_response;

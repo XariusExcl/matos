@@ -25,8 +25,8 @@ class LoginController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        if ($request->query->has('message[message]')) {
-            $this->addFlash('error', $request->query->get('message[message]'));
+        if ($request->query->has('message')) {
+            $this->addFlash('error', $request->query->get('message'));
         }
 
         return $this->render('security/login.html.twig', [
