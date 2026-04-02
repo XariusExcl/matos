@@ -4,16 +4,16 @@
 {% endblock %}
 
 {% block body %}
-    {% for message in app.flashes('error') %}
-        {% include 'main/flash.html.twig' with {'type': "error"} %}
-    {% endfor %}
-    {% for message in app.flashes('success') %}
-        {% include 'main/flash.html.twig' with {'type': "success"} %}
-    {% endfor %}
     {% if error %}
 		<div role="alert" class="absolute alert alert-error bg-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 	{% endif %}
     <div class="flex justify-center items-center min-h-screen" style="background-image:url({{asset('bg.webp')}});background-position:center;background-size:cover;">
+        {% for message in app.flashes('error') %}
+            {% include 'main/flash.html.twig' with {'type': "error"} %}
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            {% include 'main/flash.html.twig' with {'type': "success"} %}
+        {% endfor %}
         <div class="card w-96 bg-base-100">
             <div class="card-body">
                 <div class="flex justify-center">
