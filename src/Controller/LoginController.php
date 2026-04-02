@@ -18,12 +18,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class LoginController extends AbstractController
 {
     #[Route('/login', name: 'login')]
-    public function index(AuthenticationUtils $authenticationUtils): Response
+    public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+
+        if ($request->query->has('message[message]')) {
+            $this->addFlash('error', $request->query->get('message[message]'));
+        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
