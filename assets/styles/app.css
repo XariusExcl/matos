@@ -31,6 +31,10 @@ input:disabled + label {
   background: repeating-linear-gradient(45deg, #00BE8F, #00BE8F 5px, #00BE8F00 6px, #00BE8F00 11px, #00BE8F 12px);
 }
 
+.unavailable-non-preventing {
+  background: repeating-linear-gradient(45deg, #0003, #0003 5px, #0000 6px, #0000 11px, #0003 12px);
+}
+
 .table-vertical-lines {
   border-left: #0003 dashed 1px;
 }

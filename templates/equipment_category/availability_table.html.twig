@@ -9,9 +9,15 @@
         {% endfor %}
 
         {% for u in unavailableDays %}
+            {% if u.preventsLoans %}
             <div class="ud w-100 h-100" style="grid-area:1/{{u.slotStart +2}}/last-line/{{u.slotEnd +3}};background-color:#0003">
                 <div class="ud-content text-center font-bold text-sm relative bg-slate-400" style="grid-area:1/{{u.slotStart +2}}/2/{{u.slotEnd +3}}">{{ u.comment ~ " " ~ u.timeStartEnd}}</div>
             </div>
+            {% else %}
+            <div class="ud w-100 h-100 unavailable-non-preventing" style="grid-area:1/{{u.slotStart +2}}/last-line/{{u.slotEnd +3}};">
+                <div class="ud-content text-center font-bold text-sm relative bg-slate-400" style="grid-area:1/{{u.slotStart +2}}/2/{{u.slotEnd +3}}">{{ u.comment ~ " " ~ u.timeStartEnd}}</div>
+            </div>
+            {% endif %}
         {% endfor %}
 
         {% for e in equipment %}
