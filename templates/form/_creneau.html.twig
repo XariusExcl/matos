@@ -1,32 +1,18 @@
-<h2 class="text-2xl font-bold my-2" >Créneau</h2>
-<p id="creneau-error" class="text-error">
-    {{ form_errors(form.startDay) }}
-    {{ form_errors(form.endDay) }}
-    {{ form_errors(form.startTimeSlot) }}
-    {{ form_errors(form.endTimeSlot) }}
-</p>
-<div class="flex flex-wrap">
-    <div class="flex flex-wrap">
-        <div class="w-52 mr-5">
-            {{ form_label(form.startDay) }}
-            {{ form_widget(form.startDay, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
-        </div>
-        <div class="w-32">
-            {{ form_label(form.startTimeSlot) }}
-            {{ form_widget(form.startTimeSlot, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
-        </div>
-    </div>
-
-    <svg xmlns="http://www.w3.org/2000/svg" class="mx-6 mt-6 w10 h-10 invisible lg:visible" style="transform:rotate(180deg);" viewBox="0 0 24 24"><g id="Left-3" data-name="Left"><path d="M21,8H11V5a1,1,0,0,0-1.707-.707l-7,7a1,1,0,0,0,0,1.414l7,7A1,1,0,0,0,11,19V16H21a1,1,0,0,0,1-1V9A1,1,0,0,0,21,8Z" style="fill:#CBD5E1"/></g></svg>
-
-    <div class="flex flex-wrap">
-        <div class="w-52 mr-5">
-            {{ form_label(form.endDay) }}
-            {{ form_widget(form.endDay, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
-        </div>
-        <div class="w-32">
-            {{ form_label(form.endTimeSlot) }}
-            {{ form_widget(form.endTimeSlot, {'attr': {'class': 'select select-primary w-full max-w-xs'}}) }}
-        </div>
-    </div>
+{% import 'main/_icons.html.twig' as ui %}
+<div class="flex flex-col gap-6">
+	{% for side in [
+		{title: 'Départ', day: form.startDay, slot: form.startTimeSlot},
+		{title: 'Retour', day: form.endDay, slot: form.endTimeSlot}
+	] %}
+		<div class="flex flex-col gap-3">
+			<h3 class="font-semibold">{{ side.title }}</h3>
+			<div class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" data-choices-for="{{ side.day.vars.id }}" data-kind="day" role="group" aria-label="Jour de {{ side.title|lower }}"></div>
+			<div class="flex gap-2" data-choices-for="{{ side.slot.vars.id }}" data-kind="slot" role="group" aria-label="Créneau horaire de {{ side.title|lower }}"></div>
+			<div class="hidden">
+				{{ form_label(side.day) }}{{ form_widget(side.day) }}
+				{{ form_label(side.slot) }}{{ form_widget(side.slot) }}
+			</div>
+		</div>
+	{% endfor %}
+	<p id="creneau-error" class="flex scroll-mb-32 items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-error empty:hidden" role="alert">{{ form_errors(form.startDay) }}{{ form_errors(form.endDay) }}{{ form_errors(form.startTimeSlot) }}{{ form_errors(form.endTimeSlot) }}</p>
 </div>

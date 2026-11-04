@@ -1,6 +1,12 @@
-<h3>Matériel actuellement emprunté : </h3>
-<ul>
-{% for e in equipments %}
-<li><b>{{ quantities[e.id] > 1 ? quantities[e.id]~"x " : "" }}</b>{{ e.name }}</li>
-{% endfor %}
-</ul>
+<section class="ea-card p-5">
+	<h2 class="mb-3 flex items-center justify-between text-lg font-bold">Actuellement sorti <span class="text-sm font-medium text-ink-500">{{ equipments|length }}</span></h2>
+	{% for e in equipments %}
+		<div class="flex items-center gap-3 border-t border-surface-line py-2.5">
+			<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-ink-700"><i class="fa fa-box"></i></span>
+			<span class="min-w-0 flex-1 text-sm font-semibold text-ink-900">{{ e.name }}</span>
+			<span class="text-xs text-ink-500">×{{ quantities[e.id] }}</span>
+		</div>
+	{% else %}
+		<p class="m-0 rounded-xl border border-dashed border-surface-line p-6 text-center text-sm text-ink-500">Tout le matériel est au studio.</p>
+	{% endfor %}
+</section>

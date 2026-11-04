@@ -2,11 +2,19 @@
 
 {% block content_title %}Tableau de bord{% endblock %}
 
+{% block page_actions %}
+	<a class="ea-btn ea-btn-dark" href="{{ ea_url().setController('App\\Controller\\Admin\\UnavailableDaysCrudController').setAction('new') }}">Nouvelle fermeture</a>
+{% endblock %}
+
 {% block main %}
-    <p>Bienvenue sur le back-office de Matos.</p>
-    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::equipmentCurrentlyOut')) }}
-    <br/>
-    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPending')) }}
-    <br/>
-    {{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPendingReturn')) }}
+	<p class="mb-6 text-ink-500">{{ 'now'|date('d/m/Y') }} · Bienvenue sur le back-office de MATOS.</p>
+	<div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+		<div class="flex flex-col gap-6">
+			{{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPending')) }}
+			{{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::loansPendingReturn')) }}
+		</div>
+		<div>
+			{{ render(controller('App\\Controller\\Admin\\DashboardWidgetsController::equipmentCurrentlyOut')) }}
+		</div>
+	</div>
 {% endblock %}

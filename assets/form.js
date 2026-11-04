@@ -171,9 +171,11 @@ let unavailableEquipmentInputs = [];
 function updateUnavailableEquipment(request) {
 
     unavailableEquipmentInputs.forEach((input) => {
+        delete input.dataset.reserved;
         if (tagAffectedInputs.includes(input)) return;
         input.disabled = false;
     });
+    unavailableEquipmentInputs = [];
 
     Object.entries(request.equipment).forEach(([key, value]) => {
         if (value === 0 || equipmentInfo[key] == undefined || equipmentInfo[key]["quantity"] > value) return;
@@ -183,6 +185,7 @@ function updateUnavailableEquipment(request) {
 
         input.disabled = true;
         input.checked = false;
+        input.dataset.reserved = '';
         processTagRules();
         unavailableEquipmentInputs.push(input);
     });

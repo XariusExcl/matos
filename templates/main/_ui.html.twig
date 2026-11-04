@@ -1,0 +1,31 @@
+{% macro statusBadge(loan) %}
+	{% set now = date() %}
+	{% if loan.status == 0 %}
+		<span class="m-badge m-badge-pending">En attente</span>
+	{% elseif loan.status == 1 and loan.departureDate <= now %}
+		<span class="m-badge m-badge-return">À rendre</span>
+	{% elseif loan.status == 1 %}
+		<span class="m-badge m-badge-accepted">Confirmée</span>
+	{% elseif loan.status == 2 %}
+		<span class="m-badge m-badge-refused">Refusée</span>
+	{% elseif loan.status == 3 %}
+		<span class="m-badge m-badge-done">Terminée</span>
+	{% else %}
+		<span class="m-badge m-badge-done">Annulée</span>
+	{% endif %}
+{% endmacro %}
+
+{% macro equipIcon(equipment) %}
+	{% set slug = equipment and equipment.subCategory ? equipment.subCategory.slug : '' %}
+	{% set map = {
+		'cameras': 'camera', 'lenses': 'lens', 'microphones': 'mic', 'lights': 'light',
+		'tripods': 'tripod', 'stabilizers': 'gimbal', 'batteries': 'battery',
+		'vr_headsets': 'vr', 'pen_tablets': 'tablet', 'packs': 'box', 'pack_bonus': 'box'
+	} %}
+	{{- map[slug]|default('box') -}}
+{% endmacro %}
+
+{% macro frDate(date, withTime = true) %}
+	{% set days = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'] %}
+	{{- days[date|date('N') - 1] }} {{ date|date('d/m') }}{% if withTime %} · {{ date|date('H') }}h{{ date|date('i') }}{% endif -%}
+{% endmacro %}

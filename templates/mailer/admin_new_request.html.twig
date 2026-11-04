@@ -1,20 +1,11 @@
 {% extends "mailer/base.html.twig" %}
+
+{% block chip %}Nouvelle demande{% endblock %}
+{% block chipStyle %}background-color:#FFF5DC;color:#B37A00;{% endblock %}
+
 {% block body %}
-    <h1>Bonjour Administrateur !</h1>
-    <p>Une nouvelle demande de matériel à été émise sur MATOS.</p>
-    <p>Voici les informations de l'emprunt :</p>
-    <p>Utilisateur:
-        {{ loan.loaner.name }}</p>
-    <p>Date de début de l'emprunt :<b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
-    <p>Date de retour de l'emprunt :<b>{{ loan.returnDate|date('d/m/Y H:i') }}</b></p>
-    <p>Matériel demandé :</p>
-    <ul style="list-style-type: none;padding:0;">
-        {% for equipment in loan.equipmentLoaned??"" %}
-            <li style="margin-bottom: 10px;">
-                {{ equipment.name }}
-            </li>
-        {% endfor %}
-    </ul>
-    <p>Cliquez sur le bouton ci-dessous pour traîter la demande :</p>
-    <a href="{{ url('admin') }}" class="btn btn-primary">Traîter la demande</a>
+	<h1 style="font-size:24px;line-height:32px;margin:16px 0 8px;">Bonjour Administrateur !</h1>
+	<p style="font-size:15px;line-height:22px;color:#334155;margin:0;">Une nouvelle demande de matériel a été émise sur MATOS. Voici les informations de l'emprunt :</p>
+	{% include 'mailer/_recap.html.twig' with {loan: loan, showLoaner: true, itemsLabel: 'Matériel demandé'} %}
+	<p style="margin:8px 0 0;"><a href="{{ url('admin') }}" style="display:inline-block;background-color:#0B1622;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:14px 24px;border-radius:12px;">Traiter la demande</a></p>
 {% endblock %}

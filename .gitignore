@@ -34,3 +34,5 @@ yarn-error.log
 /public/adminer*.php
 /public/images/*
 /public/images/*/*
+/cypress/screenshots/
+/cypress/videos/

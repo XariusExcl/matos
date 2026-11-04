@@ -1,0 +1,49 @@
+{% macro cards(field, equipmentInfo, emptyLabel = null, emptyText = null) %}
+	{% import 'main/_icons.html.twig' as ui %}
+	{% import 'main/_ui.html.twig' as m %}
+	<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3" id="{{ field.vars.id }}">
+		{{ form_errors(field) }}
+		{% for choice in field %}
+			{% set info = choice.vars.value is not empty ? equipmentInfo[choice.vars.value] : null %}
+			<label for="{{ choice.vars.id }}" class="m-equip">
+				{{ form_widget(choice, {attr: {tag: info ? info.type : ''}}) }}
+				<span class="m-reserved absolute right-2 top-2 z-10">Réservé</span>
+				<span class="flex items-center gap-3 p-3 sm:flex-col sm:items-stretch sm:p-0">
+					{% if info and info.imageName is not empty %}
+						<span class="h-14 w-14 shrink-0 rounded-xl bg-surface-muted bg-cover bg-center sm:h-36 sm:w-full sm:rounded-none" style="background-image: url('{{ asset('images/equipments/' ~ info.imageName) }}')"></span>
+					{% else %}
+						<span class="m-thumb h-14 w-14 text-ink-400 sm:h-36 sm:w-full sm:rounded-none">{{ ui.icon(info ? m.equipIcon(info)|trim : 'x', 'h-7 w-7 sm:h-10 sm:w-10') }}</span>
+					{% endif %}
+					<span class="flex min-w-0 flex-1 flex-col gap-0.5 sm:p-3">
+						<span class="font-semibold">{{ info ? info.name|raw : (emptyLabel ?? 'Aucun') }}</span>
+						<span class="line-clamp-2 text-sm text-ink-500">{{ info ? info.description|striptags|raw : (emptyText ?? '') }}</span>
+					</span>
+				</span>
+			</label>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro options(field, equipmentInfo) %}
+	<div class="grid grid-cols-1 gap-2 sm:grid-cols-2" id="{{ field.vars.id }}">
+		{{ form_errors(field) }}
+		{% for choice in field %}
+			{% set info = choice.vars.value is not empty ? equipmentInfo[choice.vars.value] : null %}
+			<label for="{{ choice.vars.id }}" class="m-option">
+				{{ form_widget(choice, {attr: {tag: info ? info.type : ''}}) }}
+				<span class="min-w-0 flex-1">
+					<span class="block text-sm font-semibold">{{ info ? info.name|raw : 'Aucun' }}</span>
+					{% if info and info.description is not empty %}<span class="block truncate text-xs text-ink-500">{{ info.description|striptags|raw }}</span>{% endif %}
+				</span>
+				<span class="m-reserved shrink-0">Réservé</span>
+			</label>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro group(title, hint, content, anchor) %}
+	<div class="flex flex-col gap-3" id="group-{{ anchor }}">
+		<h3 class="flex items-baseline gap-2"><span class="font-semibold">{{ title }}</span><span class="text-xs text-ink-500">{{ hint }}</span></h3>
+		{{ content }}
+	</div>
+{% endmacro %}

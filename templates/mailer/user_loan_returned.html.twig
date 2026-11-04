@@ -1,7 +1,9 @@
 {% extends "mailer/base.html.twig" %}
+
+{% block chip %}Matériel rendu{% endblock %}
+{% block chipStyle %}background-color:#F1F5F9;color:#334155;{% endblock %}
+
 {% block body %}
-    <h1>Bonjour {{ loaner.name??"" }} !</h1>
-    <p>Nous confirmons que votre emprunt a bien été rendu.</p>
-    <p>Vous pouvez consulter vos emprunts passés sur votre profil.</p>
-    <p>À bientôt sur MATOS !</p>
+	<h1 style="font-size:24px;line-height:32px;margin:16px 0 8px;">Bonjour {{ loan.loaner.name ?? '' }} !</h1>
+	<p style="font-size:15px;line-height:22px;color:#334155;margin:0;">Nous confirmons que votre emprunt a bien été rendu. Vous pouvez consulter vos emprunts passés dans « Mes emprunts ».</p>
 {% endblock %}

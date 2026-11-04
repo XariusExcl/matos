@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class="flex min-h-screen flex-col bg-white md:flex-row">
+		<div class="relative flex h-56 flex-col justify-between bg-cover bg-center p-5 md:h-auto md:flex-1 md:p-14" style="background-image: linear-gradient(to bottom, rgba(11,22,34,.25), rgba(11,22,34,.9)), url('{{ asset('bg.webp') }}')">
+			<a href="{{ path('app_main') }}" class="flex items-center gap-2 text-white">
+				<img src="{{ asset('logo.png') }}" class="h-8 w-8 rounded bg-white" alt="">
+				<span class="text-xl font-bold tracking-wide">MATOS</span>
+			</a>
+			<div class="hidden md:block">
+				<p class="max-w-lg text-[32px] font-extrabold leading-10 text-white">Le matériel du studio, en quelques clics.</p>
+				<p class="mt-3 max-w-lg text-ink-300">Caméras, micros, lumières, casques VR et tablettes graphiques du département MMI · IUT de Troyes.</p>
+			</div>
+		</div>
+		<div class="-mt-6 flex flex-1 items-start justify-center rounded-t-3xl bg-white px-5 py-8 md:mt-0 md:max-w-[640px] md:items-center md:rounded-none">
+			<div class="flex w-full max-w-[400px] flex-col gap-4">
+				{% for type, messages in app.flashes(['error', 'success']) %}
+					{% for message in messages %}
+						{% include 'main/flash.html.twig' with {'type': type, 'message': message} %}
+					{% endfor %}
+				{% endfor %}
+				{% block card %}{% endblock %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

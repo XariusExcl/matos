@@ -1,57 +1,34 @@
-{% extends 'base.html.twig' %}
+{% extends 'security/_layout.html.twig' %}
 
-{% block title %}Se connecter
-{% endblock %}
+{% block title %}MATOS - Se connecter{% endblock %}
 
-{% block body %}
-    {% for message in app.flashes('error') %}
-        {% include 'main/flash.html.twig' with {'type': "error"} %}
-    {% endfor %}
-    {% for message in app.flashes('success') %}
-        {% include 'main/flash.html.twig' with {'type': "success"} %}
-    {% endfor %}
-    {% if error %}
-		<div role="alert" class="absolute alert alert-error bg-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% block card %}
+	{% if error %}
+		{% include 'main/flash.html.twig' with {'type': 'error', 'message': error.messageKey|trans(error.messageData, 'security')} %}
 	{% endif %}
-    <div class="flex justify-center items-center min-h-screen" style="background-image:url({{asset('bg.webp')}});background-position:center;background-size:cover;">
-        <div class="card w-96 bg-base-100">
-            <div class="card-body">
-                <div class="flex justify-center">
-                    <img src="{{asset('logo.png')}}" class="w-24 h-24"/>
-                </div>
-                <h2 class="card-title">Se connecter</h2>
-                {% if enable_urca_login %}
-                    <a href="{{ path('sso_cas') }}" class="btn btn-primary mt-5">Utiliser mon login URCA</a>
-                {% else %}
-                    <button class="btn btn-disabled mt-5">Utiliser mon login URCA (indisponible)</button>
-                {% endif %}
-                <hr>
-                <form class="flex flex-col" action="{{ path('login') }}" method="post">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Email</span>
-                        </div>
-                        <input class="input input-bordered" placeholder="john.doe@etudiant.univ-reims.fr" type="text" id="username" name="_username" value="{{ last_username }}">
-                    </label>
-
-                    <label class="form-control w-full max-w-xs">
-                        <div class="label">
-                            <span class="label-text">Mot de passe</span>
-                        </div>
-                        <input class="input input-bordered" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" type="password" id="password" name="_password">
-                    </label>
-
-                    {# If you want to control the URL the user is redirected to on success
-                                                            <input type="hidden" name="_target_path" value="/account"> #}
-
-                    <button class="btn btn-primary mt-5" type="submit">Se connecter</button>
-                </form>
-                {% if not enable_urca_login %}
-                    <a href="{{ path('signup') }}" class="btn btn-primary mt-5">Créer un compte (email URCA requis)</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+	<div>
+		<h1 class="text-2xl font-bold">Se connecter</h1>
+		<p class="mt-1 text-ink-500">Réserve le matériel MMI de l'IUT de Troyes.</p>
+	</div>
+	{% if enable_urca_login %}
+		<a href="{{ path('sso_cas') }}" class="btn btn-primary h-12">Se connecter avec mon compte URCA</a>
+	{% else %}
+		<button class="btn btn-disabled h-12" disabled>Se connecter avec mon compte URCA (indisponible)</button>
+	{% endif %}
+	<div class="flex items-center gap-3 text-xs text-ink-400"><span class="h-px flex-1 bg-surface-line"></span>ou<span class="h-px flex-1 bg-surface-line"></span></div>
+	<form class="flex flex-col gap-4" action="{{ path('login') }}" method="post">
+		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+		<label class="flex flex-col gap-2">
+			<span class="text-sm font-semibold">Adresse mail</span>
+			<input class="m-input" placeholder="prenom.nom@etudiant.univ-reims.fr" type="text" id="username" name="_username" value="{{ last_username }}" autocomplete="username">
+		</label>
+		<label class="flex flex-col gap-2">
+			<span class="text-sm font-semibold">Mot de passe</span>
+			<input class="m-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" type="password" id="password" name="_password" autocomplete="current-password">
+		</label>
+		<button class="btn h-12 border-surface-line bg-white hover:bg-surface-muted" type="submit">Se connecter</button>
+	</form>
+	{% if not enable_urca_login %}
+		<p class="text-center text-sm text-ink-500">Pas de compte ? <a href="{{ path('signup') }}" class="font-semibold text-brand-700">Créer un compte</a> <span class="text-ink-400">(email URCA requis)</span></p>
+	{% endif %}
 {% endblock %}

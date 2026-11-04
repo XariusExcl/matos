@@ -1,7 +1,7 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block content_title %}Emprunt #{{ loanId }}{% endblock %}
+{% block content_title %}Demande #{{ loanId }}{% endblock %}
 
 {% block main %}
-    {{ render(controller('App\\Controller\\Admin\\LoanCrudController::loanReview', {id: loanId})) }}
+	{{ render(controller('App\\Controller\\Admin\\LoanCrudController::loanReview', {id: loanId})) }}
 {% endblock %}

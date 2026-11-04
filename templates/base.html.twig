@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html data-theme="mytheme">
+<html lang="fr" data-theme="mytheme">
 	<head>
 		<meta charset="UTF-8">
 		<title>
-			{% block title %}Welcome!
-			{% endblock %}
+			{% block title %}MATOS{% endblock %}
 		</title>
 		<link rel="icon" href="{{ asset('logo.png') }}">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 			{{ ux_controller_link_tags() }}
@@ -20,7 +22,7 @@
 			{% endblock %}
 		{% endblock %}
 	</head>
-	<body>
+	<body class="bg-surface-bg">
 		{% block body %}{% endblock %}
 	</body>
 </html>

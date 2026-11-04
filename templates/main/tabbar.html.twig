@@ -1,0 +1,17 @@
+{% import 'main/_icons.html.twig' as ui %}
+{% set active = active|default('') %}
+{% set bookSlug = saeMode|default(false) ? 'audiovisual_sae' : 'audiovisual' %}
+<nav class="fixed inset-x-0 bottom-0 z-30 border-t border-surface-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Navigation">
+	<div class="grid grid-cols-3">
+		{% for item in [
+			{key: 'home', label: 'Accueil', icon: 'home', url: path('app_main')},
+			{key: 'book', label: 'Réserver', icon: 'grid', url: path('reservation_form', {formSlug: bookSlug})},
+			{key: 'loans', label: 'Mes emprunts', icon: 'clipboard', url: app.user ? path('app_myloans') : path('login')}
+		] %}
+			<a href="{{ item.url }}" class="flex flex-col items-center gap-1 py-2.5 text-xs {{ active == item.key ? 'font-bold text-brand-700' : 'font-medium text-ink-500' }}" {% if active == item.key %}aria-current="page"{% endif %}>
+				{{ ui.icon(item.icon, 'h-6 w-6 ' ~ (active == item.key ? 'text-brand-600' : 'text-ink-400')) }}
+				{{ item.label }}
+			</a>
+		{% endfor %}
+	</div>
+</nav>

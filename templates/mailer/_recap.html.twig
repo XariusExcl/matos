@@ -1,0 +1,16 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background-color:#F6F8FA;border-radius:12px;">
+	<tr>
+		<td style="padding:16px;font-size:14px;line-height:22px;">
+			{% if showLoaner|default(false) %}
+				<span style="color:#64748B;">Utilisateur :</span> <b>{{ loan.loaner.name ?? loan.loaner.email }}</b><br>
+			{% endif %}
+			<span style="color:#64748B;">Date de début de l'emprunt :</span> <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b><br>
+			<span style="color:#64748B;">Date de retour de l'emprunt :</span> <b>{{ loan.returnDate|date('d/m/Y H:i') }}</b>
+			<div style="border-top:1px solid #E5E9F0;margin:12px 0;"></div>
+			<span style="color:#64748B;">{{ itemsLabel|default('Matériel emprunté') }} :</span><br>
+			{% for equipment in loan.equipmentLoaned %}
+				• <b>{{ equipment.name }}</b><br>
+			{% endfor %}
+		</td>
+	</tr>
+</table>

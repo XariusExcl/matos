@@ -1,58 +1,128 @@
 {% extends 'base.html.twig' %}
+{% import 'main/_icons.html.twig' as ui %}
+{% import 'main/_ui.html.twig' as m %}
 
-{% block title %}MATOS - Emprunts et Gestion de matériel
-{% endblock %}
+{% block title %}MATOS - Emprunts et gestion de matériel{% endblock %}
 
 {% block body %}
-	{% include 'main/navbar.html.twig' %}
-	<div class="flex justify-center mb-10">
-		<div class="container px-10">
-			<div class="flex justify-end pt-10 flex-col md:flex-row">
-				<div class="flex h-6 my-1 md:my-0">
-					<div class="ml-4 mr-2 w-10 h-full pending-reservation"></div>En cours de réservation
-				</div>
-				<div class="flex h-6 my-1 md:my-0">
-					<div class="ml-4 mr-2 w-10 h-full bg-error"></div>Réservé
-				</div>
-				<div class="flex h-6 my-1 md:my-0">
-					<div class="ml-4 mr-2 w-10 h-full" style="background-color:#0003"></div>Indisponible
-				</div>
-				<div class="mr-5"></div>
+	{% include 'main/navbar.html.twig' with {active: 'home'} %}
+	{% set now = date() %}
+	{% set upcoming = app.user ? app.user.loans|filter(l => (l.status == 0 or l.status == 1) and l.returnDate >= now)|sort((a, b) => a.departureDate <=> b.departureDate) : [] %}
+	{% set nextPickup = upcoming|filter(l => l.status == 1)|first %}
+	{% set firstName = app.user ? (app.user.name ?? app.user.email|split('@')[0])|split(' ')|first : null %}
+
+	<main class="mx-auto max-w-6xl px-4 pb-28 pt-6 md:px-6 md:pb-10 md:pt-10">
+		<section class="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_400px]">
+			<div class="md:m-card md:p-10">
+				<p class="text-ink-500">{{ firstName ? 'Bonjour ' ~ firstName : 'Bienvenue sur MATOS' }}</p>
+				<h1 class="mt-1 text-2xl font-bold md:text-[32px] md:leading-10">Quel matériel veux-tu emprunter ?</h1>
+				<p class="mt-3 max-w-xl text-ink-500">Caméras, micros, lumières, casques VR et tablettes graphiques du département MMI, à réserver en quelques clics.</p>
+				<a href="{{ path('reservation_form', {formSlug: audiovisualCategory.slug}) }}" class="btn btn-neutral mt-6 h-12 px-6">Faire une demande d'emprunt {{ ui.icon('arrow-right', 'h-4 w-4') }}</a>
 			</div>
-			<div id="{{ audiovisualCategory|lower }}" class="row">
-				<h2 class="text-3xl font-bold">{{ audiovisualCategory.name }}</h2>
-				{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
-				{% if saeMode %}
-					{% include 'equipment_category/availability_table_sae.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans} %}
-				{% else %}
-					{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
-				{% endif %}
-				<a href="{{ path('reservation_form', { formSlug:audiovisualCategory.slug }) }}" class="btn btn-primary text-base-100">Faire une demande d'emprunt</a>
-			</div>
-			<div class="mt-10">
-				<h2 class="text-3xl font-bold">Autres emprunts :</h2>
-				<div class="flex flex-wrap mt-8">
-					<div class="card bg-base-100 image-full w-96 shadow-xl mx-4 mb-4">
-						<figure class="h-64" style="background:url('{{ asset('quest2.jpg') }}') center; background-size: cover;"></figure>
-						<div class="card-body justify-between">
-							<h2 class="card-title text-3xl">Casques VR</h2>
-							<div class="card-actions self-end">
-								<a href="{{ path('reservation_form', { formSlug:'vr' }) }}" class="btn btn-primary text-base-100">Emprunt de casque VR</a>
-							</div>
-						</div>
+
+			{% if nextPickup %}
+				<div class="flex flex-col gap-4 rounded-[20px] bg-ink-900 p-6 text-white md:p-7">
+					<div class="flex items-center justify-between">
+						<span class="text-sm font-semibold text-brand-500">Prochain retrait</span>
+						{{ m.statusBadge(nextPickup) }}
 					</div>
-					<div class="card bg-base-100 image-full w-96 shadow-xl mx-4 mb-4">
-						<figure class="h-64" style="background:url('{{ asset('tablet.jpg') }}') center; background-size: cover;"></figure>
-						<div class="card-body justify-between">
-							<h2 class="card-title text-3xl">Tablettes graphiques</h2>
-							<div class="card-actions self-end">
-								<a href="{{ path('reservation_form', { formSlug:'graphic_design' }) }}" class="btn btn-primary text-base-100">Emprunt de tablette</a>
-							</div>
-						</div>
+					<div>
+						<p class="text-xl font-bold md:text-2xl">{{ m.frDate(nextPickup.departureDate) }}</p>
+						<p class="mt-1 text-sm text-ink-300">{{ nextPickup.equipmentLoaned|map(e => e.name)|join(', ') }}</p>
 					</div>
+					<p class="flex items-center gap-2 text-sm text-ink-300">{{ ui.icon('pin', 'h-4 w-4') }}Studio (H017) · retour {{ m.frDate(nextPickup.returnDate) }}</p>
+					<a href="{{ path('pdf_loan_html', {id: nextPickup.id}) }}" class="btn btn-primary mt-auto h-12">Voir la fiche d'emprunt {{ ui.icon('arrow-right', 'h-4 w-4') }}</a>
+				</div>
+			{% elseif not app.user %}
+				<div class="flex flex-col justify-between gap-4 rounded-[20px] bg-ink-900 p-6 text-white md:p-7">
+					<div>
+						<p class="text-xl font-bold">Connecte-toi pour réserver</p>
+						<p class="mt-2 text-sm text-ink-300">Avec ton compte URCA, tu peux faire une demande et suivre tes emprunts.</p>
+					</div>
+					<a href="{{ path('login') }}" class="btn btn-primary h-12">Se connecter</a>
+				</div>
+			{% endif %}
+		</section>
+
+		<section class="mt-8 md:mt-10">
+			<h2 class="mb-4 text-lg font-bold md:text-xl">Catégories</h2>
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+				{% for cat in [
+					{slug: audiovisualCategory.slug, name: audiovisualCategory.name, sub: 'Caméras, objectifs, micros, lumières', image: 'bg.webp', icon: 'camera'},
+					{slug: 'vr', name: 'Casques VR', sub: 'Réalité virtuelle et mixte', image: 'quest2.jpg', icon: 'vr'},
+					{slug: 'graphic_design', name: 'Tablettes graphiques', sub: 'Illustration et retouche', image: 'tablet.jpg', icon: 'tablet'}
+				] %}
+					<a href="{{ path('reservation_form', {formSlug: cat.slug}) }}" class="group m-card flex items-center gap-4 overflow-hidden p-3 transition-shadow hover:shadow-card sm:flex-col sm:items-stretch sm:p-0">
+						<div class="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-surface-muted bg-cover bg-center sm:h-36 sm:w-full sm:rounded-none" style="background-image: url('{{ asset(cat.image) }}')"></div>
+						<div class="flex flex-1 items-center justify-between gap-3 sm:px-4 sm:pb-4">
+							<div>
+								<p class="font-semibold">{{ cat.name }}</p>
+								<p class="text-sm text-ink-500">{{ cat.sub }}</p>
+							</div>
+							<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-muted text-ink-700 group-hover:bg-ink-900 group-hover:text-white">{{ ui.icon('arrow-right', 'h-4 w-4') }}</span>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		</section>
+
+		<section id="{{ audiovisualCategory|lower }}" class="mt-8 md:mt-10">
+			<div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+				<div>
+					<h2 class="text-lg font-bold md:text-xl">Planning · {{ audiovisualCategory.name }}</h2>
+					<p class="text-sm text-ink-500">{{ saeMode ? 'Matin 9h30 · Après-midi 15h · Soir 20h30' : 'Qui a réservé quoi sur les prochains jours ouvrés' }}</p>
 				</div>
 			</div>
-		</div>
-	</div>
+			{% set loans = equipmentLoaned[audiovisualCategory.id] ?? [] %}
+			{% if saeMode %}
+				{% include 'equipment_category/availability_table_sae.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
+			{% else %}
+				{% include 'equipment_category/availability_table.html.twig' with {equipment: tableEquipment, dates: dates, loans: loans, unavailableDays: unavailableDays} %}
+			{% endif %}
+		</section>
+
+		<section class="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-[minmax(0,1fr)_400px]">
+			{% if app.user %}
+				<div class="md:m-card md:p-6">
+					<div class="mb-3 flex items-center justify-between">
+						<h2 class="text-lg font-bold md:text-xl">Mes demandes</h2>
+						<a href="{{ path('app_myloans') }}" class="-my-2 py-2 text-sm font-semibold text-brand-700">Voir tout</a>
+					</div>
+					{% for loan in upcoming|slice(0, 3) %}
+						<a href="{{ path('app_myloans') }}" class="mb-3 flex items-center gap-3 rounded-2xl border border-surface-line bg-white p-3 last:mb-0">
+							<span class="m-thumb h-12 w-12">{{ ui.icon(m.equipIcon(loan.equipmentLoaned|first)|trim, 'h-6 w-6') }}</span>
+							<span class="min-w-0 flex-1">
+								<span class="block truncate font-semibold">{{ (loan.equipmentLoaned|first).name ?? 'Emprunt' }}{% if loan.equipmentLoaned|length > 1 %} + {{ loan.equipmentLoaned|length - 1 }}{% endif %}</span>
+								<span class="block truncate text-sm text-ink-500">Retrait {{ m.frDate(loan.departureDate) }}</span>
+							</span>
+							{{ m.statusBadge(loan) }}
+							{{ ui.icon('chevron-right', 'h-5 w-5 text-ink-400') }}
+						</a>
+					{% else %}
+						<p class="rounded-2xl border border-dashed border-surface-line p-6 text-center text-sm text-ink-500">Aucune demande en cours.</p>
+					{% endfor %}
+				</div>
+			{% endif %}
+			<div class="rounded-2xl border border-brand-100 bg-brand-50 p-5 md:p-6 {{ app.user ? '' : 'md:col-span-2' }}">
+				<h2 class="mb-4 flex items-center gap-2 font-bold text-brand-700">{{ ui.icon('info', 'h-5 w-5') }}Bon à savoir</h2>
+				<ul class="flex flex-col gap-4">
+					{% for rule in [
+						{icon: 'clock', title: '24 h à l\'avance', text: 'Les demandes se font au minimum la veille.'},
+						{icon: 'calendar', title: 'Durée maximale', text: '1 jour en audiovisuel (vendredi → lundi possible), 1 semaine en VR et tablettes.'},
+						{icon: 'box', title: (saeMode ? '1 demande' : '2 demandes') ~ ' en cours', text: 'Rends ton matériel pour en réserver d\'autres.'}
+					] %}
+						<li class="flex gap-3">
+							<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700">{{ ui.icon(rule.icon, 'h-5 w-5') }}</span>
+							<span>
+								<span class="block font-semibold">{{ rule.title }}</span>
+								<span class="block text-sm text-ink-500">{{ rule.text }}</span>
+							</span>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</section>
+	</main>
 	{% include 'main/footer.html.twig' %}
+	{% include 'main/tabbar.html.twig' with {active: 'home'} %}
 {% endblock %}

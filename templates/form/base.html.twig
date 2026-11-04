@@ -1,42 +1,257 @@
 {% extends 'base.html.twig' %}
+{% import 'main/_icons.html.twig' as ui %}
 
-{% block title %}Nouvel emprunt{% endblock %}
+{% block title %}MATOS - {{ pageTitle }}{% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('form') }}
+	{{ parent() }}
+	{{ encore_entry_script_tags('form') }}
 {% endblock %}
 
+{% set hasProject = hasProject ?? true %}
+{% set pageTitle = pageTitle ?? ('Emprunt ' ~ formName|lower) %}
+{% set loanName = form.vars.name|replace({'_loan': ''}) %}
+
 {% block body %}
-    {% for message in app.flashes('error') %}
-        {% include 'main/flash.html.twig' with {'type': "error"} %}
-    {% endfor %}
-    <div class="flex justify-center">
-		<div class="container px-10">
-            <h1 class="text-3xl font-bold my-10">Emprunt {{ formName }}</h1>
-            <div class="flex justify-center">
-                <div class="lg:w-10/12">
-                    <p><a href="{{ path('app_main') }}" class="btn">< Retour à la liste des emprunts</a></p>
-                    {% block form %}{% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        const equipmentInfo = {{ equipmentInfoJson|raw }};
-        const loanableDays = {{ loanableDays|raw }};
-        const _ud = {{ unavailableDays|raw }};
-        const unavailableDays = _ud.map((ud) => {return {"startTime": new Date(ud.start).getTime(), "endTime": new Date(ud.end).getTime(), "preventsLoans": ud.preventsLoans, "comment": ud.comment}});
-        const tagRules = {{ tagRules|raw }};
-        window.onload = () => {
-            loanStartDayElement?.addEventListener("change", formDateChange);
-            loanEndDayElement?.addEventListener("change", formDateChange);
-            loanStartTimeslotElement?.addEventListener("change", formDateChange);
-            loanEndTimeslotElement?.addEventListener("change", formDateChange);
-            loanTaggedElementsArray.forEach((element) => {
-                element.addEventListener("change", processTagRules);
-            });
-            processUnavailableDays();
-        }
-    </script>
+	{% include 'main/navbar.html.twig' with {active: 'book', saeMode: loanName == 'audiovisual_sae'} %}
+	<main class="mx-auto max-w-6xl px-4 pb-36 pt-4 md:px-6 md:pt-8 lg:pb-12">
+		<nav class="mb-3 hidden items-center gap-2 text-sm text-ink-500 md:flex" aria-label="Fil d'Ariane">
+			<a href="{{ path('app_main') }}" class="hover:text-ink-900">Accueil</a>{{ ui.icon('chevron-right', 'h-4 w-4 text-ink-400') }}<span class="font-semibold text-ink-900">{{ pageTitle }}</span>
+		</nav>
+		<div class="flex flex-wrap items-end justify-between gap-4">
+			<div>
+				<h1 class="text-2xl font-bold">{{ pageTitle }}</h1>
+				<p class="text-ink-500">{% block subtitle %}{% endblock %}</p>
+			</div>
+			<ol class="flex w-full gap-2 md:w-auto md:items-center md:gap-3" aria-label="Étapes">
+				{% for label in hasProject ? ['Créneau', 'Matériel', 'Projet'] : ['Créneau', 'Matériel'] %}
+					<li class="flex flex-1 flex-col gap-1.5 md:flex-none md:flex-row md:items-center md:gap-2" data-step-indicator="{{ loop.index }}">
+						<span class="m-step-bar md:hidden" data-active="{{ loop.first ? 'true' : 'false' }}"></span>
+						<span class="hidden h-7 w-7 items-center justify-center rounded-full bg-surface-muted text-sm font-semibold text-ink-500 md:flex" data-step-dot>{{ loop.index }}</span>
+						<span class="text-xs font-semibold text-ink-400 md:text-sm" data-step-label>{{ loop.index }}. {{ label }}</span>
+					</li>
+				{% endfor %}
+			</ol>
+		</div>
+
+		{{ form_start(form, {attr: {novalidate: 'novalidate', id: 'loan-form'}}) }}
+		<div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+			<div class="flex flex-col gap-4">
+				<section class="m-card overflow-hidden" data-step="1">
+					{% include 'form/_step_header.html.twig' with {n: 1, title: 'Créneau'} %}
+					<div class="flex flex-col gap-6 px-4 pb-5 md:px-6 md:pb-6" data-step-body>
+						<div class="rounded-2xl bg-brand-50 p-4 text-sm text-ink-700">
+							{% block modalites %}{% endblock %}
+						</div>
+						{% include 'form/_creneau.html.twig' %}
+						<button type="button" class="btn btn-neutral hidden h-12 self-start px-6 lg:inline-flex" data-next>Choisir le matériel {{ ui.icon('arrow-right', 'h-4 w-4') }}</button>
+					</div>
+				</section>
+
+				<section class="m-card overflow-hidden" data-step="2">
+					{% include 'form/_step_header.html.twig' with {n: 2, title: 'Matériel'} %}
+					<div class="flex flex-col gap-6 px-4 pb-5 md:px-6 md:pb-6" data-step-body id="equipmentSelection">
+						{% block equipment %}{% endblock %}
+						<p class="flex items-center gap-2 text-xs text-ink-500">{{ ui.icon('info', 'h-4 w-4 shrink-0') }}Grisé = déjà réservé sur ton créneau ou incompatible avec ta sélection.</p>
+						{% if hasProject %}
+							<button type="button" class="btn btn-neutral hidden h-12 self-start px-6 lg:inline-flex" data-next>Continuer {{ ui.icon('arrow-right', 'h-4 w-4') }}</button>
+						{% endif %}
+					</div>
+				</section>
+
+				{% if hasProject %}
+					<section class="m-card overflow-hidden" data-step="3">
+						{% include 'form/_step_header.html.twig' with {n: 3, title: 'Projet'} %}
+						<div class="flex flex-col gap-4 px-4 pb-5 md:px-6 md:pb-6" data-step-body>
+							<label for="{{ form.comment.vars.id }}" class="text-sm font-semibold">Raison de l'emprunt et numéro de contact</label>
+							{{ form_widget(form.comment, {attr: {class: 'm-textarea', placeholder: commentPlaceholder|default('Décris ici la raison de l\'emprunt (SAÉ, projet personnel...) ainsi qu\'un numéro de contact.')}}) }}
+							<p class="text-xs text-ink-500">Obligatoire · visible par le responsable du prêt</p>
+						</div>
+					</section>
+				{% endif %}
+			</div>
+
+			<aside class="hidden lg:block">
+				<div class="sticky top-24 m-card flex flex-col gap-4 p-5 shadow-card">
+					<h2 class="font-semibold">Ma demande</h2>
+					<p class="flex items-center gap-2 rounded-xl bg-surface-muted px-3 py-2.5 text-sm font-semibold text-ink-700">{{ ui.icon('calendar', 'h-4 w-4 shrink-0 text-ink-500') }}<span data-recap-slot>Choisis un créneau</span></p>
+					<ul class="flex flex-col gap-2 text-sm" data-recap-items><li class="text-ink-400">Aucun matériel pour l'instant.</li></ul>
+					<p class="flex items-center gap-2 text-sm text-ink-700">{{ ui.icon('pin', 'h-4 w-4 text-ink-500') }}Retrait et retour au Studio (H017)</p>
+					<button type="button" class="btn btn-neutral h-12" data-main-action>Continuer {{ ui.icon('arrow-right', 'h-4 w-4') }}</button>
+				</div>
+			</aside>
+		</div>
+		{{ form_end(form) }}
+	</main>
+
+	<div class="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-surface-line bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-float lg:hidden">
+		<div class="min-w-0 flex-1">
+			<p class="font-semibold" data-recap-count>0 article</p>
+			<p class="truncate text-sm text-ink-500" data-recap-slot>Choisis un créneau</p>
+		</div>
+		<button type="button" class="btn btn-neutral h-12 px-5" data-main-action>Continuer {{ ui.icon('arrow-right', 'h-4 w-4') }}</button>
+	</div>
+
+	{% include 'form/_form_modals.html.twig' %}
+
+	<script>
+		const equipmentInfo = {{ equipmentInfoJson|raw }};
+		const loanableDays = {{ loanableDays|raw }};
+		const _ud = {{ unavailableDays|raw }};
+		const unavailableDays = _ud.map((ud) => {return {"startTime": new Date(ud.start).getTime(), "endTime": new Date(ud.end).getTime(), "preventsLoans": ud.preventsLoans, "comment": ud.comment}});
+		const tagRules = {{ tagRules|raw }};
+		const loanName = "{{ loanName }}";
+		const loanStartDayElement = document.getElementById("{{ form.startDay.vars.id }}");
+		const loanStartTimeslotElement = document.getElementById("{{ form.startTimeSlot.vars.id }}");
+		const loanEndDayElement = document.getElementById("{{ form.endDay.vars.id }}");
+		const loanEndTimeslotElement = document.getElementById("{{ form.endTimeSlot.vars.id }}");
+		const loanTaggedElementsArray = Array.from(document.querySelectorAll('[tag]'));
+		const stepCount = {{ hasProject ? 3 : 2 }};
+
+		window.onload = () => {
+			loanStartDayElement?.addEventListener("change", formDateChange);
+			loanEndDayElement?.addEventListener("change", formDateChange);
+			loanStartTimeslotElement?.addEventListener("change", formDateChange);
+			loanEndTimeslotElement?.addEventListener("change", formDateChange);
+			loanTaggedElementsArray.forEach((element) => {
+				element.addEventListener("change", processTagRules);
+			});
+			processUnavailableDays();
+			initLoanForm();
+		}
+
+		function initLoanForm() {
+			const selects = [loanStartDayElement, loanStartTimeslotElement, loanEndDayElement, loanEndTimeslotElement];
+			const shortDay = (text) => { const [day, date] = text.split(' '); return [day.slice(0, 3).toLowerCase() + '.', (date || '').split('/')[0]]; };
+
+			const renderChoices = () => {
+				document.querySelectorAll('[data-choices-for]').forEach((container) => {
+					const select = document.getElementById(container.dataset.choicesFor);
+					const kind = container.dataset.kind;
+					container.innerHTML = '';
+					[...select.options].filter((o) => o.value !== '').forEach((option) => {
+						const button = document.createElement('button');
+						button.type = 'button';
+						button.className = kind === 'day' ? 'm-day min-w-[56px] flex-none' : 'm-slot';
+						button.disabled = option.disabled;
+						button.setAttribute('aria-pressed', select.value === option.value ? 'true' : 'false');
+						if (kind === 'day') {
+							const [d, n] = shortDay(option.text);
+							button.innerHTML = `<span class="text-xs">${d}</span><span class="text-xl font-bold">${n}</span>`;
+							button.setAttribute('aria-label', option.text);
+						} else {
+							button.textContent = option.text;
+						}
+						button.addEventListener('click', async () => {
+							select.value = option.value;
+							select.dispatchEvent(new Event('change'));
+							if (select === loanStartDayElement || select === loanStartTimeslotElement) await alignEnd();
+							renderChoices();
+							updateRecap();
+						});
+						container.appendChild(button);
+					});
+				});
+			};
+
+			const creneauError = () => document.querySelector('#creneau-error').innerText.trim();
+
+			const alignEnd = async () => {
+				await formDateChange();
+				if (!creneauError()) return;
+				const slots = [...loanEndTimeslotElement.options].filter((o) => o.value !== '');
+				const startIndex = slots.findIndex((o) => o.value === loanStartTimeslotElement.value);
+				const endSlot = (sameDay) => loanName === 'audiovisual_sae' ? slots[sameDay ? startIndex + 1 : 0].value : slots[slots.length - 1].value;
+				if (startIndex < slots.length - 1) {
+					loanEndDayElement.value = loanStartDayElement.value;
+					loanEndTimeslotElement.value = endSlot(true);
+				} else {
+					const nextDay = [...loanEndDayElement.options].find((o) => o.value !== '' && !o.disabled && parseInt(o.value) > parseInt(loanStartDayElement.value));
+					if (!nextDay) return;
+					loanEndDayElement.value = nextDay.value;
+					loanEndTimeslotElement.value = endSlot(false);
+				}
+				await formDateChange();
+			};
+
+			const slotText = () => {
+				const t = (s) => s.options[s.selectedIndex]?.text ?? '';
+				return `${t(loanStartDayElement)} · ${t(loanStartTimeslotElement)} → ${t(loanEndDayElement)} · ${t(loanEndTimeslotElement)}`;
+			};
+
+			const selectedEquipment = () => [...document.querySelectorAll('#equipmentSelection input:checked')].filter((i) => i.value !== '' && equipmentInfo[i.value]).map((i) => equipmentInfo[i.value].name);
+
+			const updateRecap = () => {
+				const items = selectedEquipment();
+				const error = creneauError();
+				document.querySelectorAll('[data-recap-slot]').forEach((el) => {
+					el.textContent = error || slotText();
+					el.classList.toggle('!text-error', !!error);
+				});
+				document.querySelectorAll('[data-recap-count]').forEach((el) => el.textContent = `${items.length} article${items.length > 1 ? 's' : ''}`);
+				document.querySelectorAll('[data-recap-items]').forEach((el) => {
+					el.innerHTML = items.length ? items.map((n) => `<li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>${n}</li>`).join('') : '<li class="text-ink-400">Aucun matériel pour l\'instant.</li>';
+				});
+				const s1 = document.querySelector('[data-step="1"] [data-step-summary]');
+				if (s1) s1.textContent = slotText();
+				const s2 = document.querySelector('[data-step="2"] [data-step-summary]');
+				if (s2) s2.textContent = items.length ? items.join(', ') : 'Aucun matériel';
+			};
+
+			let current = 1;
+			const showStep = (n) => {
+				current = n;
+				document.querySelectorAll('[data-step]').forEach((section) => {
+					const k = parseInt(section.dataset.step);
+					section.querySelector('[data-step-body]').classList.toggle('hidden', k !== n);
+					section.querySelector('[data-step-summary]').classList.toggle('hidden', k >= n);
+					section.querySelector('[data-step-edit]').classList.toggle('hidden', k >= n);
+					section.querySelector('[data-step-done]').classList.toggle('hidden', k >= n);
+					section.querySelector('[data-step-num]').classList.toggle('hidden', k < n);
+					section.classList.toggle('opacity-60', k > n);
+				});
+				document.querySelectorAll('[data-step-indicator]').forEach((li) => {
+					const k = parseInt(li.dataset.stepIndicator);
+					li.querySelector('.m-step-bar').dataset.active = k <= n ? 'true' : 'false';
+					const dot = li.querySelector('[data-step-dot]');
+					dot.className = 'hidden h-7 w-7 items-center justify-center rounded-full text-sm font-semibold md:flex ' + (k < n ? 'bg-success text-white' : k === n ? 'bg-ink-900 text-white' : 'bg-surface-muted text-ink-500');
+					li.querySelector('[data-step-label]').className = 'text-xs font-semibold md:text-sm ' + (k <= n ? 'text-ink-900' : 'text-ink-400');
+				});
+				const last = n === stepCount;
+				document.querySelectorAll('[data-main-action]').forEach((b) => b.innerHTML = last ? 'Envoyer la demande' : (n === 1 ? 'Choisir le matériel' : 'Continuer'));
+				updateRecap();
+				document.querySelector(`[data-step="${n}"]`).scrollIntoView({behavior: 'smooth', block: 'start'});
+			};
+
+			const next = async () => {
+				if (current === 1) {
+					await formDateChange();
+					if (creneauError()) {
+						updateRecap();
+						document.querySelector('#creneau-error').scrollIntoView({behavior: 'smooth', block: 'center'});
+						return;
+					}
+				}
+				if (current === 2 && selectedEquipment().length === 0) {
+					document.querySelector('#error_modal_content').innerHTML = "Votre emprunt est vide !";
+					document.querySelector('#error_modal').showModal();
+					return;
+				}
+				if (current < stepCount) showStep(current + 1);
+				else checkFormValidity();
+			};
+
+			document.querySelectorAll('[data-next], [data-main-action]').forEach((b) => b.addEventListener('click', next));
+			document.querySelectorAll('[data-step-edit]').forEach((b) => b.addEventListener('click', () => showStep(parseInt(b.closest('[data-step]').dataset.step))));
+			document.querySelectorAll('#equipmentSelection input').forEach((i) => i.addEventListener('change', updateRecap));
+			selects.forEach((s) => new MutationObserver(renderChoices).observe(s, {subtree: true, attributes: true, attributeFilter: ['disabled']}));
+			document.querySelectorAll('[data-equipment-filter]').forEach((chip) => chip.addEventListener('click', () => document.getElementById(chip.dataset.equipmentFilter)?.scrollIntoView({behavior: 'smooth', block: 'center'})));
+
+			if (loanEndTimeslotElement.selectedIndex === 0) loanEndTimeslotElement.selectedIndex = loanName === 'audiovisual_sae' ? 1 : loanEndTimeslotElement.options.length - 1;
+			renderChoices();
+			formDateChange().then(updateRecap);
+			showStep(1);
+			window.scrollTo(0, 0);
+		}
+	</script>
 {% endblock %}

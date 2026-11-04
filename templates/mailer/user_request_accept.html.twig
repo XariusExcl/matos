@@ -1,46 +1,26 @@
 {% extends "mailer/base.html.twig" %}
-{% block body %}
-    <h1>Bonjour {{ loaner.name??"" }} !</h1>
-    <p>Vous avez fait une demande d'emprunt de matériel sur MATOS pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
-    <p>Votre demande a été acceptée !</p>
-    {% if loan.adminComment is not empty %}
-        <p>Commentaire :</p>
-        <i>{{ loan.adminComment??"" }}</i>
-    {% endif %}
-    <br/>
-    <p>Pour rappel, voici un récapitulatif de votre demande :</p>
-    <p>Date de début de l'emprunt : <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
-    <p>Date de retour de l'emprunt : <b>{{ loan.returnDate|date('d/m/Y H:i') }}</b></p>
-    <p>Matériel emprunté :</p>
-    <ul style="list-style-type: none;padding:0;">
-        {% for equipment in loan.equipmentLoaned??"" %}
-            <li style="margin-bottom: 10px;">
-                • <b>{{ equipment.name }}</b>
-            </li>
-        {% endfor %}
-    </ul>
-    <p>Pour récupérer votre emprunt :</p>
-    <ul>
-        <li style="margin-bottom: 10px;">
-            • Il vous est demandé d'être présent devant le studio ou devant le bureau H110 <b>5 minutes avant l'heure de départ.</b>
-        </li>
-        <li style="margin-bottom: 10px;">
-            • Tout retard de plus de 10 minutes entraînera <b>l'annulation de l'emprunt</b>.
-        </li>
-    </ul>
-    <p>Pour rendre votre emprunt :</p>
-    <ul>
-        <li style="margin-bottom: 10px;">
-            • Présentez-vous devant le studio ou devant le bureau H110 <b>5 minutes avant l'heure de retour.</b>
-        </li>
-        <li style="margin-bottom: 10px;">
-            • Le retour doit se faire uniquement en présence d'un enseignant ou personnel de l'IUT.
-        </li>
-        <li style="margin-bottom: 10px;">
-            • Un retard trop important peut entraîner une <b>restriction des emprunts</b>.
-        </li>
-    </ul>
-    <p>Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse <a href="mailto:emprunt.mmi@gmail.com?subject=?subject=Question%20emprunt%20">emprunt.mmi@gmail.com</a>.</p>
-    <p>À bientôt sur MATOS !</p>
-{% endblock %}
 
+{% block chip %}Demande acceptée{% endblock %}
+{% block chipStyle %}background-color:#E5F8F2;color:#00A87E;{% endblock %}
+
+{% block body %}
+	<h1 style="font-size:24px;line-height:32px;margin:16px 0 8px;">Bonjour {{ loan.loaner.name ?? '' }} !</h1>
+	<p style="font-size:15px;line-height:22px;color:#334155;margin:0;">Votre demande d'emprunt pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b> a été acceptée !</p>
+	{% if loan.adminComment is not empty %}
+		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
+			<tr>
+				<td style="border-left:3px solid #00A87E;background-color:#F6F8FA;border-radius:10px;padding:12px 16px;font-size:15px;line-height:22px;">
+					<span style="font-size:12px;color:#64748B;">Commentaire</span><br>{{ loan.adminComment }}
+				</td>
+			</tr>
+		</table>
+	{% endif %}
+	{% include 'mailer/_recap.html.twig' with {loan: loan} %}
+	<p style="font-size:14px;font-weight:600;margin:0 0 6px;">Pour récupérer votre emprunt :</p>
+	<p style="font-size:14px;line-height:21px;color:#334155;margin:0 0 4px;">• Il vous est demandé d'être présent devant le studio ou devant le bureau H110 <b>5 minutes avant l'heure de départ.</b></p>
+	<p style="font-size:14px;line-height:21px;color:#334155;margin:0 0 14px;">• Tout retard de plus de 10 minutes entraînera <b>l'annulation de l'emprunt</b>.</p>
+	<p style="font-size:14px;font-weight:600;margin:0 0 6px;">Pour rendre votre emprunt :</p>
+	<p style="font-size:14px;line-height:21px;color:#334155;margin:0 0 4px;">• Présentez-vous devant le studio ou devant le bureau H110 <b>5 minutes avant l'heure de retour.</b></p>
+	<p style="font-size:14px;line-height:21px;color:#334155;margin:0 0 4px;">• Le retour doit se faire uniquement en présence d'un enseignant ou personnel de l'IUT.</p>
+	<p style="font-size:14px;line-height:21px;color:#334155;margin:0;">• Un retard trop important peut entraîner une <b>restriction des emprunts</b>.</p>
+{% endblock %}

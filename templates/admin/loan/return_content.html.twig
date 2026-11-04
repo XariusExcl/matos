@@ -1,25 +1,54 @@
 <script>
-    if({{ redirect?"true":"false" }}) {
-        window.location.href = "{{ path('admin') }}";
-    }
+	if({{ redirect?"true":"false" }}) {
+		window.location.href = "{{ path('admin') }}";
+	}
 </script>
 
+{% set name = loan.loaner.name ?? loan.loaner.email|split('@')[0] %}
+<p class="mb-5 text-ink-500">{{ name }} · retour prévu le {{ loan.returnDate|date('d/m/Y à H:i') }}</p>
+
 {{ form_start(form) }}
-    <div class="ml-3">
-        {% for equipment in form.equipment %}
-            <div class="mt-1">
-                {{ form_widget(equipment, {'attr': {'class': 'form-check-input', 'style': "width:1.5rem; height:1.5rem"}}) }}
-                <span class="text-lg">
-                    {{ field_label(equipment) }} {% if loan.discriminators[equipment.vars.value] is defined %} (N°{{ loan.discriminators[equipment.vars.value] }}) {% endif %} 
-                </span>
-           </div>
-        {% endfor %}
-    </div>
-
-    <div class="mt-1">
-        {{ form_label(form.comment) }}
-        {{ form_widget(form.comment, {'attr': {'class': 'form-control'}}) }}
-    </div>
-
-    <button type="submit" id="camera_loan_submit" class="mt-4 p-3 btn btn-primary">Confirmer le retour</button>
+<div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+	<div class="flex flex-col gap-5">
+		<section class="ea-card p-5">
+			<div class="mb-2 flex items-center justify-between">
+				<h2 class="m-0 text-base font-semibold">Checklist de retour</h2>
+				<span class="text-sm font-semibold text-brand-700"><span data-return-count>0</span> / {{ form.equipment|length }} vérifiés</span>
+			</div>
+			<div class="mb-2 h-1.5 overflow-hidden rounded-full bg-surface-muted"><div class="h-full w-0 rounded-full bg-brand-500 transition-all" data-return-bar></div></div>
+			{% for equipment in form.equipment %}
+				<label for="{{ equipment.vars.id }}" class="m-0 flex cursor-pointer items-center gap-3 border-t border-surface-line py-3">
+					{{ form_widget(equipment, {'attr': {'class': 'form-check-input m-0 h-5 w-5'}}) }}
+					<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-ink-700"><i class="fa fa-box"></i></span>
+					<span class="flex-1 font-semibold text-ink-900">{{ field_label(equipment) }}</span>
+					{% if loan.discriminators[equipment.vars.value] is defined %}<span class="text-sm text-ink-500">N°{{ loan.discriminators[equipment.vars.value] }}</span>{% endif %}
+				</label>
+			{% endfor %}
+		</section>
+		<section class="ea-card flex flex-col gap-2 p-5">
+			{{ form_label(form.comment, null, {'label_attr': {'class': 'm-0 text-sm font-semibold text-ink-900'}}) }}
+			{{ form_widget(form.comment, {'attr': {'class': 'form-control min-h-[110px] rounded-xl'}}) }}
+		</section>
+	</div>
+	<aside>
+		<section class="ea-card flex flex-col gap-4 p-5 shadow-card">
+			<h2 class="m-0 text-base font-semibold">Résumé</h2>
+			<div class="flex justify-between text-sm"><span class="text-ink-500">Retour prévu</span><span class="font-semibold text-ink-900">{{ loan.returnDate|date('d/m/Y H:i') }}</span></div>
+			<div class="flex justify-between text-sm"><span class="text-ink-500">Éléments</span><span class="font-semibold text-ink-900"><span data-return-count>0</span> / {{ form.equipment|length }} cochés</span></div>
+			<p class="m-0 text-xs text-ink-500">Un mail de confirmation est envoyé automatiquement à l'étudiant.</p>
+			<button type="submit" id="camera_loan_submit" class="ea-btn ea-btn-dark h-12">Confirmer le retour</button>
+		</section>
+	</aside>
+</div>
 {{ form_end(form) }}
+
+<script>
+	const returnInputs = document.querySelectorAll('[name^="return_loan[equipment]"]');
+	const updateReturn = () => {
+		const checked = [...returnInputs].filter((i) => i.checked).length;
+		document.querySelectorAll('[data-return-count]').forEach((el) => el.textContent = checked);
+		document.querySelector('[data-return-bar]').style.width = (returnInputs.length ? checked / returnInputs.length * 100 : 0) + '%';
+	};
+	returnInputs.forEach((i) => i.addEventListener('change', updateReturn));
+	updateReturn();
+</script>

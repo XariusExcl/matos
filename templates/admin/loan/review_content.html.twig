@@ -1,51 +1,87 @@
 {% set modifyUrl = ea_url()
-    .setController('App\\Controller\\Admin\\LoanCrudController')
-    .setAction('edit')
-    .set('entityId', loan.id) %}
+	.setController('App\\Controller\\Admin\\LoanCrudController')
+	.setAction('edit')
+	.set('entityId', loan.id) %}
+{% set name = loan.loaner.name ?? loan.loaner.email|split('@')[0] %}
+{% set initials = '' %}{% for part in name|split(' ')|slice(0, 2) %}{% set initials = initials ~ part|first|upper %}{% endfor %}
+{% set statuses = {0: ['En attente', 'bg-amber-50 text-amber-700'], 1: ['Confirmée', 'bg-emerald-50 text-emerald-600'], 2: ['Refusée', 'bg-red-50 text-error'], 3: ['Terminée', 'bg-surface-muted text-ink-500'], 4: ['Annulée', 'bg-surface-muted text-ink-500']} %}
 
-<p style="font-size:1.25rem"><b>Commentaire</b></p>
-<p style="margin-left:1rem">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
-<p style="font-size:1.25rem"><b>Responsable</b></p>
-<p style="margin-left:1rem">{{ loan.loaner.name ?? loan.loaner.email|split('@')[0] }}</p>
-<p style="font-size:1.25rem"><b>Date de départ</b></p>
-<p style="margin-left:1rem">{{ loan.departureDate|date('d/m/Y H:i') }}</p>
-<p style="font-size:1.25rem"><b>Date de retour</b></p>
-<p style="margin-left:1rem">{{ loan.returnDate|date('d/m/Y H:i') }}</p>
-<p style="font-size:1.25rem"><b>Matériel</b></p>
-<ul>
-{% for equipment in loan.equipmentLoaned %}
-    <li class="mt-1">
-        {{ equipment.name }} {% if loan.discriminators[equipment.id] is defined %} (N°{{ loan.discriminators[equipment.id] }}) {% endif %} 
-    </li>
-{% endfor %}
-</ul>
+<div class="mb-4"><span class="ea-badge {{ statuses[loan.status][1] }}">{{ statuses[loan.status][0] }}</span></div>
 
-<a class="btn btn-primary" href="{{ modifyUrl }}">Modifier</a>
-<a id="loan-acceptbutton" class="btn btn-success">Accepter</a>
-<a id="loan-refusebutton" class="btn btn-error">Refuser</a>
+<div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
+	<div class="flex flex-col gap-5">
+		<section class="ea-card flex items-center gap-4 p-5">
+			<span class="ea-avatar h-12 w-12 text-base">{{ initials }}</span>
+			<div>
+				<p class="m-0 text-base font-semibold text-ink-900">{{ name }}</p>
+				<p class="m-0 text-sm text-ink-500">{{ loan.loaner.email }}</p>
+			</div>
+		</section>
 
-<form id="loan-comment" style="display:none" method="post" action="">
-    <label id="loan-comment-label" for="loan-comment">Motif de </label>
-    <textarea name="loan-comment" id="loan-comment-textfield" class="form-control" placeholder="Motif"></textarea>
+		<section class="ea-card p-5">
+			<h2 class="mb-3 text-base font-semibold">Projet</h2>
+			<p class="m-0 rounded-xl border-l-[3px] border-brand-500 bg-surface-bg px-4 py-3 text-ink-700">{{ loan.comment ?? 'Aucun commentaire' }}</p>
+		</section>
 
-    <button type="submit" id="loan-review-send" class="btn btn-primary">Envoyer</a>
-</form>
+		<section class="ea-card p-5">
+			<h2 class="mb-1 text-base font-semibold">Matériel demandé</h2>
+			{% for equipment in loan.equipmentLoaned %}
+				<div class="flex items-center gap-3 border-t border-surface-line py-3">
+					<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-ink-700"><i class="fa fa-box"></i></span>
+					<span class="flex-1 font-semibold text-ink-900">{{ equipment.name }}</span>
+					{% if loan.discriminators[equipment.id] is defined %}<span class="text-sm font-semibold text-ink-700">N°{{ loan.discriminators[equipment.id] }}</span>{% endif %}
+				</div>
+			{% endfor %}
+		</section>
+
+		<section class="ea-card p-5">
+			<h2 class="mb-3 text-base font-semibold">Créneau</h2>
+			<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+				<div class="rounded-xl bg-surface-bg px-4 py-3"><p class="m-0 text-xs text-ink-500">Départ</p><p class="m-0 font-semibold text-ink-900">{{ loan.departureDate|date('d/m/Y H:i') }}</p></div>
+				<div class="rounded-xl bg-surface-bg px-4 py-3"><p class="m-0 text-xs text-ink-500">Retour</p><p class="m-0 font-semibold text-ink-900">{{ loan.returnDate|date('d/m/Y H:i') }}</p></div>
+			</div>
+		</section>
+	</div>
+
+	<aside>
+		<section class="ea-card flex flex-col gap-4 p-5 shadow-card">
+			<h2 class="m-0 text-base font-semibold">Ta réponse</h2>
+			<div class="grid grid-cols-2 gap-1 rounded-xl bg-surface-muted p-1" role="tablist">
+				<button type="button" id="loan-acceptbutton" class="rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-semibold text-ink-500" aria-selected="false"><i class="fa fa-check"></i> Accepter</button>
+				<button type="button" id="loan-refusebutton" class="rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-semibold text-ink-500" aria-selected="false"><i class="fa fa-xmark"></i> Refuser</button>
+			</div>
+			<form id="loan-comment" method="post" action="" class="hidden flex-col gap-3">
+				<label id="loan-comment-label" for="loan-comment-textfield" class="m-0 text-sm font-semibold text-ink-900">Réponse à la demande de prêt</label>
+				<textarea name="loan-comment" id="loan-comment-textfield" class="form-control min-h-[120px] rounded-xl" placeholder="Message envoyé par mail à l'étudiant"></textarea>
+				<p class="m-0 text-xs text-ink-500">Envoyé par mail à l'étudiant.</p>
+				<button type="submit" id="loan-review-send" class="ea-btn ea-btn-dark h-12">Envoyer</button>
+			</form>
+			<a class="ea-btn ea-btn-ghost" href="{{ modifyUrl }}">Modifier la demande</a>
+		</section>
+	</aside>
+</div>
 
 <script>
-    const acceptUrl = '/admin/loan/{{ loan.id }}/accept';
-    const refuseUrl = '/admin/loan/{{ loan.id }}/refuse';
+	const acceptUrl = '/admin/loan/{{ loan.id }}/accept';
+	const refuseUrl = '/admin/loan/{{ loan.id }}/refuse';
+	const form = document.getElementById('loan-comment');
+	const acceptButton = document.getElementById('loan-acceptbutton');
+	const refuseButton = document.getElementById('loan-refusebutton');
+	const sendButton = document.getElementById('loan-review-send');
 
-    document.getElementById('loan-acceptbutton').addEventListener('click', function() {
-        const form = document.getElementById('loan-comment')
-        form.style.display = 'block';
-        form.action = acceptUrl;
-        document.getElementById('loan-comment-label').innerHTML = 'Réponse à la demande de prêt';
+	const choose = (accept) => {
+		form.classList.remove('hidden');
+		form.classList.add('flex');
+		form.action = accept ? acceptUrl : refuseUrl;
+		document.getElementById('loan-comment-label').innerHTML = accept ? 'Réponse à la demande de prêt' : 'Motif du refus';
+		sendButton.textContent = accept ? 'Accepter et envoyer' : 'Refuser et envoyer';
+		sendButton.className = 'ea-btn h-12 ' + (accept ? 'ea-btn-dark' : 'ea-btn-danger');
+		[[acceptButton, accept, 'text-emerald-600'], [refuseButton, !accept, 'text-error']].forEach(([button, on, color]) => {
+			button.setAttribute('aria-selected', on ? 'true' : 'false');
+			button.className = 'rounded-lg border-0 px-3 py-2 text-sm font-semibold ' + (on ? 'bg-white shadow-card ' + color : 'bg-transparent text-ink-500');
+		});
+	};
 
-    });
-    document.getElementById('loan-refusebutton').addEventListener('click', function() {
-        const form = document.getElementById('loan-comment')
-        form.style.display = 'block';
-        form.action = refuseUrl;
-        document.getElementById('loan-comment-label').innerHTML = 'Motif du refus';
-    });
+	acceptButton.addEventListener('click', () => choose(true));
+	refuseButton.addEventListener('click', () => choose(false));
 </script>

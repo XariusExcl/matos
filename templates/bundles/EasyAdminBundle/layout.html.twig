@@ -1,0 +1,25 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block head_stylesheets %}
+	{{ parent() }}
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	{{ encore_entry_link_tags('admin') }}
+{% endblock %}
+
+{% block javascript_page_color_scheme %}
+	<script>try { if (!localStorage.getItem('ea/colorScheme')) localStorage.setItem('ea/colorScheme', 'light'); } catch (e) {}</script>
+	{{ parent() }}
+{% endblock %}
+
+{% block header_logo %}
+	<a class="logo" title="MATOS" href="{{ path(ea.dashboardRouteName) }}">
+		<span class="logo-custom flex items-center gap-2">
+			<img src="{{ asset('logo.png') }}" alt="" class="h-8 w-8">
+			<span class="text-xl font-bold tracking-wide">MATOS</span>
+			<span class="rounded-md bg-ink-900 px-2 py-0.5 text-xs font-medium text-white">Admin</span>
+		</span>
+		<span class="logo-compact"><img src="{{ asset('logo.png') }}" alt="MATOS" class="h-7 w-7"></span>
+	</a>
+{% endblock header_logo %}

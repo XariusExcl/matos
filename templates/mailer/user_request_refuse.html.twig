@@ -1,11 +1,18 @@
 {% extends "mailer/base.html.twig" %}
-{% block body %}
-    <h1>Bonjour {{ loaner.name??"" }} !</h1>
-    <p>Vous avez fait une demande d'emprunt de matériel sur MATOS pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b></p>
-    <p>Votre demande a malheureusement été refusée.</p>
-    <p>Motif :</p>
-    <i>{{ loan.adminComment??"" }}</i>
-    <p>Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse <a href="mailto:emprunt.mmi@gmail.com?subject=?subject=Question%20emprunt%20">emprunt.mmi@gmail.com</a>.</p>
-    <p>À bientôt sur MATOS.</p>
-{% endblock %}
 
+{% block chip %}Demande refusée{% endblock %}
+{% block chipStyle %}background-color:#FDECEE;color:#DB2E3F;{% endblock %}
+
+{% block body %}
+	<h1 style="font-size:24px;line-height:32px;margin:16px 0 8px;">Bonjour {{ loan.loaner.name ?? '' }} !</h1>
+	<p style="font-size:15px;line-height:22px;color:#334155;margin:0;">Vous avez fait une demande d'emprunt de matériel sur MATOS pour le <b>{{ loan.departureDate|date('d/m/Y H:i') }}</b>. Votre demande a malheureusement été refusée.</p>
+	{% if loan.adminComment is not empty %}
+		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
+			<tr>
+				<td style="border-left:3px solid #DB2E3F;background-color:#F6F8FA;border-radius:10px;padding:12px 16px;font-size:15px;line-height:22px;">
+					<span style="font-size:12px;color:#64748B;">Motif</span><br>{{ loan.adminComment }}
+				</td>
+			</tr>
+		</table>
+	{% endif %}
+{% endblock %}

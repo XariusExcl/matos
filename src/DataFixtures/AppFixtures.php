@@ -152,6 +152,7 @@ class AppFixtures extends Fixture
             $equipmentObject->setLoanable($equipment["loanable"]??true);
             $equipmentObject->setQuantity($equipment["quantity"]??1);
             $equipmentObject->setShowInTable($equipment["showInTable"]??true);
+            $equipmentObject->setNumbered($equipment["numbered"]??false);
             array_push($equipmentObjects, $equipmentObject);
             $manager->persist($equipmentObject);
         }
@@ -185,8 +186,8 @@ class AppFixtures extends Fixture
             ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+15 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[3], $equipmentObjects[10], $equipmentObjects[25], $equipmentObjects[27]], "loaner" => $userObjects[1]],
             ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[24], $equipmentObjects[26]], "loaner" => $userObjects[1]],
             ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[4], $equipmentObjects[11], $equipmentObjects[25], $equipmentObjects[27]], "loaner" => $userObjects[1]],
-            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[30], $equipmentObjects[51]], "loaner" => $userObjects[1]],
-            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[30], $equipmentObjects[51]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+2 day 17:00"), "returnDate" => new \DateTime("+5 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[30]], "loaner" => $userObjects[1]],
+            ["loanDate" => new \DateTime("+12 day 17:00"), "returnDate" => new \DateTime("+14 day 17:00"), "loanStatus" => LoanStatus::ACCEPTED, "equipmentLoaned" => [$equipmentObjects[6], $equipmentObjects[12], $equipmentObjects[46], $equipmentObjects[30]], "loaner" => $userObjects[1]],
         ];
 
         foreach ($loans as $loan) {

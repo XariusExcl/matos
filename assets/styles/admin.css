@@ -1,0 +1,183 @@
+@config "../../tailwind.admin.config.js";
+@tailwind utilities;
+
+:root,
+[data-bs-theme=light] {
+  --font-family-sans-serif: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-size-base: 14px;
+  --color-primary: #0B1622;
+  --text-on-primary: #ffffff;
+  --link-color: #0A6F96;
+  --link-hover-color: #0B1622;
+  --body-bg: #F6F8FA;
+  --content-bg: #F6F8FA;
+  --border-radius: 10px;
+  --border-radius-lg: 16px;
+  --sidebar-max-width: 248px;
+  --sidebar-bg: #ffffff;
+  --sidebar-border-color: #E5E9F0;
+  --sidebar-logo-color: #0B1622;
+  --sidebar-menu-color: #334155;
+  --sidebar-menu-icon-color: #64748B;
+  --sidebar-menu-header-color: #94A3B8;
+  --sidebar-menu-active-item-bg: #F1F5F9;
+  --sidebar-menu-active-item-color: #0B1622;
+  --sidebar-menu-badge-active-bg: #FFBA10;
+  --sidebar-menu-badge-active-color: #0B1622;
+  --content-top-border-color: #E5E9F0;
+  --table-cell-border-color: #E5E9F0;
+  --table-hover-cell-bg: #F6F8FA;
+  --table-selected-cell-bg: #E8F8FE;
+  --table-thead-color: #64748B;
+  --table-cell-color: #334155;
+  --table-thead-sorted-marker-color: #00ADEA;
+  --form-switch-checked-bg: #00ADEA;
+  --form-type-check-input-checked-bg: #0B1622;
+  --form-input-hover-shadow: 0 0 0 4px #E8F8FE;
+  --button-primary-bg: #0B1622;
+  --button-primary-color: #ffffff;
+  --button-border-color: #E5E9F0;
+}
+
+body.ea {
+  -webkit-font-smoothing: antialiased;
+}
+
+.ea .sidebar {
+  border-right: 1px solid var(--sidebar-border-color);
+}
+
+.ea #header-logo .logo {
+  @apply flex items-center gap-2 text-ink-900 no-underline;
+}
+
+.ea .menu-header-contents {
+  @apply text-xs font-medium uppercase tracking-wide;
+}
+
+.ea .menu-item .menu-item-contents {
+  @apply rounded-[10px] py-2.5 font-medium;
+}
+
+.ea .menu-item.active .menu-item-contents {
+  @apply font-semibold;
+}
+
+.ea .content-header-title .title,
+.ea h1.title {
+  @apply text-2xl font-bold tracking-tight text-ink-900;
+}
+
+.ea .content-panel,
+.ea .datagrid,
+.ea .form-panel,
+.ea .field-group {
+  border-radius: 16px;
+}
+
+.ea .table.datagrid {
+  @apply overflow-hidden rounded-2xl border border-surface-line bg-white;
+}
+
+.ea .table.datagrid thead th {
+  @apply bg-surface-bg text-xs font-medium;
+}
+
+.ea .btn {
+  @apply rounded-[10px] font-semibold;
+}
+
+.ea .btn-primary {
+  border-color: var(--button-primary-bg);
+}
+
+.ea .badge.badge-boolean-true {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.ea-card {
+  @apply rounded-2xl border border-surface-line bg-white;
+}
+
+.ea-badge {
+  @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium;
+}
+
+.ea-badge::before {
+  content: "";
+  @apply h-1.5 w-1.5 rounded-full bg-current;
+}
+
+.ea-btn {
+  @apply inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-[10px] px-4 text-sm font-semibold no-underline transition-colors;
+}
+
+.ea-btn-dark {
+  @apply bg-ink-900 text-white hover:bg-ink-700 hover:text-white;
+}
+
+.ea-btn-light {
+  @apply border border-surface-line bg-white text-ink-900 hover:bg-surface-muted hover:text-ink-900;
+}
+
+.ea-btn-ghost {
+  @apply bg-surface-muted text-ink-900 hover:bg-surface-line hover:text-ink-900;
+}
+
+.ea-btn-danger {
+  @apply bg-red-50 text-error hover:bg-red-100 hover:text-error;
+}
+
+.ea-avatar {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700;
+}
+
+.ea-dark-scheme .bg-white { background-color: var(--content-bg) !important; }
+.ea-dark-scheme .bg-surface-bg { background-color: var(--body-bg) !important; }
+.ea-dark-scheme .bg-surface-muted { background-color: var(--true-gray-800) !important; }
+.ea-dark-scheme .border-surface-line { border-color: var(--true-gray-700) !important; }
+.ea-dark-scheme .bg-ink-900 { background-color: var(--true-gray-700) !important; }
+.ea-dark-scheme .text-ink-900 { color: var(--true-gray-100) !important; }
+.ea-dark-scheme .text-ink-700 { color: var(--true-gray-300) !important; }
+.ea-dark-scheme .text-ink-500 { color: var(--true-gray-400) !important; }
+.ea-dark-scheme .text-ink-400 { color: var(--true-gray-500) !important; }
+.ea-dark-scheme .text-brand-700 { color: #00ADEA !important; }
+.ea-dark-scheme .text-emerald-600 { color: #34d399 !important; }
+.ea-dark-scheme .text-amber-700 { color: var(--amber-400) !important; }
+.ea-dark-scheme .bg-brand-50 { background-color: rgba(0, 173, 234, .15) !important; }
+.ea-dark-scheme .bg-emerald-50 { background-color: rgba(16, 185, 129, .15) !important; }
+.ea-dark-scheme .bg-amber-50 { background-color: rgba(245, 158, 11, .15) !important; }
+.ea-dark-scheme .bg-red-50 { background-color: rgba(239, 68, 68, .15) !important; }
+
+.ea-dark-scheme .ea-btn-dark { background-color: var(--true-gray-100) !important; color: var(--true-gray-950) !important; }
+.ea-dark-scheme .ea-btn-dark:hover { background-color: var(--true-gray-300) !important; color: var(--true-gray-950) !important; }
+.ea-dark-scheme .ea-btn-light:hover,
+.ea-dark-scheme .ea-btn-ghost:hover { background-color: var(--true-gray-700) !important; color: var(--true-gray-100) !important; }
+.ea-dark-scheme .ea-btn-danger:hover { background-color: rgba(239, 68, 68, .25) !important; }
+.ea-dark-scheme .ea-avatar { background-color: rgba(0, 173, 234, .2) !important; color: #00ADEA !important; }
+.ea-dark-scheme .ea-card,
+.ea-dark-scheme .table.datagrid { background-color: var(--content-bg) !important; border-color: var(--true-gray-700) !important; }
+.ea-dark-scheme .table.datagrid thead th { background-color: var(--body-bg) !important; }
+.ea-dark-scheme #header-logo .logo,
+.ea-dark-scheme .content-header-title .title,
+.ea-dark-scheme h1.title { color: var(--true-gray-100) !important; }
+.ea-dark-scheme .ea-btn-light { background-color: var(--content-bg) !important; border-color: var(--true-gray-700) !important; color: var(--true-gray-100) !important; }
+.ea-dark-scheme .ea-btn-ghost { background-color: var(--true-gray-800) !important; color: var(--true-gray-100) !important; }
+.ea-dark-scheme .badge.badge-boolean-true { background-color: rgba(16, 185, 129, .15) !important; color: #34d399 !important; }
+
+.ea .content-wrapper {
+  grid-template-columns: minmax(0, 1fr) var(--resize-handler-width);
+}
+
+.ea .content {
+  min-width: 0;
+}
+
+.ea .content-body:has(> .table.datagrid) {
+  overflow-x: auto;
+}
+
+.ea #navigation-toggler {
+  min-width: 40px;
+  min-height: 40px;
+}

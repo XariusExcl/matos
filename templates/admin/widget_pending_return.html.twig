@@ -1,43 +1,32 @@
-<h3>Évènements à venir / en cours : {{loans|length}}</h3>
-<table class="datagrid">
-    <thead>
-        <tr>
-            <td></td>
-            <td>Id</td>
-            <td>Date</td>
-            <td>Responsable</td>
-            <td>Équipment emprunté</td>
-            <td>Géré par</td>
-            <td>Actions</td>
-        </tr>
-    </thead>
-    <tbody>
-        {% for loan in loans %}
-            {% if loan.type == "D" %}
-                <tr style="background:var(--alert-success-bg);">
-                    <td><i class="fa-solid fa-arrow-right"></i></td>
-                    <td>#{{ loan.id }}</td>
-                    <td>{{ loan.date|date() }}</td>
-                    <td>{{ loan.loaner }}</td>
-                    <td>{{ loan.equipmentLoaned[0].category }}</td>
-                    <td>{{ loan.assignee }}</td>
-                    <td>
-                        <a class="btn btn-secondary" href="/admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\LoanCrudController&entityId={{ loan.id }}" {# lol #}>Modifier</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr style="background:var(--alert-warning-bg);">
-                    <td><i class="fa-solid fa-arrow-left"></i></td>
-                    <td>#{{ loan.id }}</td>
-                    <td>{{ loan.date|date() }}</td>
-                    <td>{{ loan.loaner }}</td>
-                    <td>{{ loan.equipmentLoaned[0].category }}</td>
-                    <td>{{ loan.assignee }}</td>
-                    <td>
-                        <a class="btn btn-primary" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+<section class="ea-card p-5">
+	<h2 class="mb-3 text-lg font-bold">Départs et retours à venir <span class="ml-1 text-sm font-medium text-ink-500">{{ loans|length }}</span></h2>
+	{% set now = date() %}
+	{% for loan in loans %}
+		{% set departure = loan.type == "D" %}
+		{% set late = not departure and loan.date < now %}
+		<div class="flex flex-wrap items-center gap-3 border-t border-surface-line py-3 md:flex-nowrap">
+			<div class="w-24 shrink-0">
+				<p class="m-0 font-semibold text-ink-900">{{ loan.date|date('H:i') }}</p>
+				<p class="m-0 text-xs text-ink-500">{{ loan.date|date('d/m/Y') }}</p>
+			</div>
+			{% if late %}
+				<span class="ea-badge bg-red-50 text-error">Retour en retard</span>
+			{% elseif departure %}
+				<span class="ea-badge bg-emerald-50 text-emerald-600">Départ</span>
+			{% else %}
+				<span class="ea-badge bg-brand-50 text-brand-700">Retour</span>
+			{% endif %}
+			<div class="min-w-0 grow basis-48 md:basis-0">
+				<p class="m-0 font-semibold text-ink-900">#{{ loan.id }} · {{ loan.loaner }}</p>
+				<p class="m-0 truncate text-xs text-ink-500">{{ loan.equipmentLoaned|map(e => e.name)|join(', ') }} · géré par {{ loan.assignee }}</p>
+			</div>
+			{% if departure %}
+				<a class="ea-btn ea-btn-ghost" href="/admin?crudAction=edit&crudControllerFqcn=App\Controller\Admin\LoanCrudController&entityId={{ loan.id }}">Modifier</a>
+			{% else %}
+				<a class="ea-btn ea-btn-dark" href="{{ path('admin_loan_return', {'id': loan.id}) }}">Faire le retour</a>
+			{% endif %}
+		</div>
+	{% else %}
+		<p class="m-0 rounded-xl border border-dashed border-surface-line p-6 text-center text-sm text-ink-500">Rien de prévu.</p>
+	{% endfor %}
+</section>

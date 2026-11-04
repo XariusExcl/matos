@@ -1,134 +1,33 @@
 {% extends 'form/base.html.twig' %}
+{% import 'form/_equipment.html.twig' as eq %}
+{% import 'main/_icons.html.twig' as ui %}
 
-{% block form %}
-    <h2 class="text-xl font-bold my-2 ml-5">Modalités</h2>
-    <ul class="ml-10">
-        <li>• Les demandes doivent être faites au
-            <b>minimum 24h à l'avance</b>.</li>
-        <li>• La durée maximale d'emprunt est de <b>1 jour</b>.</li>
-        <li>• Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
-    </ul>
-    <h2 class="text-xl font-bold my-2 ml-5">Matériel</h2>
-    <ul class="ml-10">
-        <li>• Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie.</b>
-        </li>
-        <li>• Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
-    </ul>
+{% set pageTitle = 'Emprunt audiovisuel' %}
 
-    {{ form_start(form) }}
+{% block subtitle %}Caméras, objectifs, micros, lumières, trépieds et accessoires{% endblock %}
 
-    <h2 class="text-2xl font-bold my-2">Projet</h2>
-    <div>
-        {{ form_widget(form.comment, {'attr': {'placeholder': 'Décrivez ici la raison de l\'emprunt (SAÉ, projet personnel, bénévolat...) ainsi qu\'un numéro de contact.', 'class': 'textarea textarea-primary md:w-1/2 w-full'}}) }}
-    </div>
+{% block modalites %}
+	<p class="flex items-center gap-2 font-semibold text-brand-700">{{ ui.icon('info', 'h-4 w-4') }}Modalités</p>
+	<ul class="mt-1 list-disc pl-10">
+		<li>Les demandes doivent être faites au <b>minimum 24h à l'avance</b>.</li>
+		<li>La durée maximale d'emprunt est de <b>1 jour</b> (emprunté le vendredi = rendu le lundi).</li>
+		<li>Vous recevrez un mail de confirmation dès que votre demande aura été traitée.</li>
+	</ul>
+	<p class="mt-3 flex items-center gap-2 font-semibold text-brand-700">{{ ui.icon('box', 'h-4 w-4') }}Fourni avec</p>
+	<ul class="mt-1 list-disc pl-10">
+		<li>Les boîtiers sont fournis avec <b>leur chargeur</b> et <b>une batterie</b>.</li>
+		<li>Les lumières sont fournies avec <b>une batterie V-mount</b> (si applicable), <b>leur adaptateur secteur</b> et <b>un trépied lumière</b>.</li>
+	</ul>
+{% endblock %}
 
-    {% include 'form/_creneau.html.twig' %}
-
-    <h2 class="text-2xl font-bold my-5">Matériel emprunté</h2>
-
-    <div id="equipmentSelection">
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.cameras) }}</h3>
-
-        <div class="grid xl:grid-cols-3 md:grid-cols-2 gap-x-md gap-y-xl input-cards">
-            {{ form_errors(form.cameras, {'attr': {'class': 'text-red-500'}}) }}
-            {% for equipment in form.cameras %}
-                    <label for={{ equipment.vars.id }} class="flex justify-center">
-                        {{ form_widget(equipment, {'attr': {'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                        {% if equipment.vars.value != "" %}
-                            <div class="card w-72 bg-white shadow-xl mb-10 self-end">
-                                <figure class="h-52 bg-slate-300" style="
-                                    {% if equipmentInfo[equipment.vars.value].imageName is not empty %}background:url('{{ asset('images/equipments/' ~ equipmentInfo[equipment.vars.value].imageName) }}') center; background-size: cover;{% endif %}">
-                                </figure>
-                                <div class="card-body">
-                                    <h2 class="card-title">{{ equipmentInfo[equipment.vars.value].name|raw }}</h2>
-                                    {{ equipmentInfo[equipment.vars.value].description|raw }}
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="card w-72 bg-white shadow-xl mb-10 self-end">
-                                <div class="card-body">
-                                    <h2 class="card-title"><i>Aucun</i></h2>
-                                    <i>Pas de boîtier nécessaire pour ce projet.</i>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </label>
-            {% endfor %}
-        </div>
-
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.lenses) }}</h3>
-        {{ form_errors(form.lenses, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.lenses %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : "" }}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.microphones) }}</h3>
-        {{ form_errors(form.microphones, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.microphones %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1'}}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.lights) }}</h3>
-        {{ form_errors(form.lights, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.lights %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-        
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.tripods) }}</h3>
-        {{ form_errors(form.tripods, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.tripods %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.stabilizers) }}</h3>
-        {{ form_errors(form.stabilizers, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.stabilizers %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-
-        <h3 class="text-xl font-bold my-5">{{ form_label(form.batteries) }}</h3>
-        {{ form_errors(form.batteries, {'attr': {'class': 'text-red-500'}}) }}
-        {% for equipment in form.batteries %}
-            <div class="flex my-1.5">
-                {{ form_widget(equipment, {'attr': {'class': 'checkbox checkbox-primary mr-1', 'tag': (equipment.vars.value is not empty) ? equipmentInfo[equipment.vars.value].type : ""}}) }}
-                {{ form_label(equipment) }}
-            </div>
-        {% endfor %}
-    </div>
-
-    {#
-    <h3 class="text-xl font-bold my-5">Autres demandes</h3>
-    <div>
-        {{ form_widget(form.comment, {'attr': {'class': 'w-10/12 md:w-3/4 lg:w-1/2 textarea textarea-bordered textarea-primary mb-10'}}) }}
-    </div>
-    #}
-
-    {{ form_end(form) }}
-    <button onclick="checkFormValidity()" id="camera_loan_submit" class="btn btn-primary text-base-100 mt-5 mb-10">Envoyer la demande</button>
-
-    {% include 'form/_form_modals.html.twig' %}
-    {% include 'main/footer.html.twig' %}
-    <script>
-        const loanName = "audiovisual";
-        const loanStartDayElement = document.getElementById("audiovisual_loan_startDay");
-        const loanStartTimeslotElement = document.getElementById("audiovisual_loan_startTimeSlot");
-        const loanEndDayElement = document.getElementById("audiovisual_loan_endDay");
-        const loanEndTimeslotElement = document.getElementById("audiovisual_loan_endTimeSlot");
-        const loanTaggedElementsArray = Array.from(document.querySelectorAll('[tag]'));
-    </script>
+{% block equipment %}
+	<div class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+		{% for anchor, label in {cameras: 'Boîtier', lenses: 'Objectifs', microphones: 'Micros', lights: 'Lumières', tripods: 'Trépieds', stabilizers: 'Stabilisateurs', batteries: 'Batteries'} %}
+			<button type="button" class="m-chip {{ loop.first ? 'm-chip-active' : '' }}" data-equipment-filter="group-{{ anchor }}">{{ label }}</button>
+		{% endfor %}
+	</div>
+	{{ eq.group(form_label(form.cameras)|striptags, '1 au choix', eq.cards(form.cameras, equipmentInfo, 'Aucun', 'Pas de boîtier nécessaire pour ce projet.'), 'cameras') }}
+	{% for field in ['lenses', 'microphones', 'lights', 'tripods', 'stabilizers', 'batteries'] %}
+		{{ eq.group(form_label(form[field])|striptags, form[field].vars.multiple ? 'plusieurs possibles' : '1 au choix', eq.options(form[field], equipmentInfo), field) }}
+	{% endfor %}
 {% endblock %}

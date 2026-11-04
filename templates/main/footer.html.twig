@@ -1,3 +1,18 @@
-<footer class="text-center p-2">
-    <small>MATOS - IUT de Troyes - <a class="text-primary hover:underline" href="https://github.com/XariusExcl/matos" target="_blank">GitHub</a> - 2024 - 2025 {% if is_granted("ROLE_USER") %}| Un bug ? <a class="text-primary hover:underline" href="mailto:jules.sabater@univ-reims.fr?subject=Bug sur Matos">Envoyez un mail</a>{% endif %}</small>
+<footer class="mt-16 hidden border-t border-surface-line md:block">
+	<div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-6 text-xs">
+		<p class="flex items-center gap-2 text-ink-500">
+			<span class="text-sm font-semibold text-ink-700">MATOS</span>
+			<span class="text-ink-300">·</span>IUT de Troyes
+			<span class="text-ink-300">·</span>2024 – 2025
+		</p>
+		<p class="flex items-center gap-2">
+			<a class="font-medium text-brand-700 hover:underline" href="https://github.com/XariusExcl/matos" target="_blank" rel="noopener">GitHub</a>
+			{% if is_granted("ROLE_USER") %}
+				<span class="text-ink-300">·</span>
+				<a class="font-medium text-brand-700 hover:underline" href="mailto:jules.sabater@univ-reims.fr?subject=Bug sur Matos">Un bug ? Envoyez un mail</a>
+			{% endif %}
+			<span class="text-ink-300">·</span>
+			<a class="font-medium text-brand-700 hover:underline" href="https://www.rafaelteixeira.fr" target="_blank" rel="noopener">Rafael Teixeira</a>
+		</p>
+	</div>
 </footer>

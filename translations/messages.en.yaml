@@ -1,0 +1,48 @@
+Admin: Gestion
+Crud: Paramètres
+Dashboard: Tableau de bord
+'Jours "indisponibles"': Fermetures
+'Retour au site': Retour au site
+Matos: Matériel
+Catégories: Catégories
+Emprunts: Demandes
+Salles: Salles
+'Tag Rules': Règles de compatibilité
+Loan: Emprunt
+Loans: Emprunts
+Equipment: Équipement
+EquipmentCategory: Catégorie
+Location: Salle
+TagRule: Règle de compatibilité
+UnavailableDays: Fermeture
+Name: Nom
+Category: Catégorie
+'Sub Category': Sous-catégorie
+Type: Tag (règles)
+'Image Name': Photo
+'Serial Number': N° de série
+'Show In Table': Afficher dans le planning
+Loanable: Empruntable
+Description: Description
+Quantity: Quantité
+Numbered: Numéroté
+Loaner: Étudiant
+Assignee: Géré par
+'Departure Date': Départ
+'Return Date': Retour
+Status: Statut
+Comment: Commentaire
+'Equipment Loaned': Matériel
+'Date Start': Début
+'Date End': Fin
+'Prevents Loans': Bloque les emprunts
+'Restricted Category': Catégorie concernée
+Title: Nom
+Slug: Slug
+'Tag règle': Tag règle
+'Tag désactivé': Tag désactivé
+PENDING: En attente
+ACCEPTED: Confirmée
+REFUSED: Refusée
+RETURNED: Terminée
+CANCELLED_BY_LOANER: Annulée

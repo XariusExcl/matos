@@ -1,88 +1,111 @@
 {% extends 'base.html.twig' %}
+{% import 'main/_icons.html.twig' as ui %}
+{% import 'main/_ui.html.twig' as m %}
 
-{% block title %}MATOS - Mes emprunts
-{% endblock %}
+{% block title %}MATOS - Mes emprunts{% endblock %}
 
 {% block body %}
-    {% include 'main/navbar.html.twig' %}
-	<div class="flex justify-center">
-		<div class="container mt-20 px-10">
-            <p><a href="{{ path('app_main') }}" class="btn">< Retour à la page d'accueil</a></p>
-            <h1 class="text-3xl font-bold my-10">Mes emprunts prévus</h2>
-            <div class="flex flex-wrap justify-around">
-                {% set cardColors = ["bg-white", "bg-green-100", "bg-sky-100", "bg-sky-100", "bg-sky-100"] %}
-                {% set loanStatuses = ["En attente de validation", "Validé", "Refusé", "Passé", "Annulé"] %}
-                {% for loan in user.loans %}
-                    {% if loan.status == 0 or loan.status == 1 %}
-                        <div class="rounded-3xl mb-5 {{ cardColors[loan.status] }} " style="width: 30rem;">
-                            <div class="card-body">
-                                <p class="text-right">{{ loanStatuses[loan.status] }}</p>
-                                <p class="text-xl"><b>Date de départ</b></p>
-                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y H:i') }}</p>
-                                <p class="text-xl"><b>Date de retour</b></p>
-                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y H:i') }}</p>
-                                <p class="text-xl"><b>Matériel</b></p>
-                                <ul>
-                                {% for equipment in loan.equipmentLoaned %}
-                                    <li class="mt-1 ml-4">
-                                        • {{ equipment.name }} {% if loan.discriminators[equipment.id] is defined %} (N°{{ loan.discriminators[equipment.id] }}) {% endif %} 
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                                <p class="text-xl"><b>Commentaire</b></p>
-                                <p class="ml-1">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
-                            </div>
-                            <div class="card-actions p-8 pt-0 flex justify-end">
-                                {% if loan.status == 0 %}
-                                    <button class="btn btn-error" onclick="modal_{{ loan.id }}.showModal()">Annuler</button>
-                                {% endif %}
-                                <a href="mailto:emprunt.mmi@gmail.com?subject=Demande de modification de l'emprunt du {{ loan.departureDate|date('d/m/Y') }}" class="btn btn-primary">Envoyer un mail</a>
-                                {% if loan.status == 1 %}
-                                    <a class="btn btn-secondary" href="{{ path('pdf_loan_html', {'id': loan.id}) }}">Fiche emprunt (PDF)</a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <dialog id="modal_{{ loan.id }}" class="modal">
-                            <div class="modal-box">
-                                <h3 class="font-bold text-lg">Annuler l'emprunt</h3>
-                                <p class="py-4">Êtes vous sûr(e) de vouloir annuler cet emprunt ?</p>
-                                <div class="modal-action">
-                                    <form method="dialog">
-                                        <button class="btn mr-2">Retour</button>
-                                        <a class="btn btn-error" href="{{ path('app_cancel_loan', {'id': loan.id}) }}">Oui, annuler</a>
-                                    </form>
-                                </div>
-                            </div>
-                        </dialog>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <h1 class="text-3xl font-bold mb-10">Emprunts passés</h2>
-            <div class="flex flex-wrap justify-around">
-                {% for loan in user.loans %}
-                    {% if loan.status >= 2 %}
-                        <div class="rounded-3xl {{ cardColors[loan.status] }} mb-5" style="width: 20rem;">
-                            <div class="card-body">
-                                <p class="text-right">{{ loanStatuses[loan.status] }}</p>
-                                <p class="text-xl"><b>Date de départ</b></p>
-                                <p class="ml-1">{{ loan.departureDate|date('d/m/Y H:i') }}</p>
-                                <p class="text-xl"><b>Date de retour</b></p>
-                                <p class="ml-1">{{ loan.returnDate|date('d/m/Y H:i') }}</p>
-                                <p class="text-xl"><b>Matériel</b></p>
-                                <ul>
-                                {% for equipment in loan.equipmentLoaned %}
-                                    <li class="mt-1 ml-4">
-                                        • {{ equipment.name }} 
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                                <p class="text-xl"><b>Commentaire</b></p>
-                                <p class="ml-1">{{ loan.comment ?? "<i>Aucun</i>" }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
+	{% include 'main/navbar.html.twig' with {active: 'loans'} %}
+	{% set now = date() %}
+	{% set current = user.loans|filter(l => l.status == 0 or l.status == 1)|sort((a, b) => a.departureDate <=> b.departureDate) %}
+	{% set past = user.loans|filter(l => l.status >= 2)|sort((a, b) => b.departureDate <=> a.departureDate) %}
+	{% set toReturn = current|filter(l => l.status == 1 and l.departureDate <= now) %}
+
+	<main class="mx-auto max-w-6xl px-4 pb-28 pt-6 md:px-6 md:pb-12 md:pt-10">
+		<div class="flex flex-wrap items-end justify-between gap-4">
+			<div>
+				<h1 class="text-2xl font-bold">Mes emprunts</h1>
+				<p class="text-ink-500">{{ current|length }} demande{{ current|length > 1 ? 's' : '' }} en cours</p>
+			</div>
+			<a href="{{ path('reservation_form', {formSlug: 'audiovisual'}) }}" class="btn btn-neutral hidden h-10 md:inline-flex">Nouvelle demande {{ ui.icon('arrow-right', 'h-4 w-4') }}</a>
 		</div>
-	</div>
+
+		{% for loan in toReturn %}
+			<div class="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4 md:flex-nowrap md:px-5">
+				<span class="m-badge m-badge-return">À rendre</span>
+				<p class="flex-1 font-semibold">{{ loan.equipmentLoaned|map(e => e.name)|join(', ') }} · retour {{ m.frDate(loan.returnDate) }}</p>
+				<span class="flex items-center gap-1.5 text-sm font-semibold text-brand-700">{{ ui.icon('pin', 'h-4 w-4') }}Studio (H017)</span>
+			</div>
+		{% endfor %}
+
+		<div class="mt-6 inline-flex rounded-xl bg-surface-muted p-1" role="tablist">
+			<button type="button" class="rounded-lg bg-white px-4 py-2 text-sm font-semibold shadow-card" data-loans-tab="current" aria-selected="true">En cours · {{ current|length }}</button>
+			<button type="button" class="rounded-lg px-4 py-2 text-sm font-semibold text-ink-500" data-loans-tab="past" aria-selected="false">Historique · {{ past|length }}</button>
+		</div>
+
+		{% for group, list in {current: current, past: past} %}
+			<div class="mt-4 flex flex-col gap-3 {{ group == 'past' ? 'hidden' : '' }}" data-loans-panel="{{ group }}">
+				<div class="hidden grid-cols-[minmax(0,1fr)_170px_170px_120px_150px] gap-4 px-5 text-xs font-medium text-ink-500 md:grid">
+					<span>Matériel</span><span>Départ</span><span>Retour</span><span>Statut</span><span class="text-right">Actions</span>
+				</div>
+				{% for loan in list %}
+					<article class="m-card p-4 md:grid md:grid-cols-[minmax(0,1fr)_170px_170px_120px_150px] md:items-center md:gap-4 md:px-5 {{ group == 'past' ? 'opacity-75' : '' }}">
+						<div class="min-w-0">
+							<div class="flex items-start justify-between gap-3 md:hidden">
+								<p class="font-semibold">{{ m.frDate(loan.departureDate) }} → {{ m.frDate(loan.returnDate) }}</p>
+								{{ m.statusBadge(loan) }}
+							</div>
+							<ul class="mt-3 flex flex-col gap-2 md:mt-0 md:gap-1">
+								{% for equipment in loan.equipmentLoaned %}
+									<li class="flex items-center gap-3">
+										<span class="m-thumb h-9 w-9 md:hidden">{{ ui.icon(m.equipIcon(equipment)|trim, 'h-5 w-5') }}</span>
+										<span class="text-sm text-ink-700 md:font-semibold md:text-ink-900">{{ equipment.name }}{% if loan.discriminators[equipment.id] is defined %} <span class="font-normal text-ink-400">(N°{{ loan.discriminators[equipment.id] }})</span>{% endif %}</span>
+									</li>
+								{% endfor %}
+							</ul>
+							<p class="mt-2 text-xs text-ink-500 md:mt-1">Demande n°{{ loan.id }}</p>
+						</div>
+						<p class="hidden text-sm text-ink-700 md:block">{{ m.frDate(loan.departureDate) }}</p>
+						<p class="hidden text-sm text-ink-700 md:block">{{ m.frDate(loan.returnDate) }}</p>
+						<span class="hidden md:block">{{ m.statusBadge(loan) }}</span>
+						{% if loan.comment %}
+							<p class="mt-3 rounded-xl bg-surface-bg px-3 py-2 text-sm text-ink-500 md:col-span-5 md:mt-1">{{ loan.comment }}</p>
+						{% endif %}
+						<div class="mt-4 flex gap-2 md:col-start-5 md:row-start-1 md:mt-0 md:justify-end">
+							{% if loan.status == 1 %}
+								<a class="btn btn-outline btn-sm h-10 flex-1 border-surface-line md:h-9 md:w-9 md:flex-none md:px-0" href="{{ path('pdf_loan_html', {'id': loan.id}) }}" title="Fiche d'emprunt (PDF)">{{ ui.icon('file', 'h-4 w-4') }}<span class="md:hidden">Fiche PDF</span></a>
+							{% endif %}
+							{% if group == 'current' %}
+								<a class="btn btn-outline btn-sm h-10 flex-1 border-surface-line md:h-9 md:w-9 md:flex-none md:px-0" href="mailto:emprunt.mmi@gmail.com?subject=Demande de modification de l'emprunt du {{ loan.departureDate|date('d/m/Y') }}" title="Envoyer un mail">{{ ui.icon('mail', 'h-4 w-4') }}<span class="md:hidden">Contacter</span></a>
+							{% endif %}
+							{% if loan.status == 0 %}
+								<button class="btn btn-sm h-10 flex-1 border-0 bg-red-50 text-error hover:bg-red-100 md:h-9 md:w-9 md:flex-none md:px-0" onclick="modal_{{ loan.id }}.showModal()" title="Annuler">{{ ui.icon('x', 'h-4 w-4') }}<span class="md:hidden">Annuler</span></button>
+							{% endif %}
+						</div>
+					</article>
+					{% if loan.status == 0 %}
+						<dialog id="modal_{{ loan.id }}" class="modal modal-bottom sm:modal-middle">
+							<div class="modal-box rounded-t-3xl p-6 text-center sm:rounded-3xl">
+								<span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-error">{{ ui.icon('x', 'h-6 w-6') }}</span>
+								<h3 class="mt-4 text-xl font-bold">Annuler cette demande ?</h3>
+								<p class="mt-2 text-sm text-ink-500">{{ loan.equipmentLoaned|map(e => e.name)|join(', ') }} · {{ m.frDate(loan.departureDate) }}. Le matériel sera de nouveau disponible pour les autres.</p>
+								<form method="dialog" class="mt-6 grid grid-cols-2 gap-3">
+									<button class="btn h-12 border-0 bg-surface-muted">Retour</button>
+									<a class="btn h-12 border-0 bg-red-50 text-error hover:bg-red-100" href="{{ path('app_cancel_loan', {'id': loan.id}) }}">Oui, annuler</a>
+								</form>
+							</div>
+							<form method="dialog" class="modal-backdrop"><button>Fermer</button></form>
+						</dialog>
+					{% endif %}
+				{% else %}
+					<p class="rounded-2xl border border-dashed border-surface-line p-8 text-center text-sm text-ink-500">{{ group == 'current' ? 'Aucun emprunt en cours.' : 'Aucun emprunt passé.' }}</p>
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</main>
+	{% include 'main/tabbar.html.twig' with {active: 'loans'} %}
+	<script>
+		document.querySelectorAll('[data-loans-tab]').forEach((tab) => {
+			tab.addEventListener('click', () => {
+				document.querySelectorAll('[data-loans-tab]').forEach((t) => {
+					const on = t === tab;
+					t.setAttribute('aria-selected', on ? 'true' : 'false');
+					t.classList.toggle('bg-white', on);
+					t.classList.toggle('shadow-card', on);
+					t.classList.toggle('text-ink-500', !on);
+				});
+				document.querySelectorAll('[data-loans-panel]').forEach((p) => p.classList.toggle('hidden', p.dataset.loansPanel !== tab.dataset.loansTab));
+			});
+		});
+	</script>
 {% endblock %}
